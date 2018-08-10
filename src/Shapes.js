@@ -98,7 +98,7 @@ class Shapes extends Component {
     for (var i = 0; i < indexes.length; i++) {
       const scale = 1;
 
-      let dx = 3 * (Math.random(1) - 1 / 2) * ri;
+      let dx = 5 * (Math.random(1) - 1 / 2) * ri;
       let dy = (Math.random(1) - 1 / 2) * ri;
 
       newLayers.push(
