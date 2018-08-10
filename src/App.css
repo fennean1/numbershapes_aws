@@ -11,7 +11,17 @@
   background-color: #c00ffe;
 }
 
+.shorten {
+  margin-bottom: 50px;
+}
+
+.stage {
+  width: "100%";
+  height: "80%";
+}
+
 .slider {
+  margin-top: 40px;
   margin-bottom: 20px;
 }
 
@@ -20,6 +30,15 @@
   background-size: contain;
   background-position: center;
   background-color: #c00ffe;
+}
+
+.navBar {
+  background-color: #7a7a7a;
+  font-family: georgia;
+}
+
+.greyBackGround {
+  background-color: #7a7a7a;
 }
 
 .appContainer {
@@ -35,7 +54,7 @@
 
 .goButton {
   width: 100%;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
   background-color: #c00ffe;
 }
 

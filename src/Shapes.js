@@ -4,7 +4,7 @@ import "./App.css";
 import { Button, Icon, Row, Col } from "react-materialize";
 import { Stage, Layer, Rect, Text, Star, Circle } from "react-konva";
 import InputRange from "react-input-range";
-//import Slider, { Range } from "rc-slider";
+import Measure from "react-measure";
 import "rc-slider/assets/index.css";
 import { Switch, Route } from "react-router-dom";
 
@@ -18,9 +18,15 @@ class Shapes extends Component {
 
     this.width = 0;
     this.height = 0;
+    this.dimensions = {};
+    this.randomNumber = 0;
+
     this.state = {
       sliderValue: 10,
-      layers: []
+      layers: [],
+      upperBound: 15,
+      lowerBound: 5,
+      randomNumber: 0
     };
   }
 
@@ -33,8 +39,6 @@ class Shapes extends Component {
     this.setState({ upperBound: value[1] });
     this.setState({ lowerBound: value[0] });
   }
-
-  createTempArrayForNumber(n) {}
 
   getRandomIndexesForNumber(number) {
     let tempArray = [];
@@ -61,12 +65,20 @@ class Shapes extends Component {
     return randomIndexes;
   }
 
+  componentDidMount() {
+    console.log("Dimensions", this.dimensions);
+  }
+
   randomClicked(e) {
+    console.log("Dimensions", this.dimensions);
+
     let rand =
       this.state.lowerBound +
       Math.floor(
         Math.random() * (this.state.upperBound - this.state.lowerBound)
       );
+
+    this.setState({ randomNumber: rand });
 
     let indexes = this.getRandomIndexesForNumber(rand);
 
@@ -76,23 +88,24 @@ class Shapes extends Component {
   }
 
   drawMyLayersAt(indexes) {
+    const { top, right, bottom, left, width, height } = this.dimensions;
+
     let newLayers = [];
-    let ri = this.width / 80;
-    let ro = this.width / 40;
+    let ri = width / 60;
+    let dh = height / 8;
+    let dw = width / 5;
+    let ro = width / 30;
     for (var i = 0; i < indexes.length; i++) {
       const scale = 1;
 
-      console.log(indexes[i][0] * 5 * ro + 0.5 * this.width);
-      console.log(indexes[i][1] * 5 * ro + 0.5 * this.height);
-
-      let dx = 5 * (Math.random(1) - 1 / 2) * ri;
-      let dy = 5 * (Math.random(1) - 1 / 2) * ri;
+      let dx = 3 * (Math.random(1) - 1 / 2) * ri;
+      let dy = (Math.random(1) - 1 / 2) * ri;
 
       newLayers.push(
         <Star
           key={i}
-          x={indexes[i][0] * 6 * ro + 0.2 * this.width + dx}
-          y={indexes[i][1] * 4 * ro + 0.2 * this.height + dy}
+          x={indexes[i][0] * dw + 0.1 * width + dx}
+          y={indexes[i][1] * dh + 0.15 * height + dy}
           numPoints={5}
           innerRadius={ri}
           outerRadius={ro}
@@ -122,31 +135,44 @@ class Shapes extends Component {
 
   render() {
     return (
-      <div>
-        <Stage width={this.width} height={this.height}>
-          <Layer>{this.state.layers}</Layer>
-        </Stage>
-        <div className="container">
-          <div className="col">
-            <Range
-              onChange={value => {
-                this.boundsChanged(value);
-              }}
-              className="slider"
-              max={25}
-              step={1}
-            />
-            <Button
-              className="goButton"
-              onClick={() => {
-                this.randomClicked();
-              }}
-            >
-              Go
-            </Button>
+      <Measure
+        bounds
+        onResize={contentRect => {
+          console.log("content rect bounds", contentRect.bounds);
+          this.dimensions = contentRect.bounds;
+        }}
+      >
+        {({ measureRef }) => (
+          <div>
+            <div className="container ">
+              <div className="col">
+                <Range
+                  onChange={value => {
+                    this.boundsChanged(value);
+                  }}
+                  className="slider"
+                  max={25}
+                  step={1}
+                  defaultValue={[5, 15]}
+                />
+                <Button
+                  className="goButton"
+                  onClick={() => {
+                    this.randomClicked();
+                  }}
+                >
+                  Go
+                </Button>
+              </div>
+            </div>
+            <div ref={measureRef}>
+              <Stage width={this.width} height={this.height}>
+                <Layer>{this.state.layers}</Layer>
+              </Stage>
+            </div>
           </div>
-        </div>
-      </div>
+        )}
+      </Measure>
     );
   }
 }

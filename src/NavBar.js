@@ -17,7 +17,7 @@ class NavigationBar extends Component {
     const height = window.innerHeight;
 
     return (
-      <Navbar brand="NumberShapes" right>
+      <Navbar className="navBar" brand="NumberShapes" right>
         <Link to="/shapes">Shapes</Link>
       </Navbar>
     );
