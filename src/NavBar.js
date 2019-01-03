@@ -18,7 +18,8 @@ class NavigationBar extends Component {
 
     return (
       <Navbar className="navBar" brand="NumberShapes" right>
-        <Link to="/shapes">Shapes</Link>
+        <Link to="/shapes">Subitize</Link>
+        <Link to="/fractions">Factor</Link>
       </Navbar>
     );
   }
