@@ -77,6 +77,7 @@ class FractionList extends Component {
         <div className = "scroller">
           {this.renderRows(this.state.whole)}
         </div>
+        <a className = "footerLink" href = "https://itunes.apple.com/au/app/multiplication-fact-workout/id1085400375?mt=8">More NumberShapes!</a>
       </div>
     );
   }
