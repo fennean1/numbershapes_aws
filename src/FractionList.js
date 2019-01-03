@@ -21,17 +21,18 @@ const YELLOW = "#FFFD82"
 const ORANGE = "#ffb84d"
 const PINK = "#ff66ff"
 const RED = "#ff3333"
-const BLUE_GREY = "#8585ad"
+const BROWN = "#bf8040"
 const SEXY_GREEN = "#669999"
 const STRONG_GREEN = "#00b359"
 const STRONG_YELLOW = "#ffff00"
+const BLUE_GREY = "#8585ad"
 
 
 class FractionList extends Component {
   constructor(props) {
     super(props);
 
-    this.colors = [BLUE,GREEN,PURPLE,YELLOW,ORANGE,PINK,RED,BLUE_GREY,SEXY_GREEN,STRONG_GREEN,STRONG_YELLOW]
+    this.colors = [BLUE,GREEN,PURPLE,YELLOW,ORANGE,PINK,RED,BLUE_GREY,SEXY_GREEN,STRONG_GREEN,STRONG_YELLOW,BROWN]
     this.colorIndex = 0
 
     this.state = {
