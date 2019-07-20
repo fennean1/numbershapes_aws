@@ -27,7 +27,7 @@ const STRONG_GREEN = "#00b359";
 const STRONG_YELLOW = "#ffff00";
 const BLUE_GREY = "#8585ad";
 
-class FractionList extends Component {
+class OldSite extends Component {
   constructor(props) {
     super(props);
 
@@ -91,17 +91,15 @@ class FractionList extends Component {
   }
   render() {
     return (
-      <div className="container">
-        <input
-          className="centerText"
-          type="text"
-          value={this.state.whole}
-          onChange={this.handleChange.bind(this)}
-        />
-        <div className="scroller">{this.renderRows(this.state.whole)}</div>
-      </div>
+      <iframe
+        src="http://number-shapes.com/"
+        width={window.innerWidth}
+        height={window.innerHeight}
+        flexDirection="column"
+        frameborder="0"
+      />
     );
   }
 }
 
-export default FractionList;
+export default OldSite;

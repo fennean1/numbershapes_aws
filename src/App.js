@@ -6,13 +6,14 @@ import NavBar from "./NavBar";
 import "materialize-css";
 import "materialize-css/dist/css/materialize.min.css";
 import "materialize-css/dist/js/materialize.min";
+import OldSite from "./OldSite";
 
 import Main from "./Main";
 
 const App = () => (
   <div>
-    <NavBar/>
-    <Main/>
+    <NavBar />
+    <Main />
   </div>
 );
 

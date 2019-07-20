@@ -1,9 +1,12 @@
 import React, { Component } from "react";
 import logo from "./logo.svg";
 import "./App.css";
-import { Button, Icon, Navbar, NavItem } from "react-materialize";
-import { Stage, Layer, Rect, Text, Star } from "react-konva";
-import Konva from "konva";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
+import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
+import MenuIcon from "@material-ui/icons/Menu";
 
 import { Switch, Route, Link } from "react-router-dom";
 
@@ -17,10 +20,29 @@ class NavigationBar extends Component {
     const height = window.innerHeight;
 
     return (
-      <Navbar className="navBar" brand="NumberShapes" right>
-        <Link to="/shapes">Subitize</Link>
-        <Link to="/fractions">Factor</Link>
-      </Navbar>
+      <AppBar className="grey" position="static">
+        <Toolbar>
+          <Typography style={{ paddingRight: 40 }} variant="h6">
+            <Link className="white-text" to={"/"}>
+              About
+            </Link>
+          </Typography>
+          <Typography style={{ paddingRight: 40 }} variant="h6">
+            <Link className="white-text" to={"/fractions"}>
+              Tools
+            </Link>
+          </Typography>
+          <Typography style={{ paddingRight: 40 }} variant="h6">
+            <a
+              className="white-text"
+              target="_blank"
+              href="https://itunes.apple.com/au/app/multiplication-fact-workout/id1085400375?mt=8"
+            >
+              Apps
+            </a>
+          </Typography>
+        </Toolbar>
+      </AppBar>
     );
   }
 }
