@@ -1,0 +1,39 @@
+{
+  "ID": "nl-lx-perf-tsk",
+  "title": "Finding Fractional Parts",
+  "type": "Performance Task",
+  "contentLinks": {
+    "tool": "https://testunit.stmath.com/NumberlineTool/NumberlineTool.html",
+    "game": "link",
+    "document": "link"
+  },
+  "track": "Extending Ideas",
+  "difficultyLevel": "1",
+  "activityDescription": "Performance task for studying fractional parts.",
+  "steps": [
+    {
+      "instructions": "Students work independently on the performance task.",
+      "time": 20
+    },
+    {
+      "instructions": "Students discuss with a partner",
+      "time": 15
+    },
+    {
+      "instructions": "Students discuss as a class",
+      "time": 10
+    }
+  ],
+  "duration": 45,
+  "coreSkill": "Finding Parts of a Whole.",
+  "coreSkillDescription": "Given an integer whole identify the part from a unit fraction and extend that knowledge to non-unit fractional parts. Ex: What is 3/4 of 12?",
+  "standardID": "CC.3.NF.1",
+  "standardDescription": "CC.3.NF.1 Develop understanding of fractions as numbers. Understand a fraction 1/b as the quantity formed by 1 part when a whole is partitioned into b equal parts; understand a fraction a/b as the quantity formed by a parts of size 1/b.  (Grade 3 expectations in this domain are limited to fractions with denominators 2, 3, 4, 6, and 8.)",
+  "previewImg": "PerformanceTaskImg.png",
+  "tags": ["Puzzles", "Manipulative", "Practice"],
+  "discussion": {
+    "notes": "Discuss this way",
+    "link": "/discuss-what-you-see-here"
+  },
+  "notes": "Long form text to provide additional details about this activity."
+}

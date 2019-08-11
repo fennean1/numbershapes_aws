@@ -30,9 +30,8 @@ class Home extends Component {
     console.log(content);
 
     return (
-      <div className="editor">
-        <Editor editorState={this.state.editorState} onChange={this.onChange} />
-        <Text>This is what you are typing: {content}</Text>
+      <div>
+        <AppCard />
       </div>
     );
   }

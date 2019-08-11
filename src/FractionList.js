@@ -8,6 +8,9 @@ import Measure from "react-measure";
 import "rc-slider/assets/index.css";
 import Konva from "konva";
 import { Switch, Route } from "react-router-dom";
+import * as randCords from "./randomCoordinates"
+
+
 
 const Slider = require("rc-slider");
 const createSliderWithTooltip = Slider.createSliderWithTooltip;
@@ -45,10 +48,14 @@ class FractionList extends Component {
       STRONG_YELLOW,
       BROWN
     ];
+
+    this.threeColors = [ "#4079ff" , "#ff4063","#787878"]
+
     this.colorIndex = 0;
 
+
     this.state = {
-      whole: 24
+      whole: 24,
     };
   }
 
@@ -58,9 +65,11 @@ class FractionList extends Component {
       arr.push(i);
     }
 
-    let color = n > this.colors.length ? BLUE_GREY : this.colors[n - 1];
+    this.colorIndex +=1
+    let index = this.colorIndex%3
+    let color = this.threeColors[index]
 
-    const liStyle = { background: color, margin: 2 };
+    const liStyle = { background: color,color: "#ffffff",marginTop: 5,marginLeft: 3 };
 
     return arr.map(e => (
       <div className="grow" style={liStyle}>
@@ -70,6 +79,7 @@ class FractionList extends Component {
   }
 
   handleChange(event) {
+    this.colorIndex = 0
     this.setState({ whole: event.target.value });
   }
 
@@ -79,7 +89,7 @@ class FractionList extends Component {
     } else {
       let arr = [];
       let testArr = [1, 2, 3];
-      for (let i = 0; i < n; i++) {
+      for (let i = 1; i <= n; i++) {
         arr.push(i);
       }
       return arr.map(e => (
@@ -90,7 +100,11 @@ class FractionList extends Component {
     }
   }
   render() {
+
+    randCords.generateRandomCoordinates(10)
+
     return (
+      <div className = "clouds">
       <div className="container">
         <input
           className="centerText"
@@ -99,6 +113,7 @@ class FractionList extends Component {
           onChange={this.handleChange.bind(this)}
         />
         <div className="scroller">{this.renderRows(this.state.whole)}</div>
+      </div>
       </div>
     );
   }

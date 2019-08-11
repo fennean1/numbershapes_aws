@@ -1,0 +1,21 @@
+{
+  "ID": "UniqID",
+  "title": "Placing Fractions on a Number Line Line Line Line",
+  "coreSkill": "Partitioning",
+  "standardID": "CC.3.NF.1",
+  "standardDescription": "CC.3.NF.1 Develop understanding of fractions as numbers. Understand a fraction 1/b as the quantity formed by 1 part when a whole is partitioned into b equal parts; understand a fraction a/b as the quantity formed by a parts of size 1/b.  (Grade 3 expectations in this domain are limited to fractions with denominators 2, 3, 4, 6, and 8.)",
+  "type": "Game",
+  "contentLinks": {
+    "tool": "link",
+    "game": "link",
+    "document": "link"
+  },
+  "track": "Core Building",
+  "difficultyLevel": "1",
+  "notes": "Students practice setting pins on a line segment to create equidistant points and develop spatial accuracy for setting equidistant points",
+  "duration": 20,
+  "previewImg": "nl-l2-a3-p2.png",
+  "puzzle": "nl-a1-p1",
+  "sequence": ["Step One: Do this", "Step Two: Do that"],
+  "tags": ["Puzzles", "Manipulatives", "Practice"]
+}

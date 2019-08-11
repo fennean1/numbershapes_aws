@@ -24,21 +24,21 @@ class NavigationBar extends Component {
         <Toolbar>
           <Typography style={{ paddingRight: 40 }} variant="h6">
             <Link className="white-text" to={"/"}>
-              About
+              Subitize
             </Link>
           </Typography>
           <Typography style={{ paddingRight: 40 }} variant="h6">
             <Link className="white-text" to={"/fractions"}>
-              Tools
+              Factor
             </Link>
           </Typography>
           <Typography style={{ paddingRight: 40 }} variant="h6">
             <a
               className="white-text"
               target="_blank"
-              href="https://itunes.apple.com/au/app/multiplication-fact-workout/id1085400375?mt=8"
+              href="http://number-shapes.com/"
             >
-              Apps
+              Learn More
             </a>
           </Typography>
         </Toolbar>

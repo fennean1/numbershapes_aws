@@ -1,0 +1,38 @@
+{
+  "ID" : "nl-l1-w",
+  "title" : "Fractions on a Number Line",
+  "type" : "Written",
+  "contentLinks" : {
+    "tool" : "link",
+    "game" : "link",
+    "document" : "link"
+  },
+  "track" : "Core Building",
+  "difficultyLevel" : "1",
+  "tags" : [
+    "Stations",
+    "Manipulatives",
+    "Practice"
+  ],
+  "duration" : 15,
+  "activityDescription" : "Students place fractions on a worksheet.",
+  "steps" : [
+    {
+      "instructions" : "do this",
+      "time" : "for this long"
+    },
+    {
+      "instructions" : "do this",
+      "time" : "for this long"
+    }
+  ],
+  "coreSkill" : "Partitioning a Number Line",
+  "coreSkillDescription" : "Setting pins or ticks on a line segment to create equidistant points and develop spatial accuracy for setting equidistant points",
+  "standardID" : "CC.3.NF.2b",
+  "standardDescription" : "CC.3.NF.2b Represent a fraction a/b on a number line diagram by marking off a lengths 1/b from 0. Recognize that the resulting interval has size a/b and that its endpoint locates the number a/b on the number line.  (Grade 3 expectations in this domain are limited to fractions with denominators 2, 3, 4, 6, and 8.)",
+  "previewImg" : "nl-l1-a3-p1.png",
+  "discussion" : {
+    "notes" : "Discuss this way",
+    "link" : "/discuss-what-you-see-here"
+  }
+}
