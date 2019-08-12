@@ -34,25 +34,9 @@ class FractionList extends Component {
   constructor(props) {
     super(props);
 
-    this.colors = [
-      BLUE,
-      GREEN,
-      PURPLE,
-      YELLOW,
-      ORANGE,
-      PINK,
-      RED,
-      BLUE_GREY,
-      SEXY_GREEN,
-      STRONG_GREEN,
-      STRONG_YELLOW,
-      BROWN
-    ];
-
     this.threeColors = [ "#4079ff" , "#ff4063","#787878"]
 
     this.colorIndex = 0;
-
 
     this.state = {
       whole: 24,

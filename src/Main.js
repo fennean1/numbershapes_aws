@@ -6,15 +6,20 @@ import FractionList from "./FractionList";
 import { Switch, Route, Link } from "react-router-dom";
 import Shapes from "./Shapes";
 import OldSite from "./OldSite";
-import AppCard from "./AppCard";
+import AppCard from "./LessonCard";
 import Arena from "./Arena"
 import * as subitizer from "./subitizer.js"
+import * as LessonOne from "./activities/LessonOne.json";
+import LessonList from "./LessonList"
+
+console.log("LessonOne",LessonOne)
 
 const Main = () => (
   <Switch>
     <Route exact path="/" component={()=><Arena fullscreen = {true} script = {subitizer.init}/>} />
-    <Route exact path="/appcard" component={AppCard} />
+    <Route exact path="/appcard" component={()=><AppCard data = {LessonOne}/>}/>
     <Route exact path="/fractions" component={FractionList} />
+    <Route exact path="/lessons" component={LessonList} />
   </Switch>
 );
 

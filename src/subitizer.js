@@ -59,6 +59,7 @@ export const init  = (app, setup) => {
     app.stage.addChild(newShapeButton)
 
     function newShape(){
+        //app.help()
         let randValue =  4 + Math.floor(Math.random() * (6));
         let randomCords = randomCoordinates.generateRandomCoordinates(randValue)
         let heightAndWidthOfCords = randomCoordinates.getHeightAndWidthOfCords(randomCords)
