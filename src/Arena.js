@@ -5,6 +5,8 @@ import "./App.css";
 import NavigationBar from "./NavBar";
 import { Button, Icon, Navbar, NavItem } from "react-materialize";
 import Modal from '@material-ui/core/Modal';
+import Paper from '@material-ui/core/Paper';
+import Drawer from '@material-ui/core/Drawer';
 
 import * as Pixi from "pixi.js";
 
@@ -91,17 +93,18 @@ class Arena extends Component {
     let styleType = this.props.fullscreen ? { height: "100vh" } : null;
     return (
       <div>
-      <Modal open={this.state.open}
-        onClose={this.handleClose.bind(this)}>
-        <div className = "container">
-        <div className = "card">
-          <h5 id="simple-modal-title">Instructions</h5>
-          <p id="simple-modal-description">
-              Project Subitizations App and generate NumberShapes for your students to subitize. Discuss how they arrived at their answer including what numbers they may have pieced together. You can also move the dots to show different relationships. As an extension, you can ask students to write an addition equation based on what they see. Do this individually and have students share with their partner to see if they saw the same thing.
-          </p>
+      <Drawer anchor="bottom" open={this.state.open} onClose={this.handleClose.bind(this)}>
+      <div className ="card">
+        <div className ="card-content">
+          <span className ="card-title">Getting Started</span>
+          <p>{this.props.lesson.coreSkillDescription}</p>
         </div>
+        <div className="card-action">
+          <a className = "black-text" href={""+this.props.lesson.worksheet}>Worksheet</a>
         </div>
-      </Modal>
+  </div>
+         
+      </Drawer>
       <div style = {styleType}
         ref={me => {
           this.gameCanvas = me;

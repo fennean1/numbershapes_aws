@@ -22,8 +22,9 @@
         "time": "for this long"
       }
     ],
+    "worksheet": "https://docs.google.com/drawings/d/1fLgi3MAYctU6rqKT70SfLwQid5_f6-WOlcJYOs0RPxQ/edit?usp=sharing",
     "coreSkill": "Getting Started",
-    "coreSkillDescription": "Project Subitizations App and generate NumberShapes for your students to subitize. Discuss how they arrived at their answer including what numbers they may have pieced together. You can also move the dots to show different relationships. As an extension, you can ask students to write an addition equation based on what they see. Do this individually and have students share with their partner to see if they saw the same thing.",
+    "coreSkillDescription": "Project a NumberShape and ask these questions: How many were there? How many are missing? How many are left? Next, let the students create an equation for what they observed. Create more shapes and have students write equations on their own.",
     "standardID": "K.CC.B.4 ",
     "standardDescription": "Understand the relationship between numbers and quantities; connect counting to cardinality.",
     "previewImg": "LessonTwoImg.png",

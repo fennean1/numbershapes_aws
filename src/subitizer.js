@@ -5,6 +5,7 @@ import Clouds from "./assets/Clouds.png";
 import BlueBall from "./assets/BlueBall.png";
 import BlueRing from "./assets/BlueRing.png";
 import NewShapeButton from './assets/NewShapeButton.png'
+import QuestionMark from './assets/QuestionMark.png'
 
 const SUBITIZER_TYPES = {
   NORMAL: 1, 
@@ -40,7 +41,27 @@ export const init = (app, setup) => {
     backGround.y = 0 
     backGround.width = setup.width
     backGround.height = setup.height
-    app.stage.addChild(backGround)
+    //app.stage.addChild(backGround)
+
+    let newShapeButton = new PIXI.Sprite.from(NewShapeButton)
+    newShapeButton.x = dx/4
+    newShapeButton.y = dx/4
+    newShapeButton.width = 5*dx/2 
+    newShapeButton.height = dx/2
+    newShapeButton.interactive = true
+    newShapeButton.on('pointerdown',newShape)
+    app.stage.addChild(newShapeButton)
+
+    let questionButton = new PIXI.Sprite.from(QuestionMark)
+    questionButton.x = setup.width - 1.5*dx
+    questionButton.y = dx/4
+    questionButton.width = dx
+    questionButton.height = dx
+    questionButton.interactive = true
+    questionButton.on('pointerdown',()=> {app.help()})
+    app.stage.addChild(questionButton)
+
+
 
     // Init Balls
     // Helpers
@@ -112,15 +133,6 @@ export const init = (app, setup) => {
       console.log("balls")
     }
     }
-
-    let newShapeButton = new PIXI.Sprite.from(NewShapeButton)
-    newShapeButton.x = dx/4
-    newShapeButton.y = dx/4
-    newShapeButton.width = 5*dx/2 
-    newShapeButton.height = dx/2
-    newShapeButton.interactive = true
-    newShapeButton.on('pointerdown',newShape)
-    app.stage.addChild(newShapeButton)
 
     function help(){
       app.help()
