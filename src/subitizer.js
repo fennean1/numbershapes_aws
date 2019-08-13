@@ -3,9 +3,17 @@ import * as PIXI from "pixi.js";
 import * as randomCoordinates from "./randomCoordinates.js"
 import Clouds from "./assets/Clouds.png";
 import BlueBall from "./assets/BlueBall.png";
+import BlueRing from "./assets/BlueRing.png";
 import NewShapeButton from './assets/NewShapeButton.png'
 
-export const init  = (app, setup) => {
+const SUBITIZER_TYPES = {
+  NORMAL: 1, 
+  ADDITION: 2,
+  SUBTRACTION: 3,
+  ADDITION_THREE_DIGIT: 4
+}
+
+export const init = (app, setup) => {
     // Meta
     console.log("window.width,window.height",window.innerWidth,window.innerHeight)
     console.log(setup.width,setup.height,"setup.width")
@@ -35,18 +43,74 @@ export const init  = (app, setup) => {
     app.stage.addChild(backGround)
 
     // Init Balls
-    for (let i = 0; i<10;i++) {
-        let ball = new PIXI.Sprite.from(BlueBall)
-        ball.interactive = true
-        ball.on('pointerdown',onDragStart)
+    // Helpers
+    function randBetween(a,b){
+      return  a + Math.floor(Math.random() * (b-a));
+    }
+    function destroy(objects){
+      for (let o of objects){
+        app.stage.removeChild(o)
+        o.destroy(true)
+      }
+    }
+
+
+    // Type needs to come from setup.type
+    function initBallsFromType(type){
+    
+    switch (type){
+      case SUBITIZER_TYPES.NORMAL: 
+      let n = randBetween(4,10)
+      let nBalls = []
+
+      for (let i = 0;i<n;i++){
+        let aBall = new PIXI.Sprite.from(BlueBall)
+        nBalls.push(aBall)
+      }
+      for (let b of nBalls){
+        b.interactive = true
+        b.on('pointerdown',onDragStart)
+          .on('pointermove',onDragMove)
+          .on('pointerup',onDragEnd)
+      }
+      return nBalls
+        break;
+      case SUBITIZER_TYPES.SUBTRACTION:
+        let a = randBetween(4,10)
+        let b = randBetween(1,a)
+        let aBalls = []
+        let bBalls = []
+
+        for (let i = 0;i<(a-b);i++){
+          let aBall = new PIXI.Sprite.from(BlueBall)
+          aBalls.push(aBall)
+        }
+
+        for (let j = 0;j<b;j++){
+          let bBall = new PIXI.Sprite.from(BlueRing)
+          bBalls.push(bBall)
+        }
+
+        let allBalls = [...aBalls,...bBalls]
+
+        for (let b of allBalls){
+          b.interactive = true
+          b.on('pointerdown',onDragStart)
             .on('pointermove',onDragMove)
             .on('pointerup',onDragEnd)
-        ball.width = dx 
-        ball.height = dx
-        ball.x = -dx
-        ball.y = -dx
-        balls.push(ball)
-        app.stage.addChild(ball)
+        }
+        return allBalls
+      // Code
+        break;
+      case SUBITIZER_TYPES.ADDITION:
+      // Code
+        break;
+      case SUBITIZER_TYPES.ADDITION_THREE_DIGIT:
+      // Code
+        break;
+      default: 
+      console.log("balls")
+    }
     }
 
     let newShapeButton = new PIXI.Sprite.from(NewShapeButton)
@@ -58,10 +122,14 @@ export const init  = (app, setup) => {
     newShapeButton.on('pointerdown',newShape)
     app.stage.addChild(newShapeButton)
 
+    function help(){
+      app.help()
+    }
+
     function newShape(){
-        //app.help()
-        let randValue =  4 + Math.floor(Math.random() * (6));
-        let randomCords = randomCoordinates.generateRandomCoordinates(randValue)
+        destroy(balls)
+        balls = initBallsFromType(setup.props.type)
+        let randomCords = randomCoordinates.generateRandomCoordinates(balls.length)
         let heightAndWidthOfCords = randomCoordinates.getHeightAndWidthOfCords(randomCords)
 
     for (let b of balls){
@@ -72,6 +140,9 @@ export const init  = (app, setup) => {
             1000,
             window.createjs.Ease.getPowInOut(4)
           );
+          b.width = dx
+          b.height = dx
+          app.stage.addChild(b)
     }
 
     for (let i = 0;i<randomCords.length;i++){

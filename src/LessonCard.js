@@ -111,7 +111,7 @@ export default function LessonCard(props) {
         {props.data.tags[2] != "" && <Chip label={props.data.tags[2]} />}
       </CardContent>
       <CardActions disableSpacing>
-        <Link to="/">
+        <Link to={""+props.data.tool}>
           <Button>Open</Button>
         </Link>
 

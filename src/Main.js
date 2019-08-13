@@ -16,7 +16,8 @@ console.log("LessonOne",LessonOne)
 
 const Main = () => (
   <Switch>
-    <Route exact path="/" component={()=><Arena fullscreen = {true} script = {subitizer.init}/>} />
+    <Route exact path="/" component={()=><Arena fullscreen = {true} type = {1}script = {subitizer.init}/>} />
+    <Route exact path="/subtraction" component={()=><Arena fullscreen = {true} type = {3} script = {subitizer.init}/>} />
     <Route exact path="/appcard" component={()=><AppCard data = {LessonOne}/>}/>
     <Route exact path="/fractions" component={FractionList} />
     <Route exact path="/lessons" component={LessonList} />

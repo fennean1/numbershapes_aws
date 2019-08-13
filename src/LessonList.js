@@ -9,6 +9,7 @@ import { Switch, Route, Link } from "react-router-dom";
 import LessonCard from "./LessonCard";
 
 import * as LessonOne from "./activities/LessonOne.json";
+import * as LessonTwo from "./activities/LessonTwo.json";
 
 class LessonList extends Component {
   constructor(props) {
@@ -26,6 +27,9 @@ class LessonList extends Component {
         <div className="row">
           <div className="col s6">
             <LessonCard data={LessonOne} />
+          </div>
+          <div className="col s6">
+            <LessonCard data={LessonTwo} />
           </div>
  
         </div>
