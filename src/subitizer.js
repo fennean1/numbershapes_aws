@@ -41,7 +41,7 @@ export const init = (app, setup) => {
     backGround.y = 0 
     backGround.width = setup.width
     backGround.height = setup.height
-    //app.stage.addChild(backGround)
+    app.stage.addChild(backGround)
 
     let newShapeButton = new PIXI.Sprite.from(NewShapeButton)
     newShapeButton.x = dx/4
