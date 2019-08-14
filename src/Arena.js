@@ -100,7 +100,7 @@ class Arena extends Component {
           <p>{this.props.lesson.coreSkillDescription}</p>
         </div>
         <div className="card-action">
-          <a className = "black-text" href={""+this.props.lesson.worksheet}>Worksheet</a>
+          <a className = "black-text" href={this.props.lesson.worksheet}>Worksheet</a>
         </div>
   </div>
          
