@@ -22,7 +22,7 @@ class LessonList extends Component {
 
   render() {
     return (
-      <div>
+      <div className = "container">
           <h2 className = "center"> Lessons </h2>
         <div className="row">
           <div className="col s6">
