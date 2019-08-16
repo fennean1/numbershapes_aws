@@ -62,7 +62,7 @@ export const init = (app, setup) => {
     questionButton.width = dx
     questionButton.height = dx
     questionButton.interactive = true
-    questionButton.on('pointerdown',()=> {drawRow(balls)})
+    questionButton.on('pointerdown',()=> {app.help()})
     app.stage.addChild(questionButton)
 
     let frameButton = new PIXI.Sprite.from(FrameButton)
@@ -183,7 +183,7 @@ export const init = (app, setup) => {
     }
 
     function getAdditionBalls(pivot){
-      let a = pivot == null ? randBetween(1,11) : pivot
+      let a = pivot == null ? randBetween(1,10) : pivot
       console.log("a",a)
       let b = 1 + randBetween(0,10-a)
       let aBalls = []
