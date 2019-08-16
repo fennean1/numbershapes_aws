@@ -7,9 +7,11 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Switch, Route, Link } from "react-router-dom";
 
 import LessonCard from "./LessonCard";
+import * as Subitization from "./activities/Subitization.json";
+import * as Addition from "./activities/Addition.json";
+import * as Subtraction from "./activities/Subtraction.json";
+import * as Pivot from "./activities/Pivot.json";
 
-import * as LessonOne from "./activities/LessonOne.json";
-import * as LessonTwo from "./activities/LessonTwo.json";
 
 class LessonList extends Component {
   constructor(props) {
@@ -26,12 +28,19 @@ class LessonList extends Component {
           <h2 className = "center"> Lessons </h2>
         <div className="row">
           <div className="col s6">
-            <LessonCard data={LessonOne} />
+            <LessonCard data={Subitization} />
           </div>
           <div className="col s6">
-            <LessonCard data={LessonTwo} />
+            <LessonCard data={Subtraction} />
           </div>
- 
+          <div className="row">
+          <div className="col s6">
+            <LessonCard data={Addition} />
+          </div>
+          <div className="col s6">
+            <LessonCard data={Pivot} />
+          </div>
+         </div> 
         </div>
       </div>
     );

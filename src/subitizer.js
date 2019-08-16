@@ -3,6 +3,7 @@ import * as PIXI from "pixi.js";
 import * as randomCoordinates from "./randomCoordinates.js"
 import Clouds from "./assets/Clouds.png";
 import BlueBall from "./assets/BlueBall.png";
+import OrangeBall from "./assets/OrangeBall.png";
 import BlueRing from "./assets/BlueRing.png";
 import NewShapeButton from './assets/NewShapeButton.png'
 import QuestionMark from './assets/QuestionMark.png'
@@ -11,7 +12,8 @@ const SUBITIZER_TYPES = {
   NORMAL: 1, 
   ADDITION: 2,
   SUBTRACTION: 3,
-  ADDITION_THREE_DIGIT: 4
+  ADDITION_THREE_DIGIT: 4,
+  PIVOT: 5,
 }
 
 export const init = (app, setup) => {
@@ -75,13 +77,76 @@ export const init = (app, setup) => {
       }
     }
 
+    function getSubtractionBalls(pivot){
+
+      let a = pivot == null ? randBetween(4,11) : pivot
+      console.log("a",a)
+      let b = randBetween(1,a)
+      let aBalls = []
+      let bBalls = []
+
+      for (let i = 0;i<(a-b);i++){
+        let aBall = new PIXI.Sprite.from(BlueBall)
+        aBalls.push(aBall)
+      }
+
+      for (let j = 0;j<b;j++){
+        let bBall = new PIXI.Sprite.from(BlueRing)
+        bBalls.push(bBall)
+      }
+
+      let allBalls = [...aBalls,...bBalls]
+
+      for (let b of allBalls){
+        b.interactive = true
+        b.on('pointerdown',onDragStart)
+          .on('pointermove',onDragMove)
+          .on('pointerup',onDragEnd)
+      }
+      return allBalls
+    }
+
+    function getPivotBalls(pivot){
+      let rand = randBetween(1,11)
+      console.log("RANDOME SHIT",rand)
+      let pivotBalls = rand > 5 ? getSubtractionBalls(pivot) : getAdditionBalls(pivot)
+      return pivotBalls
+    }
+
+    function getAdditionBalls(pivot){
+      let a = pivot == null ? randBetween(1,11) : pivot
+      console.log("a",a)
+      let b = 1 + randBetween(0,10-a)
+      let aBalls = []
+      let bBalls = []
+
+      for (let i = 0;i< a;i++){
+        let aBall = new PIXI.Sprite.from(BlueBall)
+        aBalls.push(aBall)
+      }
+
+      for (let j = 0;j<b;j++){
+        let bBall = new PIXI.Sprite.from(OrangeBall)
+        bBalls.push(bBall)
+      }
+
+      let allBalls = [...aBalls,...bBalls]
+
+      for (let b of allBalls){
+        b.interactive = true
+        b.on('pointerdown',onDragStart)
+          .on('pointermove',onDragMove)
+          .on('pointerup',onDragEnd)
+      }
+      return allBalls
+    }
 
     // Type needs to come from setup.type
     function initBallsFromType(type){
     
     switch (type){
       case SUBITIZER_TYPES.NORMAL: 
-      let n = randBetween(4,10)
+      let n = randBetween(4,11)
       let nBalls = []
 
       for (let i = 0;i<n;i++){
@@ -97,38 +162,19 @@ export const init = (app, setup) => {
       return nBalls
         break;
       case SUBITIZER_TYPES.SUBTRACTION:
-        let a = randBetween(4,10)
-        let b = randBetween(1,a)
-        let aBalls = []
-        let bBalls = []
-
-        for (let i = 0;i<(a-b);i++){
-          let aBall = new PIXI.Sprite.from(BlueBall)
-          aBalls.push(aBall)
-        }
-
-        for (let j = 0;j<b;j++){
-          let bBall = new PIXI.Sprite.from(BlueRing)
-          bBalls.push(bBall)
-        }
-
-        let allBalls = [...aBalls,...bBalls]
-
-        for (let b of allBalls){
-          b.interactive = true
-          b.on('pointerdown',onDragStart)
-            .on('pointermove',onDragMove)
-            .on('pointerup',onDragEnd)
-        }
-        return allBalls
+        return getSubtractionBalls()
       // Code
         break;
       case SUBITIZER_TYPES.ADDITION:
-      // Code
+         return getAdditionBalls()
         break;
       case SUBITIZER_TYPES.ADDITION_THREE_DIGIT:
       // Code
         break;
+      case SUBITIZER_TYPES.PIVOT:
+        return getPivotBalls(5)
+        // Code
+       break;
       default: 
       console.log("balls")
     }

@@ -1,0 +1,37 @@
+{
+    "ID": "nl-l1-w",
+    "contentLinks": {
+      "tool": "link",
+      "game": "link",
+      "document": "link"
+    },
+    "tool":"/subtraction",
+    "track": "K-2",
+    "difficultyLevel": "1",
+    "title": "Subtraction",
+    "type": "Lesson",
+    "activityDescription": "Create subtraction equations by subitizing NumberShapes.",
+    "duration": 10,
+    "steps": [
+      {
+        "instructions": "do this",
+        "time": "for this long"
+      },
+      {
+        "instructions": "do this",
+        "time": "for this long"
+      }
+    ],
+    "worksheet": "https://drive.google.com/file/d/1pOaSSI9StCZVYBX2-Pr1D2Keq0PjARGY/view?usp=sharing",
+    "coreSkill": "Getting Started",
+    "coreSkillDescription": "Project a NumberShape and ask these questions: How many were there? How many are missing? How many are left? Next, let the students create an equation for what they observed. Create more shapes and have students write equations on their own.",
+    "standardID": "K.CC.B.4 ",
+    "standardDescription": "Understand the relationship between numbers and quantities; connect counting to cardinality.",
+    "previewImg": "SubtractionImg.png",
+    "tags": ["Subtraction", "Grouping", "Composition"],
+    "discussion": {
+      "notes": "Discuss this way",
+      "link": "/discuss-what-you-see-here"
+    }
+  }
+  

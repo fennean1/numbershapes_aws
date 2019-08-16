@@ -28,13 +28,18 @@ class NavigationBar extends Component {
             </Link>
           </Typography>
           <Typography style={{ paddingRight: 40 }} variant="h6">
-            <Link className="white-text" to={"/subtraction"}>
-              Subtract
+            <Link className="white-text" to={"/addition"}>
+              Addition
             </Link>
           </Typography>
           <Typography style={{ paddingRight: 40 }} variant="h6">
-            <Link className="white-text" to={"/fractions"}>
-              Factor
+            <Link className="white-text" to={"/subtraction"}>
+              Subtraction
+            </Link>
+          </Typography>
+          <Typography style={{ paddingRight: 40 }} variant="h6">
+            <Link className="white-text" to={"/mixed"}>
+              Mixed
             </Link>
           </Typography>
           <Typography style={{ paddingRight: 40 }} variant="h6">
