@@ -7,6 +7,8 @@ import OrangeBall from "./assets/OrangeBall.png";
 import BlueRing from "./assets/BlueRing.png";
 import NewShapeButton from './assets/NewShapeButton.png'
 import QuestionMark from './assets/QuestionMark.png'
+import FrameButton from "./assets/FrameButton.png";
+import LineButton from "./assets/LineButton.png";
 
 const SUBITIZER_TYPES = {
   NORMAL: 1, 
@@ -60,8 +62,28 @@ export const init = (app, setup) => {
     questionButton.width = dx
     questionButton.height = dx
     questionButton.interactive = true
-    questionButton.on('pointerdown',()=> {app.help()})
+    questionButton.on('pointerdown',()=> {drawRow(balls)})
     app.stage.addChild(questionButton)
+
+    let frameButton = new PIXI.Sprite.from(FrameButton)
+    frameButton.x = dx/4
+    frameButton.y = dx/3 + dx/2
+    frameButton.width = 2*dx/2
+    frameButton.height = 0.80*dx/2
+    frameButton.interactive = true
+    frameButton.on('pointerdown',()=> {drawFrame(balls)})
+    app.stage.addChild(frameButton)
+
+    let lineButton = new PIXI.Sprite.from(LineButton)
+    lineButton.x = dx/4
+    lineButton.y = dx/3 + 2*dx/2
+    lineButton.width = 2*dx/2
+    lineButton.height = 0.80*dx/2
+    lineButton.interactive = true
+    lineButton.on('pointerdown',()=> {drawRow(balls)})
+    app.stage.addChild(lineButton)
+
+
 
 
 
@@ -98,19 +120,66 @@ export const init = (app, setup) => {
       let allBalls = [...aBalls,...bBalls]
 
       for (let b of allBalls){
-        b.interactive = true
-        b.on('pointerdown',onDragStart)
-          .on('pointermove',onDragMove)
-          .on('pointerup',onDragEnd)
+        makeDraggable(b)
       }
       return allBalls
     }
 
+    function drawRow(r){
+      let w = r.length * dx
+      let h = dx
+      r.forEach((b,i)=>{
+        window.createjs.Tween.get(b).to({
+          x: CENTER_STAGE_X - w/2 + i*dx,
+          y: CENTER_STAGE_Y
+        },
+        1000,
+        window.createjs.Ease.getPowInOut(4)
+      );
+      })
+    }
+
+    function drawFrame(r){
+      let w = r.length > 5 ? 5*dx : r.length*dx
+      let h = 2*dx
+      let switchRow = false
+      r.forEach((b,i)=>{
+        let j = i >= 5 ? 1 : 0
+        window.createjs.Tween.get(b).to({
+          x: CENTER_STAGE_X - w/2 + i%5*dx,
+          y: CENTER_STAGE_Y - dx + j*dx
+        },
+        1000,
+        window.createjs.Ease.getPowInOut(4)
+      );
+      })
+    }
+
     function getPivotBalls(pivot){
-      let rand = randBetween(1,11)
-      console.log("RANDOME SHIT",rand)
-      let pivotBalls = rand > 5 ? getSubtractionBalls(pivot) : getAdditionBalls(pivot)
+      let rand = randBetween(1,3)
+      let pivotBalls = rand == 2 ? getSubtractionBalls(pivot): getAdditionBalls(pivot)
       return pivotBalls
+    }
+
+    function makeDraggable(dragMe){
+      dragMe.interactive = true
+      dragMe.on('pointerdown',onDragStart)
+        .on('pointermove',onDragMove)
+        .on('pointerup',onDragEnd)
+    }
+
+    function getSubitizationBalls(pivot){
+
+      let n = randBetween(4,11)
+      let nBalls = []
+      for (let i = 0;i<n;i++){
+        let aBall = new PIXI.Sprite.from(BlueBall)
+        nBalls.push(aBall)
+      }
+      for (let b of nBalls){
+        makeDraggable(b)
+      }
+      return nBalls
     }
 
     function getAdditionBalls(pivot){
@@ -133,10 +202,7 @@ export const init = (app, setup) => {
       let allBalls = [...aBalls,...bBalls]
 
       for (let b of allBalls){
-        b.interactive = true
-        b.on('pointerdown',onDragStart)
-          .on('pointermove',onDragMove)
-          .on('pointerup',onDragEnd)
+        makeDraggable(b)
       }
       return allBalls
     }
@@ -146,34 +212,18 @@ export const init = (app, setup) => {
     
     switch (type){
       case SUBITIZER_TYPES.NORMAL: 
-      let n = randBetween(4,11)
-      let nBalls = []
-
-      for (let i = 0;i<n;i++){
-        let aBall = new PIXI.Sprite.from(BlueBall)
-        nBalls.push(aBall)
-      }
-      for (let b of nBalls){
-        b.interactive = true
-        b.on('pointerdown',onDragStart)
-          .on('pointermove',onDragMove)
-          .on('pointerup',onDragEnd)
-      }
-      return nBalls
+      return getSubitizationBalls()
         break;
       case SUBITIZER_TYPES.SUBTRACTION:
         return getSubtractionBalls()
-      // Code
         break;
       case SUBITIZER_TYPES.ADDITION:
          return getAdditionBalls()
         break;
       case SUBITIZER_TYPES.ADDITION_THREE_DIGIT:
-      // Code
         break;
       case SUBITIZER_TYPES.PIVOT:
         return getPivotBalls(5)
-        // Code
        break;
       default: 
       console.log("balls")
