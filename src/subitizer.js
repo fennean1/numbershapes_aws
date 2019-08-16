@@ -183,9 +183,9 @@ export const init = (app, setup) => {
     }
 
     function getAdditionBalls(pivot){
-      let a = pivot == null ? randBetween(1,10) : pivot
+      let a = pivot == null ? randBetween(1,8) : pivot
       console.log("a",a)
-      let b = 1 + randBetween(0,10-a)
+      let b = 2 + randBetween(0,9-a)
       let aBalls = []
       let bBalls = []
 
