@@ -8,9 +8,9 @@
     "tool":"/mixed",
     "track": "K-2",
     "difficultyLevel": "1",
-    "title": "Addition & Subtraction",
+    "title": "Making Ten",
     "type": "Lesson",
-    "activityDescription": "Students Subitize groups of a dots as a class.",
+    "activityDescription": "Students Subitize groups of a dots as either greater than or less than ten.",
     "duration": 10,
     "steps": [
       {
@@ -24,7 +24,7 @@
     ],
     "worksheet": "https://drive.google.com/file/d/1pOaSSI9StCZVYBX2-Pr1D2Keq0PjARGY/view?usp=sharing",
     "coreSkill": "Getting Started",
-    "coreSkillDescription": "\"The Blues Always Make Five\" Each shape they see in this lesson will be displayed based on it's relationship to the number five. Students job is to identify this relationship and write the equation Ex: 5-4, 5+2... ",
+    "coreSkillDescription": "\"The Blues Always Make Ten\" Ask students \"Is it more than ten or less than ten?\". Students job is to identify this relationship and write the equation Ex: 10-4, 10+2... ",
     "standardID": "K.CC.B.4 ",
     "standardDescription": "Understand the relationship between numbers and quantities; connect counting to cardinality.",
     "previewImg": "PivotImg.png",

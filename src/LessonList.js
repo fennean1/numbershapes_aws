@@ -25,13 +25,14 @@ class LessonList extends Component {
   render() {
     return (
       <div className = "container">
-          <h2 className = "center"> Lessons </h2>
+        <h2 className = "center"> Lessons </h2>   
         <div className="row">
           <div className="col s6">
             <LessonCard data={Subitization} />
           </div>
           <div className="col s6">
             <LessonCard data={Subtraction} />
+          </div>
           </div>
           <div className="row">
           <div className="col s6">
@@ -41,7 +42,6 @@ class LessonList extends Component {
             <LessonCard data={Pivot} />
           </div>
          </div> 
-        </div>
       </div>
     );
   }

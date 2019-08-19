@@ -99,11 +99,11 @@ export const init = (app, setup) => {
       }
     }
 
-    function getSubtractionBalls(pivot){
+    function getSubtractionBalls(pivot,delta){
 
       let a = pivot == null ? randBetween(4,11) : pivot
       console.log("a",a)
-      let b = randBetween(1,a)
+      let b = randBetween(1,delta+1)
       let aBalls = []
       let bBalls = []
 
@@ -144,7 +144,7 @@ export const init = (app, setup) => {
       let h = 2*dx
       let switchRow = false
       r.forEach((b,i)=>{
-        let j = i >= 5 ? 1 : 0
+        let j = (i - i%5)/5
         window.createjs.Tween.get(b).to({
           x: CENTER_STAGE_X - w/2 + i%5*dx,
           y: CENTER_STAGE_Y - dx + j*dx
@@ -155,9 +155,9 @@ export const init = (app, setup) => {
       })
     }
 
-    function getPivotBalls(pivot){
+    function getPivotBalls(pivot,delta){
       let rand = randBetween(1,3)
-      let pivotBalls = rand == 2 ? getSubtractionBalls(pivot): getAdditionBalls(pivot)
+      let pivotBalls = rand == 2 ? getSubtractionBalls(pivot,delta): getAdditionBalls(pivot,delta)
       return pivotBalls
     }
 
@@ -169,7 +169,6 @@ export const init = (app, setup) => {
     }
 
     function getSubitizationBalls(pivot){
-
       let n = randBetween(4,11)
       let nBalls = []
       for (let i = 0;i<n;i++){
@@ -182,10 +181,10 @@ export const init = (app, setup) => {
       return nBalls
     }
 
-    function getAdditionBalls(pivot){
+    function getAdditionBalls(pivot,delta) {
       let a = pivot == null ? randBetween(1,8) : pivot
-      console.log("a",a)
       let b = 2 + randBetween(0,9-a)
+      b = delta == null ? b : randBetween(1,delta+1)
       let aBalls = []
       let bBalls = []
 
@@ -221,9 +220,10 @@ export const init = (app, setup) => {
          return getAdditionBalls()
         break;
       case SUBITIZER_TYPES.ADDITION_THREE_DIGIT:
+        //return getThreeDigitBalls()
         break;
       case SUBITIZER_TYPES.PIVOT:
-        return getPivotBalls(5)
+        return getPivotBalls(10,5)
        break;
       default: 
       console.log("balls")

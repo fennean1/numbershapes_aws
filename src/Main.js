@@ -13,6 +13,9 @@ import * as Subitization from "./activities/Subitization.json";
 import * as Addition from "./activities/Addition.json";
 import * as Subtraction from "./activities/Subtraction.json";
 import * as Pivot from "./activities/Pivot.json";
+import * as ASSETS from "./AssetManager.js"
+
+
 
 import LessonList from "./LessonList"
 
