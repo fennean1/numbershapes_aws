@@ -99,6 +99,7 @@ export const init = (app, setup) => {
     equationButton.height = 0.80*dx/2
     equationButton.interactive = true
     equationButton.on('pointerdown',() => {
+      if (equation) {
       showEquation = !showEquation
       let newAlpha = showEquation ? 1 : 0
       equation.forEach(e => {
@@ -109,6 +110,7 @@ export const init = (app, setup) => {
         window.createjs.Ease.getPowInOut(4)
       );
       });
+      }
     })
     app.stage.addChild(equationButton)
 
@@ -234,6 +236,7 @@ export const init = (app, setup) => {
 
     function getSubitizationBalls(pivot){
       let n = randBetween(4,11)
+      equation = makeEquation([n])
       let nBalls = []
       for (let i = 0;i<n;i++){
         let aBall = new PIXI.Sprite.from(CounterImage)
