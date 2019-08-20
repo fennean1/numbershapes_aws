@@ -43,11 +43,6 @@ class NavigationBar extends Component {
             </Link>
           </Typography>
           <Typography style={{ paddingRight: 40 }} variant="h6">
-            <Link className="white-text" to={"/lessons"}>
-              Lessons
-            </Link>
-          </Typography>
-          <Typography style={{ paddingRight: 40 }} variant="h6">
             <a
               className="white-text"
               target="_blank"
