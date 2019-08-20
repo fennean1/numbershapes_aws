@@ -47,6 +47,21 @@ export const getNodesForCoordinate = (cord) => {
   return [up,right,down,left]
 } 
 
+export const getAllAvailableNodes = (dict) => {
+  let keys = Object.keys(dict)
+  let allNodes = []
+
+  keys.forEach(k => {
+    let nodesForThisKey = getNodesForCoordinate(dict[k])
+    let filteredNodes = nodesForThisKey.filter(node => {
+      let key = generateCoordinateKey(node)
+      return !dict[key]
+    })
+    allNodes.push(...filteredNodes)
+  } )
+  return allNodes
+}
+
 // Generates random coordinates for a given number.
 export const generateRandomCoordinates = (num) => {
   
@@ -57,28 +72,27 @@ export const generateRandomCoordinates = (num) => {
 
   for (let i =0; i<num-1;i++){
       let nodes = getNodesForCoordinate(curr)
+      /*
       let filteredNodes = nodes.filter(node => {
         let key = generateCoordinateKey(node)
         console.log("not in dict",!dict[key])
         return !dict[key]
       })
-      console.log("nodeCount",filteredNodes.length)
+      */
+      let filteredNodes = getAllAvailableNodes(dict)
+
       let nodeCount = filteredNodes.length
       let randomIndex = Math.floor(Math.random() * (nodeCount));
       let randomNode = filteredNodes[randomIndex]
       let keyForRandomNode = generateCoordinateKey(randomNode)
-      console.log("random Node",randomNode)
       dict[keyForRandomNode] = randomNode
-      console.log("dict",dict)
       curr = randomNode    
-      console.log("keys",Object.keys(dict))
   }
 
   let dictKeys = Object.keys(dict)
   let arrayOfCords = dictKeys.map((k)=>{return dict[k]})
-  console.log("array of Cords",arrayOfCords)
 
-
+  
 
   return  normalizeCords(arrayOfCords)
 }

@@ -5,10 +5,19 @@ import Clouds from "./assets/Clouds.png";
 import BlueBall from "./assets/BlueBall.png";
 import OrangeBall from "./assets/OrangeBall.png";
 import BlueRing from "./assets/BlueRing.png";
+import RedBall from "./assets/RedBall.png"
+import RedRing from "./assets/RedRing.png"
+import PinkBall from "./assets/PinkBall.png"
+import PinkRing from "./assets/PinkRing.png"
+import GreenBall from "./assets/GreenBall.png"
+import GreenRing from "./assets/GreenRing.png"
 import NewShapeButton from './assets/NewShapeButton.png'
 import QuestionMark from './assets/QuestionMark.png'
 import FrameButton from "./assets/FrameButton.png";
 import LineButton from "./assets/LineButton.png";
+import EquationButton from "./assets/EquationButton.png";
+import { Stage } from "konva";
+
 
 const SUBITIZER_TYPES = {
   NORMAL: 1, 
@@ -17,6 +26,8 @@ const SUBITIZER_TYPES = {
   ADDITION_THREE_DIGIT: 4,
   PIVOT: 5,
 }
+
+
 
 export const init = (app, setup) => {
     // Meta
@@ -30,6 +41,13 @@ export const init = (app, setup) => {
     // Vars
     let dx = setup.height/10
     let balls = []
+    let a = null 
+    let b = null 
+    let SubtractionImage = BlueRing
+    let CounterImage = BlueBall
+    let AdditionImage = OrangeBall
+    let equation = null
+    let showEquation = false
     app.stage.backGround = 0xffffff
     app.stage.alpha = 0
     window.createjs.Tween.get(app.stage).to({
@@ -74,6 +92,26 @@ export const init = (app, setup) => {
     frameButton.on('pointerdown',()=> {drawFrame(balls)})
     app.stage.addChild(frameButton)
 
+    let equationButton = new PIXI.Sprite.from(EquationButton)
+    equationButton.x = dx/4
+    equationButton.y = dx/3 + 3*dx/2
+    equationButton.width = 2*dx/2
+    equationButton.height = 0.80*dx/2
+    equationButton.interactive = true
+    equationButton.on('pointerdown',() => {
+      showEquation = !showEquation
+      let newAlpha = showEquation ? 1 : 0
+      equation.forEach(e => {
+        window.createjs.Tween.get(e).to({
+          alpha: newAlpha
+        },
+        1000,
+        window.createjs.Ease.getPowInOut(4)
+      );
+      });
+    })
+    app.stage.addChild(equationButton)
+
     let lineButton = new PIXI.Sprite.from(LineButton)
     lineButton.x = dx/4
     lineButton.y = dx/3 + 2*dx/2
@@ -82,10 +120,6 @@ export const init = (app, setup) => {
     lineButton.interactive = true
     lineButton.on('pointerdown',()=> {drawRow(balls)})
     app.stage.addChild(lineButton)
-
-
-
-
 
     // Init Balls
     // Helpers
@@ -99,21 +133,51 @@ export const init = (app, setup) => {
       }
     }
 
-    function getSubtractionBalls(pivot,delta){
+    function makeEquation(seq) {
+      showEquation = false
+      let balls = seq.reduce((sum,num)=> {return sum+num})
+      let width = 50*seq.length
+      let textObjects = seq.map((c)=>{
+        let cs = c.toString(10)
+        let t = new PIXI.Text(cs,{fontFamily: 
+        "Chalkboard SE",fontSize: 50})
+        return t
+      })
+      console.log("text Objects",textObjects)
+      textObjects.forEach((o,i) => {
+        o.alpha = 0
+        app.stage.addChild(o)
+      })
+      let prevWidth = 0
+      let nextX = CENTER_STAGE_X - width/2
+      textObjects.forEach((o,i)=> {
+        console.log("o.width",o.width)
+        console.log("o.x",o.x)
+        console.log("prevWidth",prevWidth)
+        o.x = nextX
+        o.y = 50
+        nextX = o.x + o.width + 20
+        console.log("o.x++",o.x)
+      })
+      return textObjects
+    }
 
-      let a = pivot == null ? randBetween(4,11) : pivot
+    function getSubtractionBalls(pivot,delta){
+      let a = pivot == null ? randBetween(4,10) : pivot
       console.log("a",a)
-      let b = randBetween(1,delta+1)
+      let b = delta == null ? randBetween(1,a) : randBetween(1,delta+1)
       let aBalls = []
       let bBalls = []
 
+      equation = makeEquation([a,"-",b,"=",a-b])
+
       for (let i = 0;i<(a-b);i++){
-        let aBall = new PIXI.Sprite.from(BlueBall)
+        let aBall = new PIXI.Sprite.from(CounterImage)
         aBalls.push(aBall)
       }
 
       for (let j = 0;j<b;j++){
-        let bBall = new PIXI.Sprite.from(BlueRing)
+        let bBall = new PIXI.Sprite.from(SubtractionImage)
         bBalls.push(bBall)
       }
 
@@ -172,7 +236,7 @@ export const init = (app, setup) => {
       let n = randBetween(4,11)
       let nBalls = []
       for (let i = 0;i<n;i++){
-        let aBall = new PIXI.Sprite.from(BlueBall)
+        let aBall = new PIXI.Sprite.from(CounterImage)
         nBalls.push(aBall)
       }
       for (let b of nBalls){
@@ -187,14 +251,17 @@ export const init = (app, setup) => {
       b = delta == null ? b : randBetween(1,delta+1)
       let aBalls = []
       let bBalls = []
+  
+
+      equation = makeEquation([a,"+",b,"=",a+b])
 
       for (let i = 0;i< a;i++){
-        let aBall = new PIXI.Sprite.from(BlueBall)
+        let aBall = new PIXI.Sprite.from(CounterImage)
         aBalls.push(aBall)
       }
 
       for (let j = 0;j<b;j++){
-        let bBall = new PIXI.Sprite.from(OrangeBall)
+        let bBall = new PIXI.Sprite.from(AdditionImage)
         bBalls.push(bBall)
       }
 
@@ -208,7 +275,12 @@ export const init = (app, setup) => {
 
     // Type needs to come from setup.type
     function initBallsFromType(type){
-    
+    if (equation) {destroy(equation)}
+    let PIVOT = SUBITIZER_TYPES.PIVOT == setup.props.type
+    SubtractionImage = PIVOT ? PinkRing : BlueRing
+    CounterImage = PIVOT ? PinkBall : BlueBall
+    AdditionImage = PIVOT ? GreenBall : OrangeBall
+    console.log("THIS IS THE PIVOT",PIVOT)
     switch (type){
       case SUBITIZER_TYPES.NORMAL: 
       return getSubitizationBalls()

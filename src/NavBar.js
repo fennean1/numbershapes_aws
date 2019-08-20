@@ -39,7 +39,7 @@ class NavigationBar extends Component {
           </Typography>
           <Typography style={{ paddingRight: 40 }} variant="h6">
             <Link className="white-text" to={"/mixed"}>
-              Mixed
+              +/-10
             </Link>
           </Typography>
           <Typography style={{ paddingRight: 40 }} variant="h6">
