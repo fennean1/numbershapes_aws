@@ -25,6 +25,7 @@ const Main = () => (
     <Route exact path="/addition" component={()=><Arena fullscreen = {true} lesson = {Addition} type = {2} script = {subitizer.init}/>} />
     <Route exact path="/subtraction" component={()=><Arena fullscreen = {true} lesson = {Subtraction} type = {3} script = {subitizer.init}/>} />
     <Route exact path="/mixed" component={()=><Arena fullscreen = {true} lesson = {Pivot} type = {5} script = {subitizer.init}/>} />
+    <Route exact path="/makingten" component={()=><Arena fullscreen = {true} lesson = {Addition} type = {4} script = {subitizer.init}/>} />
     <Route exact path="/appcard" component={()=><AppCard data = {Pivot}/>}/>
     <Route exact path="/fractions" component={FractionList} />
     <Route exact path="/lessons" component={LessonList} />

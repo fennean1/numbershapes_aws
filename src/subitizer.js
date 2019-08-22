@@ -248,6 +248,58 @@ export const init = (app, setup) => {
       return nBalls
     }
 
+   function shuffleArray(arr){
+     let n = arr.length
+     console.log("arr.length",arr.length)
+     let shuffledArray = []
+
+      for (let i = 0;i<n;i++){
+        let k = randBetween(0,arr.length)
+        console.log("k",k)
+        shuffledArray.push(arr[k])
+        arr.splice(k,1)
+      }
+      return shuffledArray
+   }
+
+
+    function getThreeDigitBalls(pivot,delta) {
+      let a = pivot == null ? randBetween(1,10) : pivot
+      let b = 10-a
+      let c = randBetween(1,6)
+  
+      let aBalls = []
+      let bBalls = []
+      let cBalls = []
+      let imgs = shuffleArray([CounterImage,AdditionImage,PinkBall])
+
+      equation = makeEquation([a,"+",b,"+",c,"=",a+b+c])
+
+      for (let i = 0;i< a;i++){
+        let aBall = new PIXI.Sprite.from(imgs[0])
+        aBalls.push(aBall)
+      }
+
+      for (let j = 0;j<b;j++){
+        let bBall = new PIXI.Sprite.from(imgs[1])
+        bBalls.push(bBall)
+      }
+
+      for (let k = 0;k<c;k++){
+        let cBall = new PIXI.Sprite.from(imgs[2])
+        cBalls.push(cBall)
+      }
+
+
+      let allBalls = [...aBalls,...bBalls,...cBalls]
+
+      for (let b of allBalls){
+        makeDraggable(b)
+      }
+      return allBalls
+    }
+
+
     function getAdditionBalls(pivot,delta) {
       let a = pivot == null ? randBetween(1,8) : pivot
       let b = 2 + randBetween(0,9-a)
@@ -295,7 +347,7 @@ export const init = (app, setup) => {
          return getAdditionBalls()
         break;
       case SUBITIZER_TYPES.ADDITION_THREE_DIGIT:
-        //return getThreeDigitBalls()
+        return getThreeDigitBalls()
         break;
       case SUBITIZER_TYPES.PIVOT:
         return getPivotBalls(10,5)

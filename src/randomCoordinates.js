@@ -72,14 +72,14 @@ export const generateRandomCoordinates = (num) => {
 
   for (let i =0; i<num-1;i++){
       let nodes = getNodesForCoordinate(curr)
-      /*
       let filteredNodes = nodes.filter(node => {
         let key = generateCoordinateKey(node)
         console.log("not in dict",!dict[key])
         return !dict[key]
       })
-      */
-      let filteredNodes = getAllAvailableNodes(dict)
+      console.log("nodes are empty",filteredNodes == null)
+
+      filteredNodes = filteredNodes != null ? filteredNodes : getAllAvailableNodes(dict)
 
       let nodeCount = filteredNodes.length
       let randomIndex = Math.floor(Math.random() * (nodeCount));
