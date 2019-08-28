@@ -25,7 +25,10 @@ const SUBITIZER_TYPES = {
   SUBTRACTION: 3,
   ADDITION_THREE_DIGIT: 4,
   PIVOT: 5,
+  SPLAT: 6
 }
+
+
 
 
 
@@ -33,6 +36,7 @@ export const init = (app, setup) => {
     // Meta
     console.log("window.width,window.height",window.innerWidth,window.innerHeight)
     console.log(setup.width,setup.height,"setup.width")
+  
 
     // Const
     let CENTER_STAGE_X = setup.width/2
@@ -48,6 +52,9 @@ export const init = (app, setup) => {
     let AdditionImage = OrangeBall
     let equation = null
     let showEquation = false
+
+
+    
     app.stage.backGround = 0xffffff
     app.stage.alpha = 0
     window.createjs.Tween.get(app.stage).to({
@@ -98,21 +105,25 @@ export const init = (app, setup) => {
     equationButton.width = 2*dx/2
     equationButton.height = 0.80*dx/2
     equationButton.interactive = true
-    equationButton.on('pointerdown',() => {
-      if (equation) {
-      showEquation = !showEquation
-      let newAlpha = showEquation ? 1 : 0
-      equation.forEach(e => {
-        window.createjs.Tween.get(e).to({
-          alpha: newAlpha
-        },
-        1000,
-        window.createjs.Ease.getPowInOut(4)
-      );
-      });
-      }
-    })
+    equationButton.on('pointerdown',revealEquation)
     app.stage.addChild(equationButton)
+
+
+    
+    function revealEquation(){
+        if (equation) {
+        showEquation = !showEquation
+        let newAlpha = showEquation ? 1 : 0
+        equation.forEach(e => {
+          window.createjs.Tween.get(e).to({
+            alpha: newAlpha
+          },
+          1000,
+          window.createjs.Ease.getPowInOut(4)
+        );
+        });
+        }
+    }
 
     let lineButton = new PIXI.Sprite.from(LineButton)
     lineButton.x = dx/4
@@ -123,7 +134,11 @@ export const init = (app, setup) => {
     lineButton.on('pointerdown',()=> {drawRow(balls)})
     app.stage.addChild(lineButton)
 
-    // Init Balls
+    var splat = new PIXI.Graphics();
+    splat.beginFill(0xffffff);
+    splat.lineStyle(5, 0x000000);
+ 
+
     // Helpers
     function randBetween(a,b){
       return  a + Math.floor(Math.random() * (b-a));
@@ -250,12 +265,9 @@ export const init = (app, setup) => {
 
    function shuffleArray(arr){
      let n = arr.length
-     console.log("arr.length",arr.length)
      let shuffledArray = []
-
       for (let i = 0;i<n;i++){
         let k = randBetween(0,arr.length)
-        console.log("k",k)
         shuffledArray.push(arr[k])
         arr.splice(k,1)
       }
@@ -352,6 +364,9 @@ export const init = (app, setup) => {
       case SUBITIZER_TYPES.PIVOT:
         return getPivotBalls(10,5)
        break;
+      case SUBITIZER_TYPES.SPLAT: 
+       return getSubitizationBalls()
+       break;
       default: 
       console.log("balls")
     }
@@ -362,11 +377,12 @@ export const init = (app, setup) => {
     }
 
     function newShape(){
+        this.interactive = false
         destroy(balls)
         balls = initBallsFromType(setup.props.type)
         let randomCords = randomCoordinates.generateRandomCoordinates(balls.length)
         let heightAndWidthOfCords = randomCoordinates.getHeightAndWidthOfCords(randomCords)
-
+      
     for (let b of balls){
         window.createjs.Tween.get(b).to({
               x: -dx,
@@ -380,6 +396,34 @@ export const init = (app, setup) => {
           app.stage.addChild(b)
     }
 
+    if (setup.props.type == SUBITIZER_TYPES.SPLAT){
+          console.log("splat")
+          app.stage.removeChild(splat)
+          splat.destroy(true)
+          splat = new PIXI.Graphics()
+          splat.beginFill(0xffffff);
+          splat.lineStyle(1, 0x000000)
+          splat.x = 0
+          splat.y = 0
+          let splatWidth = randBetween(2,heightAndWidthOfCords[0])*dx
+          let splatHeight = randBetween(2,heightAndWidthOfCords[1])*dx
+          let splatX = CENTER_STAGE_X-heightAndWidthOfCords[0]/2*dx - dx/2
+          let splatY = CENTER_STAGE_Y-heightAndWidthOfCords[1]/2*dx-dx/2
+          splat.drawRoundedRect(0,0,splatWidth,splatHeight,dx/5)
+          window.createjs.Tween.get(splat).to({
+            x: splatX,
+            y: splatY
+          },
+          1000,
+          window.createjs.Ease.getPowInOut(4)
+        );
+          revealEquation()
+          makeDraggable(splat)
+          splat.isSplat = true
+          splat.interactive = true
+          app.stage.addChild(splat)
+    }
+
     for (let i = 0;i<randomCords.length;i++){
         let cord = randomCords[i]
         window.createjs.Tween.get(balls[i]).to({
@@ -388,7 +432,7 @@ export const init = (app, setup) => {
             },
             1000,
             window.createjs.Ease.getPowInOut(4)
-          );
+          ).call(()=>this.interactive = true);
     }
 
 }
@@ -401,10 +445,14 @@ export const init = (app, setup) => {
         app.stage.addChild(this);
         this.data = event.data;
         this.dragging = true;
+
+        if (this.isSplat){
+          let newAlpha = this.alpha == 1 ? 0.35 : 1
+          this.alpha = newAlpha
+        }
       }
 
       function onDragEnd() {
-        console.log("FRAC ENDED");
         this.data = null;
         this.dragging = false;
       }
