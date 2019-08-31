@@ -232,10 +232,12 @@ export const init = (app, setup) => {
         window.createjs.Ease.getPowInOut(4)
       );
       })
+      let kX = randBetween(0,5)
+      let kY = randBetween(-1,2)
 
       window.createjs.Tween.get(splat).to({
-        x: CENTER_STAGE_X - w/2 ,
-        y: CENTER_STAGE_Y - dx 
+        x: CENTER_STAGE_X - w/2 + kX*dx,
+        y: CENTER_STAGE_Y - dx + kY*dx
       },
       1000,
       window.createjs.Ease.getPowInOut(4)
