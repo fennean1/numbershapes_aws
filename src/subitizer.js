@@ -222,8 +222,6 @@ export const init = (app, setup) => {
 
     function drawFrame(r){
       let w = r.length > 5 ? 5*dx : r.length*dx
-      let h = 2*dx
-      let switchRow = false
       r.forEach((b,i)=>{
         let j = (i - i%5)/5
         window.createjs.Tween.get(b).to({
@@ -234,6 +232,15 @@ export const init = (app, setup) => {
         window.createjs.Ease.getPowInOut(4)
       );
       })
+
+      window.createjs.Tween.get(splat).to({
+        x: CENTER_STAGE_X - w/2 ,
+        y: CENTER_STAGE_Y - dx 
+      },
+      1000,
+      window.createjs.Ease.getPowInOut(4)
+    );
+      
     }
 
     function getPivotBalls(pivot,delta){
