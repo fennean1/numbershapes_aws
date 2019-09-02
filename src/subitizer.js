@@ -16,6 +16,7 @@ import QuestionMark from './assets/QuestionMark.png'
 import FrameButton from "./assets/FrameButton.png";
 import LineButton from "./assets/LineButton.png";
 import EquationButton from "./assets/EquationButton.png";
+import MoreAppsButton from "./assets/MoreAppsButton.png";
 import { Stage } from "konva";
 
 
@@ -78,17 +79,27 @@ export const init = (app, setup) => {
     newShapeButton.width = 5*dx/2 
     newShapeButton.height = dx/2
     newShapeButton.interactive = true
+    newShapeButton.buttonMode = true
     newShapeButton.on('pointerdown',newShape)
     app.stage.addChild(newShapeButton)
 
     let questionButton = new PIXI.Sprite.from(QuestionMark)
     questionButton.x = setup.width - 1.5*dx
-    questionButton.y = dx/4
+    questionButton.y = dx/3 + 2*dx/2
     questionButton.width = dx
     questionButton.height = dx
     questionButton.interactive = true
     questionButton.on('pointerdown',()=> {app.help()})
     app.stage.addChild(questionButton)
+
+    let moreAppsButton = new PIXI.Sprite.from(MoreAppsButton)
+    moreAppsButton.x = setup.width - 1.5*dx
+    moreAppsButton.y = dx/4
+    moreAppsButton.width = dx
+    moreAppsButton.height = dx
+    moreAppsButton.interactive = true
+    moreAppsButton.on('pointerdown',()=> {app.goToApps()})
+    app.stage.addChild(moreAppsButton)
 
     let frameButton = new PIXI.Sprite.from(FrameButton)
     frameButton.x = dx/4

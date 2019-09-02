@@ -23,9 +23,6 @@ class Arena extends Component {
   this.setState({open: false})
   };
 
-  handleOpen() {
-    this.setState({open: true})
-  };
 
   componentWillUnmount(){
     console.log("Destroying all")
@@ -43,7 +40,6 @@ class Arena extends Component {
   }
 
   loadInstructions(){
-    console.log("I'm trying to help")
     this.setState({open: true})
   }
 
@@ -57,6 +53,7 @@ class Arena extends Component {
     };
 
     this.app.help = () => this.loadInstructions()
+    this.app.goToApps = () => {window.location.href = 'https://apps.apple.com/au/app/numbershapes-whiteboard/id1052209727'}
 
     this.app.renderer.resize(this.gameCanvas.clientWidth,this.gameCanvas.clientHeight)
 
@@ -67,7 +64,6 @@ class Arena extends Component {
   // Need fullscreen prop
 
   render() {
-    console.log("Render Called");
 
     /*
     if (this.props.show == true) {
@@ -90,8 +86,14 @@ class Arena extends Component {
     }
     */
 
+   let worksheet = 'https://drive.google.com/file/d/0B8L_uJ1iQlGJTFYxNzF1SkxsMlk/view'
+   //this.props.lesson.worksheet
+
+
     let styleType = this.props.fullscreen ? { height: "100vh" } : null;
     return (
+
+
       <div>
       <Drawer anchor="bottom" open={this.state.open} onClose={this.handleClose.bind(this)}>
       <div className ="card">
@@ -100,7 +102,7 @@ class Arena extends Component {
           <p>{this.props.lesson.coreSkillDescription}</p>
         </div>
         <div className="card-action">
-          <a className = "black-text" href={this.props.lesson.worksheet}>Worksheet</a>
+          <a className = "black-text" href={worksheet}>Workbook</a>
         </div>
   </div>
          
