@@ -16,8 +16,10 @@ import QuestionMark from './assets/QuestionMark.png'
 import FrameButton from "./assets/FrameButton.png";
 import LineButton from "./assets/LineButton.png";
 import EquationButton from "./assets/EquationButton.png";
+import ShuffleButton from "./assets/ShuffleButton.png";
 import MoreAppsButton from "./assets/MoreAppsButton.png";
 import { Stage } from "konva";
+import { setPriority } from "os";
 
 
 const SUBITIZER_TYPES = {
@@ -29,16 +31,16 @@ const SUBITIZER_TYPES = {
   SPLAT: 6
 }
 
-
+const BALL_STATES = {
+  LINE: 0,
+  FRAME: 1,
+  RANDOM: 2,
+}
 
 
 
 export const init = (app, setup) => {
-    // Meta
-    console.log("window.width,window.height",window.innerWidth,window.innerHeight)
-    console.log(setup.width,setup.height,"setup.width")
   
-
     // Const
     let CENTER_STAGE_X = setup.width/2
     let CENTER_STAGE_Y = setup.height/2
@@ -107,7 +109,7 @@ export const init = (app, setup) => {
     frameButton.width = 2*dx/2
     frameButton.height = 0.80*dx/2
     frameButton.interactive = true
-    frameButton.on('pointerdown',()=> {drawFrame(balls)})
+    frameButton.on('pointerdown',()=> {drawFrame()})
     app.stage.addChild(frameButton)
 
     let equationButton = new PIXI.Sprite.from(EquationButton)
@@ -119,20 +121,29 @@ export const init = (app, setup) => {
     equationButton.on('pointerdown',revealEquation)
     app.stage.addChild(equationButton)
 
+    let shuffleButton = new PIXI.Sprite.from(ShuffleButton)
+    shuffleButton.x = dx/4
+    shuffleButton.y = dx/3 + 4*dx/2
+    shuffleButton.width = 2*dx/2
+    shuffleButton.height = 0.80*dx/2
+    shuffleButton.interactive = true
+    shuffleButton.on('pointerdown',shuffle)
+    app.stage.addChild(shuffleButton)
+
 
     
     function revealEquation(){
         if (equation) {
-        showEquation = !showEquation
-        let newAlpha = showEquation ? 1 : 0
-        equation.forEach(e => {
-          window.createjs.Tween.get(e).to({
-            alpha: newAlpha
-          },
-          1000,
-          window.createjs.Ease.getPowInOut(4)
-        );
-        });
+          showEquation = !showEquation
+          let newAlpha = showEquation ? 1 : 0
+          equation.forEach(e => {
+              window.createjs.Tween.get(e).to({
+                alpha: newAlpha
+              },
+              1000,
+              window.createjs.Ease.getPowInOut(4)
+            );
+          });
         }
     }
 
@@ -142,12 +153,10 @@ export const init = (app, setup) => {
     lineButton.width = 2*dx/2
     lineButton.height = 0.80*dx/2
     lineButton.interactive = true
-    lineButton.on('pointerdown',()=> {drawRow(balls)})
+    lineButton.on('pointerdown',()=> {drawLine(balls)})
     app.stage.addChild(lineButton)
 
     var splat = new PIXI.Graphics();
-    splat.beginFill(0xffffff);
-    splat.lineStyle(5, 0x000000);
  
 
     // Helpers
@@ -217,7 +226,7 @@ export const init = (app, setup) => {
       return allBalls
     }
 
-    function drawRow(r){
+    function drawLine(r){
       let w = r.length * dx
       let h = dx
       r.forEach((b,i)=>{
@@ -229,11 +238,91 @@ export const init = (app, setup) => {
         window.createjs.Ease.getPowInOut(4)
       );
       })
+      if (setup.props.type == SUBITIZER_TYPES.SPLAT){
+        console.log("Moving Splat")
+        moveSplat(BALL_STATES.LINE)
+      }
     }
 
-    function drawFrame(r){
-      let w = r.length > 5 ? 5*dx : r.length*dx
-      r.forEach((b,i)=>{
+    function shuffle(){
+      let randomCords = randomCoordinates.generateRandomCoordinates(balls.length)
+      let heightAndWidthOfCords = randomCoordinates.getHeightAndWidthOfCords(randomCords)
+      for (let i = 0;i<randomCords.length;i++){
+          let cord = randomCords[i]
+          window.createjs.Tween.get(balls[i]).to({
+                x: CENTER_STAGE_X + (cord[0]-heightAndWidthOfCords[0]/2)*dx - dx/2,
+                y: CENTER_STAGE_Y  + (cord[1]-heightAndWidthOfCords[1]/2)*dx - dx/2
+              },
+              1000,
+              window.createjs.Ease.getPowInOut(4)
+            ).call(()=>this.interactive = true);
+      }
+      if (setup.props.type == SUBITIZER_TYPES.SPLAT){
+        moveSplat(BALL_STATES.RANDOM,randomCords)
+      }
+    }
+
+    function moveSplat(ballState,cords){
+      switch (ballState) {
+      case BALL_STATES.FRAME:
+          console.log("CALLING FRAME")
+          let frameWidth = balls.length > 5 ? 5*dx : balls.length*dx
+          let kX = randBetween(0,5)
+          let kY = randBetween(-1,2)
+          let kW = randBetween(1,5)
+          let kH = randBetween(1,3)
+
+          window.createjs.Tween.get(splat).to({
+            x: CENTER_STAGE_X - frameWidth/2 + kX*dx,
+            y: CENTER_STAGE_Y - dx,
+            width: kW*dx,
+            height: 2*dx
+          },
+          1000,
+          window.createjs.Ease.getPowInOut(4)
+        );
+      break;
+      case BALL_STATES.RANDOM:
+          console.log("CALLING RANDOM")
+          let heightAndWidthOfCords = randomCoordinates.getHeightAndWidthOfCords(cords)
+          let splatWidth = randBetween(2,heightAndWidthOfCords[0])*dx
+          let splatHeight = randBetween(2,heightAndWidthOfCords[1])*dx
+          let splatX = CENTER_STAGE_X-heightAndWidthOfCords[0]/2*dx - dx/2
+          let splatY = CENTER_STAGE_Y-heightAndWidthOfCords[1]/2*dx - dx/2
+          window.createjs.Tween.get(splat).to({
+            x: splatX,
+            y: splatY,
+            width: splatWidth,
+            height: splatHeight
+          },
+          1000,
+          window.createjs.Ease.getPowInOut(4)
+        );
+      break;
+      case BALL_STATES.LINE: 
+        let lineWidth = balls.length*dx
+        let iW = randBetween(1,balls.length)
+        let iH = randBetween(1,3)
+        let iX = randBetween(0,balls.length)
+    
+        window.createjs.Tween.get(splat).to({
+          x: CENTER_STAGE_X - lineWidth/2 + iX*dx,
+          y: CENTER_STAGE_Y,
+          height: dx,
+          width: iW*dx
+        },
+        1000,
+        window.createjs.Ease.getPowInOut(4)
+     );
+      break;
+      default: 
+          // do nothing
+    }
+  }
+
+    function drawFrame(){
+      let w = balls.length > 5 ? 5*dx : balls.length*dx
+      balls.forEach((b,i)=>{
         let j = (i - i%5)/5
         window.createjs.Tween.get(b).to({
           x: CENTER_STAGE_X - w/2 + i%5*dx,
@@ -243,17 +332,9 @@ export const init = (app, setup) => {
         window.createjs.Ease.getPowInOut(4)
       );
       })
-      let kX = randBetween(0,5)
-      let kY = randBetween(-1,2)
-
-      window.createjs.Tween.get(splat).to({
-        x: CENTER_STAGE_X - w/2 + kX*dx,
-        y: CENTER_STAGE_Y - dx + kY*dx
-      },
-      1000,
-      window.createjs.Ease.getPowInOut(4)
-    );
-      
+      if (setup.props.type == SUBITIZER_TYPES.SPLAT){
+        moveSplat(BALL_STATES.FRAME)
+      }
     }
 
     function getPivotBalls(pivot,delta){
@@ -392,44 +473,20 @@ export const init = (app, setup) => {
     }
     }
 
-    function help(){
-      app.help()
-    }
 
-    function newShape(){
-        this.interactive = false
-        destroy(balls)
-        balls = initBallsFromType(setup.props.type)
-        let randomCords = randomCoordinates.generateRandomCoordinates(balls.length)
-        let heightAndWidthOfCords = randomCoordinates.getHeightAndWidthOfCords(randomCords)
-      
-    for (let b of balls){
-        window.createjs.Tween.get(b).to({
-              x: -dx,
-              y: -dx
-            },
-            1000,
-            window.createjs.Ease.getPowInOut(4)
-          );
-          b.width = dx
-          b.height = dx
-          app.stage.addChild(b)
-    }
-
-    if (setup.props.type == SUBITIZER_TYPES.SPLAT){
-          console.log("splat")
+    function includeSplat(cords){
+      let heightAndWidthOfCords = randomCoordinates.getHeightAndWidthOfCords(cords)
           app.stage.removeChild(splat)
           splat.destroy(true)
           splat = new PIXI.Graphics()
-          splat.beginFill(0xffffff);
-          splat.lineStyle(1, 0x000000)
+          splat.beginFill(0xfc4254);
           splat.x = 0
           splat.y = 0
           let splatWidth = randBetween(2,heightAndWidthOfCords[0])*dx
           let splatHeight = randBetween(2,heightAndWidthOfCords[1])*dx
           let splatX = CENTER_STAGE_X-heightAndWidthOfCords[0]/2*dx - dx/2
-          let splatY = CENTER_STAGE_Y-heightAndWidthOfCords[1]/2*dx-dx/2
-          splat.drawRoundedRect(0,0,splatWidth,splatHeight,dx/5)
+          let splatY = CENTER_STAGE_Y-heightAndWidthOfCords[1]/2*dx - dx/2
+          splat.drawRect(0,0,splatWidth,splatHeight)
           window.createjs.Tween.get(splat).to({
             x: splatX,
             y: splatY
@@ -444,16 +501,40 @@ export const init = (app, setup) => {
           app.stage.addChild(splat)
     }
 
-    for (let i = 0;i<randomCords.length;i++){
-        let cord = randomCords[i]
-        window.createjs.Tween.get(balls[i]).to({
-              x: CENTER_STAGE_X + (cord[0]-heightAndWidthOfCords[0]/2)*dx - dx/2,
-              y: CENTER_STAGE_Y  + (cord[1]-heightAndWidthOfCords[1]/2)*dx - dx/2
-            },
-            1000,
-            window.createjs.Ease.getPowInOut(4)
-          ).call(()=>this.interactive = true);
-    }
+    function newShape(){
+        this.interactive = false
+        destroy(balls)
+        balls = initBallsFromType(setup.props.type)
+        let randomCords = randomCoordinates.generateRandomCoordinates(balls.length)
+        let heightAndWidthOfCords = randomCoordinates.getHeightAndWidthOfCords(randomCords)
+      
+        for (let b of balls){
+            window.createjs.Tween.get(b).to({
+                  x: -dx,
+                  y: -dx
+                },
+                1000,
+                window.createjs.Ease.getPowInOut(4)
+              );
+              b.width = dx
+              b.height = dx
+              app.stage.addChild(b)
+        }
+
+        if (setup.props.type == SUBITIZER_TYPES.SPLAT){
+            includeSplat(randomCords)
+        }
+
+        for (let i = 0;i<randomCords.length;i++){
+            let cord = randomCords[i]
+            window.createjs.Tween.get(balls[i]).to({
+                  x: CENTER_STAGE_X + (cord[0]-heightAndWidthOfCords[0]/2)*dx - dx/2,
+                  y: CENTER_STAGE_Y  + (cord[1]-heightAndWidthOfCords[1]/2)*dx - dx/2
+                },
+                1000,
+                window.createjs.Ease.getPowInOut(4)
+              ).call(()=>this.interactive = true);
+        }
 
 }
 
