@@ -76,6 +76,9 @@ import Ten_O from "./assets/Ten_O.png";
 
 
 
+
+
+
 const BLUES = [
   One_B,
   Two_B,
@@ -162,4 +165,5 @@ export const PURPLE_OBJS = () => {return PURPLES.map((e,i) => {return {img: e,va
 export const PINK_OBJS = () => {return PINKS.map((e,i) => {return {img: e,value:i+1}})}
 
 
-console.log("BLUE_OBJS", BLUE_OBJS());
+
+

@@ -89,15 +89,15 @@ class FractionList extends Component {
 
     return (
       <div className = "clouds">
-      <div className="container">
-        <input
-          className="centerText"
-          type="text"
-          value={this.state.whole}
-          onChange={this.handleChange.bind(this)}
-        />
-        <div className="scroller">{this.renderRows(this.state.whole)}</div>
-      </div>
+        <div className="container">
+          <input
+            className="centerText"
+            type="text"
+            value={this.state.whole}
+            onChange={this.handleChange.bind(this)}
+          />
+          <div className="scroller">{this.renderRows(this.state.whole)}</div>
+        </div>
       </div>
     );
   }
