@@ -1,3 +1,16 @@
+import Zero from "./assets/num-zero.png";
+import One from "./assets/num-one.png";
+import Two from "./assets/num-two.png";
+import Three from "./assets/num-three.png";
+import Four from "./assets/num-four.png";
+import Five from "./assets/num-five.png";
+import Six from "./assets/num-six.png";
+import Seven from "./assets/num-seven.png";
+import Eight from "./assets/num-eight.png";
+import Nine from "./assets/num-nine.png";
+import Ten from "./assets/num-ten.png";
+
+
 
 // Blue Cards
 import One_B from "./assets/One_B.png";
@@ -156,6 +169,20 @@ const ORANGES = [
   Nine_O,
   Ten_O
 ];
+
+export const NUMBERS = [
+  Zero,
+  One,
+  Two,
+  Three,
+  Four,
+  Five,
+  Six,
+  Seven,
+  Eight,
+  Nine,
+  Ten
+]
 
 export const BLUE_OBJS = () => {return BLUES.map((e,i) => {return {img: e,value:i+1}})}
 export const ORANGE_OBJS = () => {return ORANGES.map((e,i) => {return {img: e,value:i+1}})}

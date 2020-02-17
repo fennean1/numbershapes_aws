@@ -18,8 +18,8 @@ import LineButton from "./assets/LineButton.png";
 import EquationButton from "./assets/EquationButton.png";
 import ShuffleButton from "./assets/ShuffleButton.png";
 import MoreAppsButton from "./assets/MoreAppsButton.png";
-import { Stage } from "konva";
-import { setPriority } from "os";
+import {Keypad} from "./api.js"
+import {NUMBERS} from "./AssetManager.js"
 
 
 const SUBITIZER_TYPES = {
@@ -56,6 +56,7 @@ export const init = (app, setup) => {
     let equation = null
     let showEquation = false
 
+    let targetValue = 8 // Default value
 
     
     app.stage.backGround = 0xffffff
@@ -66,6 +67,7 @@ export const init = (app, setup) => {
       1000,
       window.createjs.Ease.getPowInOut(4)
     );
+
 
     // Setup
     let backGround = new PIXI.Sprite.from(Clouds)
@@ -83,7 +85,7 @@ export const init = (app, setup) => {
     newShapeButton.interactive = true
     newShapeButton.buttonMode = true
     newShapeButton.on('pointerdown',newShape)
-    app.stage.addChild(newShapeButton)
+    //app.stage.addChild(newShapeButton)
 
     let questionButton = new PIXI.Sprite.from(QuestionMark)
     questionButton.x = setup.width - 1.5*dx
@@ -92,7 +94,7 @@ export const init = (app, setup) => {
     questionButton.height = dx
     questionButton.interactive = true
     questionButton.on('pointerdown',()=> {app.help()})
-    app.stage.addChild(questionButton)
+    //app.stage.addChild(questionButton)
 
     let moreAppsButton = new PIXI.Sprite.from(MoreAppsButton)
     moreAppsButton.x = setup.width - 1.5*dx
@@ -101,7 +103,7 @@ export const init = (app, setup) => {
     moreAppsButton.height = dx
     moreAppsButton.interactive = true
     moreAppsButton.on('pointerdown',()=> {app.goToApps()})
-    app.stage.addChild(moreAppsButton)
+    //app.stage.addChild(moreAppsButton)
 
     let frameButton = new PIXI.Sprite.from(FrameButton)
     frameButton.x = dx/4
@@ -110,7 +112,7 @@ export const init = (app, setup) => {
     frameButton.height = 0.80*dx/2
     frameButton.interactive = true
     frameButton.on('pointerdown',()=> {drawFrame()})
-    app.stage.addChild(frameButton)
+    //app.stage.addChild(frameButton)
 
     let equationButton = new PIXI.Sprite.from(EquationButton)
     equationButton.x = dx/4
@@ -119,7 +121,7 @@ export const init = (app, setup) => {
     equationButton.height = 0.80*dx/2
     equationButton.interactive = true
     equationButton.on('pointerdown',revealEquation)
-    app.stage.addChild(equationButton)
+    //app.stage.addChild(equationButton)
 
     let shuffleButton = new PIXI.Sprite.from(ShuffleButton)
     shuffleButton.x = dx/4
@@ -128,10 +130,26 @@ export const init = (app, setup) => {
     shuffleButton.height = 0.80*dx/2
     shuffleButton.interactive = true
     shuffleButton.on('pointerdown',shuffle)
-    app.stage.addChild(shuffleButton)
-
+    //app.stage.addChild(shuffleButton)
 
     
+    function checkAnswer(val){
+        let answer = getNumberOfHiddenDots()
+        if (val == answer){
+          window.createjs.Tween.get(splat).to({alpha: 0.2},300,window.createjs.Ease.getPowInOut(4)).call(()=>{
+            setTimeout(()=>{
+              splat.alpha = 1
+              shuffle()
+            },500)
+          })
+        } else {
+          window.createjs.Tween.get(splat).to({rotation: 2*Math.PI},500,window.createjs.Ease.getPowInOut(4)).call(()=>{
+            splat.rotation = 0
+          })
+        }
+    }
+
+
     function revealEquation(){
         if (equation) {
           showEquation = !showEquation
@@ -154,7 +172,7 @@ export const init = (app, setup) => {
     lineButton.height = 0.80*dx/2
     lineButton.interactive = true
     lineButton.on('pointerdown',()=> {drawLine(balls)})
-    app.stage.addChild(lineButton)
+    //app.stage.addChild(lineButton)
 
     var splat = new PIXI.Graphics();
  
@@ -180,7 +198,6 @@ export const init = (app, setup) => {
         "Chalkboard SE",fontSize: 50})
         return t
       })
-      console.log("text Objects",textObjects)
       textObjects.forEach((o,i) => {
         o.alpha = 0
         app.stage.addChild(o)
@@ -188,20 +205,17 @@ export const init = (app, setup) => {
       let prevWidth = 0
       let nextX = CENTER_STAGE_X - width/2
       textObjects.forEach((o,i)=> {
-        console.log("o.width",o.width)
-        console.log("o.x",o.x)
-        console.log("prevWidth",prevWidth)
+
         o.x = nextX
         o.y = 50
         nextX = o.x + o.width + 20
-        console.log("o.x++",o.x)
+
       })
       return textObjects
     }
 
     function getSubtractionBalls(pivot,delta){
       let a = pivot == null ? randBetween(4,10) : pivot
-      console.log("a",a)
       let b = delta == null ? randBetween(1,a) : randBetween(1,delta+1)
       let aBalls = []
       let bBalls = []
@@ -238,10 +252,7 @@ export const init = (app, setup) => {
         window.createjs.Ease.getPowInOut(4)
       );
       })
-      if (setup.props.type == SUBITIZER_TYPES.SPLAT){
-        console.log("Moving Splat")
         moveSplat(BALL_STATES.LINE)
-      }
     }
 
     function shuffle(){
@@ -255,11 +266,46 @@ export const init = (app, setup) => {
               },
               1000,
               window.createjs.Ease.getPowInOut(4)
-            ).call(()=>this.interactive = true);
+            );
       }
-      if (setup.props.type == SUBITIZER_TYPES.SPLAT){
-        moveSplat(BALL_STATES.RANDOM,randomCords)
+      moveSplat(BALL_STATES.RANDOM,randomCords)
+    }
+
+
+    function inSplat(x,y){
+      let c1 = false 
+      let c2 = false
+
+
+      let xMin = splat.x 
+      let xMax = splat.x + splat.width
+      let yMin = splat.y 
+      let yMax = splat.y + splat.height
+
+
+      if (x < xMax && x > xMin){
+        c1 = true
       }
+
+      if (y < yMax && y > yMin){
+        c2 = true
+      }
+
+      return c1 && c2
+    }
+
+    function getNumberOfHiddenDots(){
+      let number = 0
+
+    
+      for (let b of balls){
+        let inthesplat = inSplat(b.x+b.width/2,b.y+b.height/2)
+        console.log("in splat",inthesplat)
+        if (inthesplat){
+          number += 1
+        }
+      }
+      return number
     }
 
     function moveSplat(ballState,cords){
@@ -283,12 +329,19 @@ export const init = (app, setup) => {
         );
       break;
       case BALL_STATES.RANDOM:
-          console.log("CALLING RANDOM")
+          console.log("cods",cords)
           let heightAndWidthOfCords = randomCoordinates.getHeightAndWidthOfCords(cords)
-          let splatWidth = randBetween(2,heightAndWidthOfCords[0])*dx
-          let splatHeight = randBetween(2,heightAndWidthOfCords[1])*dx
-          let splatX = CENTER_STAGE_X-heightAndWidthOfCords[0]/2*dx - dx/2
-          let splatY = CENTER_STAGE_Y-heightAndWidthOfCords[1]/2*dx - dx/2
+          console.log()
+          let i = heightAndWidthOfCords[0]
+          let j = heightAndWidthOfCords[1]
+          console.log("I,J",i,j)
+          let splatWidth = dx + randBetween(0,i)*dx
+          let splatHeight = dx + randBetween(0,j)*dx
+          let randX = randBetween(0,i-1)*dx
+          let randY= randBetween(0,j-1)*dx
+          let splatX = CENTER_STAGE_X-heightAndWidthOfCords[0]/2*dx - dx/2 + randX
+          let splatY = CENTER_STAGE_Y-heightAndWidthOfCords[1]/2*dx - dx/2 + randY
+          
           window.createjs.Tween.get(splat).to({
             x: splatX,
             y: splatY,
@@ -318,6 +371,8 @@ export const init = (app, setup) => {
       default: 
           // do nothing
     }
+
+    app.stage.addChild(splat)
   }
 
     function drawFrame(){
@@ -350,11 +405,10 @@ export const init = (app, setup) => {
         .on('pointerup',onDragEnd)
     }
 
-    function getSubitizationBalls(pivot){
-      let n = randBetween(4,11)
-      equation = makeEquation([n])
+    function getSubitizationBalls(val){
+      //equation = makeEquation([v])
       let nBalls = []
-      for (let i = 0;i<n;i++){
+      for (let i = 0;i<val;i++){
         let aBall = new PIXI.Sprite.from(CounterImage)
         nBalls.push(aBall)
       }
@@ -441,45 +495,13 @@ export const init = (app, setup) => {
       return allBalls
     }
 
-    // Type needs to come from setup.type
-    function initBallsFromType(type){
-    if (equation) {destroy(equation)}
-    let PIVOT = SUBITIZER_TYPES.PIVOT == setup.props.type
-    SubtractionImage = PIVOT ? PinkRing : BlueRing
-    CounterImage = PIVOT ? PinkBall : BlueBall
-    AdditionImage = PIVOT ? GreenBall : OrangeBall
-    console.log("THIS IS THE PIVOT",PIVOT)
-    switch (type){
-      case SUBITIZER_TYPES.NORMAL: 
-      return getSubitizationBalls()
-        break;
-      case SUBITIZER_TYPES.SUBTRACTION:
-        return getSubtractionBalls()
-        break;
-      case SUBITIZER_TYPES.ADDITION:
-         return getAdditionBalls()
-        break;
-      case SUBITIZER_TYPES.ADDITION_THREE_DIGIT:
-        return getThreeDigitBalls()
-        break;
-      case SUBITIZER_TYPES.PIVOT:
-        return getPivotBalls(10,5)
-       break;
-      case SUBITIZER_TYPES.SPLAT: 
-       return getSubitizationBalls()
-       break;
-      default: 
-      console.log("balls")
-    }
-    }
-
 
     function includeSplat(cords){
       let heightAndWidthOfCords = randomCoordinates.getHeightAndWidthOfCords(cords)
           app.stage.removeChild(splat)
           splat.destroy(true)
           splat = new PIXI.Graphics()
-          splat.beginFill(0xfc4254);
+          splat.beginFill(0x406cff);
           splat.x = 0
           splat.y = 0
           let splatWidth = randBetween(2,heightAndWidthOfCords[0])*dx
@@ -501,10 +523,11 @@ export const init = (app, setup) => {
           app.stage.addChild(splat)
     }
 
-    function newShape(){
-        this.interactive = false
+ 
+    function newShape(val){
+        //this.interactive = false
         destroy(balls)
-        balls = initBallsFromType(setup.props.type)
+        balls = getSubitizationBalls(val)
         let randomCords = randomCoordinates.generateRandomCoordinates(balls.length)
         let heightAndWidthOfCords = randomCoordinates.getHeightAndWidthOfCords(randomCords)
       
@@ -521,9 +544,9 @@ export const init = (app, setup) => {
               app.stage.addChild(b)
         }
 
-        if (setup.props.type == SUBITIZER_TYPES.SPLAT){
+
             includeSplat(randomCords)
-        }
+
 
         for (let i = 0;i<randomCords.length;i++){
             let cord = randomCords[i]
@@ -533,7 +556,7 @@ export const init = (app, setup) => {
                 },
                 1000,
                 window.createjs.Ease.getPowInOut(4)
-              ).call(()=>this.interactive = true);
+              )
         }
 
 }
@@ -566,10 +589,23 @@ export const init = (app, setup) => {
         }
       }
 
-
       function load(){
-        
+
       }
 
+
+      function loadGame(val){
+        newShape(val)
+      }
+
+    let keypad = new Keypad(50)
+    keypad.doSomething = (val)=> checkAnswer(val)
+    app.stage.addChild(keypad)
+    keypad.load()
+    keypad.draw(targetValue)
+    keypad.x = window.innerWidth/2 - keypad.width/2
+    keypad.y = keypad._height
+
+    loadGame(targetValue)
 
 }

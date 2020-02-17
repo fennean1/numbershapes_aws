@@ -92,7 +92,7 @@ export const init = (app, setup) => {
     questionButton.height = dx
     questionButton.interactive = true
     questionButton.on('pointerdown',()=> {app.help()})
-    app.stage.addChild(questionButton)
+    //app.stage.addChild(questionButton)
 
     let moreAppsButton = new PIXI.Sprite.from(MoreAppsButton)
     moreAppsButton.x = setup.width - 1.5*dx
@@ -101,7 +101,7 @@ export const init = (app, setup) => {
     moreAppsButton.height = dx
     moreAppsButton.interactive = true
     moreAppsButton.on('pointerdown',()=> {app.goToApps()})
-    app.stage.addChild(moreAppsButton)
+    //app.stage.addChild(moreAppsButton)
 
     let frameButton = new PIXI.Sprite.from(FrameButton)
     frameButton.x = dx/4
