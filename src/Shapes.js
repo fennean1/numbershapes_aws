@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import logo from "./logo.svg";
 import "./App.css";
 import { Button, Icon, Row, Col } from "react-materialize";
 import { Stage, Layer, Rect, Text, Star, Circle } from "react-konva";

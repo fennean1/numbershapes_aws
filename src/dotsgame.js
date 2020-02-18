@@ -56,7 +56,7 @@ export const init = (app, setup) => {
     let equation = null
     let showEquation = false
 
-    let targetValue = 8 // Default value
+    let targetValue = setup.props.value // Default value
 
     
     app.stage.backGround = 0xffffff
@@ -335,8 +335,8 @@ export const init = (app, setup) => {
           let i = heightAndWidthOfCords[0]
           let j = heightAndWidthOfCords[1]
           console.log("I,J",i,j)
-          let splatWidth = dx + randBetween(0,i)*dx
-          let splatHeight = dx + randBetween(0,j)*dx
+          let splatWidth = dx + randBetween(0,i+1)*dx
+          let splatHeight = dx + randBetween(0,j+1)*dx
           let randX = randBetween(0,i-1)*dx
           let randY= randBetween(0,j-1)*dx
           let splatX = CENTER_STAGE_X-heightAndWidthOfCords[0]/2*dx - dx/2 + randX
