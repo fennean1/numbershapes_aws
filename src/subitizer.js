@@ -18,8 +18,7 @@ import LineButton from "./assets/LineButton.png";
 import EquationButton from "./assets/EquationButton.png";
 import ShuffleButton from "./assets/ShuffleButton.png";
 import MoreAppsButton from "./assets/MoreAppsButton.png";
-import { Stage } from "konva";
-import { setPriority } from "os";
+import SpecialBall from "./assets/SpecialBall.png";
 
 
 const SUBITIZER_TYPES = {
@@ -44,6 +43,7 @@ export const init = (app, setup) => {
     // Const
     let CENTER_STAGE_X = setup.width/2
     let CENTER_STAGE_Y = setup.height/2
+    const FOUR_LEAF_CLOVER_TEXTURE = new PIXI.Texture.from(SpecialBall)
 
     // Vars
     let dx = setup.height/10
@@ -352,10 +352,12 @@ export const init = (app, setup) => {
 
     function getSubitizationBalls(pivot){
       let n = randBetween(4,11)
+      let makeFourLeavedClover = randBetween(0,2)
+      let rand = makeFourLeavedClover == 1 ? randBetween(0,n) : -1
       equation = makeEquation([n])
       let nBalls = []
       for (let i = 0;i<n;i++){
-        let aBall = new PIXI.Sprite.from(CounterImage)
+        let aBall = i == rand ? new PIXI.Sprite.from(SpecialBall) : new PIXI.Sprite.from(BlueBall)
         nBalls.push(aBall)
       }
       for (let b of nBalls){
@@ -505,6 +507,8 @@ export const init = (app, setup) => {
         this.interactive = false
         destroy(balls)
         balls = initBallsFromType(setup.props.type)
+   
+
         let randomCords = randomCoordinates.generateRandomCoordinates(balls.length)
         let heightAndWidthOfCords = randomCoordinates.getHeightAndWidthOfCords(randomCords)
       
