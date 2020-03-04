@@ -23,7 +23,6 @@ const Main = () => (
     <Route exact path="/subtraction" component={()=><Arena fullscreen = {true} lesson = {Subtraction} type = {3} script = {subitizer.init}/>} />
     <Route exact path="/mixed" component={()=><Arena fullscreen = {true} lesson = {Pivot} type = {5} script = {subitizer.init}/>} />
     <Route exact path="/dotsgame" component={()=><Arena fullscreen = {true} lesson = {Pivot} value = {8} script = {dotsgame.init}/>} />
-    <Route exact path="/dotsgamex5" component={()=><Arena fullscreen = {true} lesson = {Pivot} value = {5} script = {dotsgame.init}/>} />
     <Route exact path="/makingten" component={()=><Arena fullscreen = {true} lesson = {Addition} type = {4} script = {subitizer.init}/>} />
     <Route exact path="/hiddendots" component={()=><Arena fullscreen = {true} lesson = {Subitization} type = {6} script = {subitizer.init}/>} />
     <Route exact path="/appcard" component={()=><AppCard data = {Pivot}/>}/>
