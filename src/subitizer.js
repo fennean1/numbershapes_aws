@@ -19,6 +19,9 @@ import EquationButton from "./assets/EquationButton.png";
 import ShuffleButton from "./assets/ShuffleButton.png";
 import MoreAppsButton from "./assets/MoreAppsButton.png";
 import SpecialBall from "./assets/SpecialBall.png";
+import PotOfGold from "./assets/PotOfGold.png";
+import Coin from "./assets/Coin.png";
+
 
 
 const SUBITIZER_TYPES = {
@@ -43,7 +46,8 @@ export const init = (app, setup) => {
     // Const
     let CENTER_STAGE_X = setup.width/2
     let CENTER_STAGE_Y = setup.height/2
-    const FOUR_LEAF_CLOVER_TEXTURE = new PIXI.Texture.from(SpecialBall)
+    const COIN = new PIXI.Texture.from(Coin)
+    const POT_OF_GOLD = new PIXI.Texture.from(PotOfGold)
 
     // Vars
     let dx = setup.height/10
@@ -55,6 +59,9 @@ export const init = (app, setup) => {
     let AdditionImage = OrangeBall
     let equation = null
     let showEquation = false
+    let kBalls = []
+    let potOfGoldIndex = 0
+    let oldBalls = []
 
 
     
@@ -164,10 +171,8 @@ export const init = (app, setup) => {
       return  a + Math.floor(Math.random() * (b-a));
     }
     function destroy(objects){
-      for (let o of objects){
-        app.stage.removeChild(o)
-        o.destroy(true)
-      }
+      for (var i = objects.length - 1; i >= 0; i--) {	app.stage.removeChild(objects[i]);};
+      for (var i = objects.length - 1; i >= 0; i--) {	objects[i].destroy();};
     }
 
     function makeEquation(seq) {
@@ -350,20 +355,58 @@ export const init = (app, setup) => {
         .on('pointerup',onDragEnd)
     }
 
+    function giveFeedBack(){
+      let newBalls = []
+      this.texture = COIN
+      let k = balls.indexOf(this)
+      newBalls.push(balls[k])
+      balls.splice(k,1)
+      for (let i = 0;i<potOfGoldIndex-1;i++){
+        let newBall = new PIXI.Sprite.from(Coin)
+        newBall.width = dx 
+        newBall.height = dx
+        newBall.x = this.x 
+        newBall.y = this.y
+        newBalls.push(newBall)
+        app.stage.addChild(newBall)
+      }
+      let newBallsWidth = newBalls.length*dx
+      newBalls.forEach((nb,i)=>{
+   
+        window.createjs.Tween.get(nb).to({x: window.innerWidth/2 - newBallsWidth/2+dx*i,y: window.innerHeight/2-dx}, 1000,
+          window.createjs.Ease.getPowInOut(4))
+      })
+      let ballsWidth = balls.length*dx
+      balls.forEach((b,i)=>{
+        window.createjs.Tween.get(b).to({x: window.innerWidth/2 - ballsWidth/2+dx*i,y: window.innerHeight/2+dx}, 1000,
+          window.createjs.Ease.getPowInOut(4))
+      })
+
+      balls.push(...newBalls)
+      
+    }
+
     function getSubitizationBalls(pivot){
       let n = randBetween(4,11)
-      let makeFourLeavedClover = randBetween(0,2)
-      let rand = makeFourLeavedClover == 1 ? randBetween(0,n) : -1
+      let k = randBetween(2,n)
+      potOfGoldIndex = n-k
+      let aBalls = []
+
       equation = makeEquation([n])
-      let nBalls = []
-      for (let i = 0;i<n;i++){
-        let aBall = i == rand ? new PIXI.Sprite.from(SpecialBall) : new PIXI.Sprite.from(BlueBall)
-        nBalls.push(aBall)
+      revealEquation()
+
+      for (let i = 0;i<=k;i++){
+        let aBall = i == k ? new PIXI.Sprite.from(PotOfGold) : new PIXI.Sprite.from(Coin)
+        if (i==k){
+          aBall.on('pointerdown',giveFeedBack)
+        }
+        aBalls.push(aBall)
       }
-      for (let b of nBalls){
+
+      for (let b of aBalls){
         makeDraggable(b)
       }
-      return nBalls
+      return aBalls
     }
 
    function shuffleArray(arr){
@@ -503,16 +546,17 @@ export const init = (app, setup) => {
           app.stage.addChild(splat)
     }
 
+
     function newShape(){
         this.interactive = false
         destroy(balls)
-        balls = initBallsFromType(setup.props.type)
-   
 
-        let randomCords = randomCoordinates.generateRandomCoordinates(balls.length)
+        let newBalls = initBallsFromType(setup.props.type)
+        
+        let randomCords = randomCoordinates.generateRandomCoordinates(newBalls.length)
         let heightAndWidthOfCords = randomCoordinates.getHeightAndWidthOfCords(randomCords)
       
-        for (let b of balls){
+        for (let b of newBalls){
             window.createjs.Tween.get(b).to({
                   x: -dx,
                   y: -dx
@@ -531,7 +575,7 @@ export const init = (app, setup) => {
 
         for (let i = 0;i<randomCords.length;i++){
             let cord = randomCords[i]
-            window.createjs.Tween.get(balls[i]).to({
+            window.createjs.Tween.get(newBalls[i]).to({
                   x: CENTER_STAGE_X + (cord[0]-heightAndWidthOfCords[0]/2)*dx - dx/2,
                   y: CENTER_STAGE_Y  + (cord[1]-heightAndWidthOfCords[1]/2)*dx - dx/2
                 },
@@ -539,7 +583,7 @@ export const init = (app, setup) => {
                 window.createjs.Ease.getPowInOut(4)
               ).call(()=>this.interactive = true);
         }
-
+        balls = newBalls
 }
 
     // Dragging functions   
