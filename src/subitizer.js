@@ -373,12 +373,12 @@ export const init = (app, setup) => {
       let newBallsWidth = newBalls.length*dx
       newBalls.forEach((nb,i)=>{
    
-        window.createjs.Tween.get(nb).to({x: window.innerWidth/2 - newBallsWidth/2+dx*i,y: window.innerHeight/2-dx}, 1000,
+        window.createjs.Tween.get(nb).to({x: window.innerWidth/2 - newBallsWidth/2+dx*i,y: window.innerHeight/3-dx}, 1000,
           window.createjs.Ease.getPowInOut(4))
       })
       let ballsWidth = balls.length*dx
       balls.forEach((b,i)=>{
-        window.createjs.Tween.get(b).to({x: window.innerWidth/2 - ballsWidth/2+dx*i,y: window.innerHeight/2+dx}, 1000,
+        window.createjs.Tween.get(b).to({x: window.innerWidth/2 - ballsWidth/2+dx*i,y: window.innerHeight/3+dx}, 1000,
           window.createjs.Ease.getPowInOut(4))
       })
 
