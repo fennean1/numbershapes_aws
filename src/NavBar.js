@@ -24,7 +24,7 @@ class NavigationBar extends Component {
         <Toolbar>
           <Typography style={{ paddingRight: 40 }} variant="h6">
             <Link className="white-text" to={"/"}>
-              Subitize
+              Pots Of Gold
             </Link>
           </Typography>
           <Typography style={{ paddingRight: 40 }} variant="h6">
@@ -38,18 +38,8 @@ class NavigationBar extends Component {
             </Link>
           </Typography>
           <Typography style={{ paddingRight: 40 }} variant="h6">
-            <Link className="white-text" to={"/makingten"}>
-              Make 10
-            </Link>
-          </Typography>
-          <Typography style={{ paddingRight: 40 }} variant="h6">
             <Link className="white-text" to={"/hiddendots"}>
-              Hidden Dots
-            </Link>
-          </Typography>
-          <Typography style={{ paddingRight: 40 }} variant="h6">
-            <Link className="white-text" to={"/dotsgame"}>
-              Explore 8
+              Egg Hunt
             </Link>
           </Typography>
           <Typography style={{ paddingRight: 40 }} variant="h6">

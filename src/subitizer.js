@@ -21,6 +21,12 @@ import MoreAppsButton from "./assets/MoreAppsButton.png";
 import SpecialBall from "./assets/SpecialBall.png";
 import PotOfGold from "./assets/PotOfGold.png";
 import Coin from "./assets/Coin.png";
+import PurpleEgg from './assets/PurpleEgg.png'
+import YellowEgg from './assets/YellowEgg.png'
+import OrangeEgg from './assets/OrangeEgg.png'
+import GreenEgg from './assets/GreenEgg.png'
+import BlueEgg from './assets/BlueEgg.png'
+import RedEgg from './assets/RedEgg.png'
 
 
 
@@ -39,6 +45,8 @@ const BALL_STATES = {
   RANDOM: 2,
 }
 
+
+const EGGS = [RedEgg,YellowEgg, PurpleEgg, GreenEgg, BlueEgg,OrangeEgg]
 
 
 export const init = (app, setup) => {
@@ -387,6 +395,8 @@ export const init = (app, setup) => {
     }
 
     function getSubitizationBalls(pivot){
+      let rand = randBetween(0,EGGS.length)
+      CounterImage = EGGS[rand]
       let n = randBetween(4,11)
       let k = randBetween(2,n)
       potOfGoldIndex = n-k
@@ -397,6 +407,32 @@ export const init = (app, setup) => {
 
       for (let i = 0;i<=k;i++){
         let aBall = i == k ? new PIXI.Sprite.from(PotOfGold) : new PIXI.Sprite.from(Coin)
+        if (i==k){
+          aBall.on('pointerdown',giveFeedBack)
+        }
+        aBalls.push(aBall)
+      }
+
+      for (let b of aBalls){
+        makeDraggable(b)
+      }
+      return aBalls
+    }
+
+    function getSplatBalls(pivot){
+   
+      let n = randBetween(4,11)
+      let k = randBetween(2,n)
+      potOfGoldIndex = n-k
+      let aBalls = []
+
+      equation = makeEquation([n])
+      //revealEquation()
+
+      for (let i = 0;i<n;i++){
+        let rand = randBetween(0,EGGS.length)
+        CounterImage = EGGS[rand]
+        let aBall = new PIXI.Sprite.from(CounterImage)
         if (i==k){
           aBall.on('pointerdown',giveFeedBack)
         }
@@ -511,7 +547,7 @@ export const init = (app, setup) => {
         return getPivotBalls(10,5)
        break;
       case SUBITIZER_TYPES.SPLAT: 
-       return getSubitizationBalls()
+       return getSplatBalls()
        break;
       default: 
       console.log("balls")
@@ -524,7 +560,7 @@ export const init = (app, setup) => {
           app.stage.removeChild(splat)
           splat.destroy(true)
           splat = new PIXI.Graphics()
-          splat.beginFill(0xfc4254);
+          splat.beginFill(0x50d955);
           splat.x = 0
           splat.y = 0
           let splatWidth = randBetween(2,heightAndWidthOfCords[0])*dx
