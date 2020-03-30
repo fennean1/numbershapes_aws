@@ -296,12 +296,16 @@ export const init = (app, setup) => {
         );
       break;
       case BALL_STATES.RANDOM:
-          console.log("CALLING RANDOM")
-          let heightAndWidthOfCords = randomCoordinates.getHeightAndWidthOfCords(cords)
-          let splatWidth = randBetween(2,heightAndWidthOfCords[0])*dx
-          let splatHeight = randBetween(2,heightAndWidthOfCords[1])*dx
-          let splatX = CENTER_STAGE_X-heightAndWidthOfCords[0]/2*dx - dx/2
-          let splatY = CENTER_STAGE_Y-heightAndWidthOfCords[1]/2*dx - dx/2
+              let heightAndWidthOfCords = randomCoordinates.getHeightAndWidthOfCords(cords)
+              let i = heightAndWidthOfCords[0]
+              let j = heightAndWidthOfCords[1]
+              let splatWidth = dx + randBetween(0,i+1)*dx
+              let splatHeight = dx + randBetween(0,j+1)*dx
+              let randX = randBetween(0,i-1)*dx
+              let randY= randBetween(0,j-1)*dx
+              let splatX = CENTER_STAGE_X-heightAndWidthOfCords[0]/2*dx - dx/2 + randX
+              let splatY = CENTER_STAGE_Y-heightAndWidthOfCords[1]/2*dx - dx/2 + randY
+
           window.createjs.Tween.get(splat).to({
             x: splatX,
             y: splatY,
@@ -557,16 +561,20 @@ export const init = (app, setup) => {
 
     function includeSplat(cords){
       let heightAndWidthOfCords = randomCoordinates.getHeightAndWidthOfCords(cords)
+      let i = heightAndWidthOfCords[0]
+      let j = heightAndWidthOfCords[1]
           app.stage.removeChild(splat)
           splat.destroy(true)
           splat = new PIXI.Graphics()
           splat.beginFill(0x50d955);
           splat.x = 0
           splat.y = 0
-          let splatWidth = randBetween(2,heightAndWidthOfCords[0])*dx
-          let splatHeight = randBetween(2,heightAndWidthOfCords[1])*dx
-          let splatX = CENTER_STAGE_X-heightAndWidthOfCords[0]/2*dx - dx/2
-          let splatY = CENTER_STAGE_Y-heightAndWidthOfCords[1]/2*dx - dx/2
+          let splatWidth = dx + randBetween(0,i+1)*dx
+          let splatHeight = dx + randBetween(0,j+1)*dx
+          let randX = randBetween(0,i-1)*dx
+          let randY= randBetween(0,j-1)*dx
+          let splatX = CENTER_STAGE_X-heightAndWidthOfCords[0]/2*dx - dx/2 + randX
+          let splatY = CENTER_STAGE_Y-heightAndWidthOfCords[1]/2*dx - dx/2 + randY
           splat.drawRect(0,0,splatWidth,splatHeight)
           window.createjs.Tween.get(splat).to({
             x: splatX,
