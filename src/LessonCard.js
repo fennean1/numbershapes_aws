@@ -74,35 +74,9 @@ export default function LessonCard(props) {
   const id = open ? "simple-popover" : undefined;
 
   return (
-    <Card className={classes.card}>
+    <Card  style = {{borderWidth: 40,borderColor: 0x000000}}className={classes.card}>
       <CardHeader
         title={props.data.title}
-        subheader={
-          props.data.duration + " " + "minutes"
-        }
-        action={
-          <div>
-            <Button onClick={handleClick}>{props.data.standardID}</Button>
-            <Popover
-              id={id}
-              open={open}
-              anchorEl={anchorEl}
-              onClose={handleClose}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "right"
-              }}
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left"
-              }}
-            >
-              <Typography className={classes.typography}>
-                {props.data.standardDescription}
-              </Typography>
-            </Popover>
-          </div>
-        }
       />
       <CardMedia
         className={classes.media}
@@ -112,25 +86,12 @@ export default function LessonCard(props) {
         <Typography className={classes.typography}>
           {props.data.activityDescription}
         </Typography>
-        {props.data.tags[0] != "" && <Chip label={props.data.tags[0]} />}
-        {props.data.tags[1] != "" && <Chip label={props.data.tags[1]} />}
-        {props.data.tags[2] != "" && <Chip label={props.data.tags[2]} />}
+        {props.data.shortText}
       </CardContent>
       <CardActions disableSpacing>
-        <Link to={""+props.data.tool}>
-          <Button>Open</Button>
+        <Link target = "_blank" to={""+props.data.tool}>
+          <Button>Start</Button>
         </Link>
-
-        <IconButton
-          className={clsx(classes.expand, {
-            [classes.expandOpen]: expanded
-          })}
-          onClick={handleExpandClick}
-          aria-expanded={expanded}
-          aria-label="Show more"
-        >
-          <ExpandMoreIcon />
-        </IconButton>
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>

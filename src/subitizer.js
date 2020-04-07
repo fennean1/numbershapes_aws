@@ -45,7 +45,7 @@ const BALL_STATES = {
   RANDOM: 2,
 }
 
-
+const OBJS = [RedEgg,BlueBall,Coin]
 const EGGS = [RedEgg,YellowEgg, PurpleEgg, GreenEgg, BlueEgg,OrangeEgg]
 
 
@@ -591,6 +591,44 @@ export const init = (app, setup) => {
     }
 
 
+    function init(){
+      destroy(balls)
+
+      let newBalls = initBallsFromType(setup.props.type)
+      
+      let randomCords = randomCoordinates.generateRandomCoordinates(newBalls.length)
+      let heightAndWidthOfCords = randomCoordinates.getHeightAndWidthOfCords(randomCords)
+    
+      for (let b of newBalls){
+          window.createjs.Tween.get(b).to({
+                x: -dx,
+                y: -dx
+              },
+              1000,
+              window.createjs.Ease.getPowInOut(4)
+            );
+            b.width = dx
+            b.height = dx
+            app.stage.addChild(b)
+      }
+
+      if (setup.props.type == SUBITIZER_TYPES.SPLAT){
+          includeSplat(randomCords)
+      }
+
+      for (let i = 0;i<randomCords.length;i++){
+          let cord = randomCords[i]
+          window.createjs.Tween.get(newBalls[i]).to({
+                x: CENTER_STAGE_X + (cord[0]-heightAndWidthOfCords[0]/2)*dx - dx/2,
+                y: CENTER_STAGE_Y  + (cord[1]-heightAndWidthOfCords[1]/2)*dx - dx/2
+              },
+              1000,
+              window.createjs.Ease.getPowInOut(4)
+            )
+      }
+      balls = newBalls
+    }
+
     function newShape(){
         this.interactive = false
         destroy(balls)
@@ -657,4 +695,5 @@ export const init = (app, setup) => {
           this.x = pointerPosition.x + this.deltaTouch[0];
         }
       }
+      init()
 }

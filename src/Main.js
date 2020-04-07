@@ -14,7 +14,9 @@ import * as Addition from "./activities/Addition.json";
 import * as Subtraction from "./activities/Subtraction.json";
 import * as Pivot from "./activities/Pivot.json";
 import LessonList from "./LessonList"
-
+import ChoiceGrid from "./ChoiceGrid"
+import RedirectPage from "./NumberShapesCrush"
+import NumberShapesCrush from "./NumberShapesCrush";
 
 const Main = () => (
   <Switch>
@@ -28,6 +30,8 @@ const Main = () => (
     <Route exact path="/appcard" component={()=><AppCard data = {Pivot}/>}/>
     <Route exact path="/fractions" component={FractionList} />
     <Route exact path="/lessons" component={LessonList} />
+    <Route exact path="/choicegrid" component={ChoiceGrid} />
+    <Route exact path="/numbershapescrush" component={NumberShapesCrush} />
   </Switch>
 );
 

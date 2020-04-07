@@ -12,7 +12,6 @@ import Main from "./Main";
 
 const App = () => (
   <div>
-    <NavBar />
     <Main />
   </div>
 );
