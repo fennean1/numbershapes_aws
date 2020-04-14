@@ -75,8 +75,7 @@ export default function LessonCard(props) {
 
   return (
     <Card  style = {{borderWidth: 40,borderColor: 0x000000}}className={classes.card}>
-      <CardHeader
-        title={props.data.title}
+      <CardHeader   title={props.data.title}
       />
       <CardMedia
         className={classes.media}

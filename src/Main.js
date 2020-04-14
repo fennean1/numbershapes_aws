@@ -20,7 +20,6 @@ import NumberShapesCrush from "./NumberShapesCrush";
 
 const Main = () => (
   <Switch>
-    <Route exact path="/" component={()=><Arena fullscreen = {true} type = {1} lesson = {Subitization} script = {subitizer.init}/>} />
     <Route exact path="/addition" component={()=><Arena fullscreen = {true} lesson = {Addition} type = {2} script = {subitizer.init}/>} />
     <Route exact path="/subtraction" component={()=><Arena fullscreen = {true} lesson = {Subtraction} type = {3} script = {subitizer.init}/>} />
     <Route exact path="/mixed" component={()=><Arena fullscreen = {true} lesson = {Pivot} type = {5} script = {subitizer.init}/>} />
@@ -31,6 +30,7 @@ const Main = () => (
     <Route exact path="/fractions" component={FractionList} />
     <Route exact path="/lessons" component={LessonList} />
     <Route exact path="/choicegrid" component={ChoiceGrid} />
+    <Route exact path="/" component={ChoiceGrid} />
     <Route exact path="/numbershapescrush" component={NumberShapesCrush} />
   </Switch>
 );

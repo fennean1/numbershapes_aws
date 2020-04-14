@@ -25,7 +25,7 @@ class ChoiceGrid extends Component {
       <div className="clouds">
         <div className="container">
           <div className="section no-pad-bot" id="index-banner">
-            <h1 className="header center">Choice Grid</h1>
+            <h1 className="header center">Activities</h1>
           </div>
           <div style={{ flexDirection: "row", display: "flex" }}>
             <div style={{ flexDirection: "column", display: "flex", flex: 1 }}>
