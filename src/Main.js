@@ -15,11 +15,13 @@ import * as Subtraction from "./activities/Subtraction.json";
 import * as Pivot from "./activities/Pivot.json";
 import LessonList from "./LessonList"
 import ChoiceGrid from "./ChoiceGrid"
+import QuickImages from "./QuickImages"
 import RedirectPage from "./NumberShapesCrush"
 import NumberShapesCrush from "./NumberShapesCrush";
 
 const Main = () => (
   <Switch>
+    <Route exact path="/goldrush" component={()=><Arena fullscreen = {true} lesson = {Addition} type = {1} script = {subitizer.init}/>} />
     <Route exact path="/addition" component={()=><Arena fullscreen = {true} lesson = {Addition} type = {2} script = {subitizer.init}/>} />
     <Route exact path="/subtraction" component={()=><Arena fullscreen = {true} lesson = {Subtraction} type = {3} script = {subitizer.init}/>} />
     <Route exact path="/mixed" component={()=><Arena fullscreen = {true} lesson = {Pivot} type = {5} script = {subitizer.init}/>} />
@@ -30,6 +32,7 @@ const Main = () => (
     <Route exact path="/fractions" component={FractionList} />
     <Route exact path="/lessons" component={LessonList} />
     <Route exact path="/choicegrid" component={ChoiceGrid} />
+    <Route exact path="/quickimages" component={QuickImages} />
     <Route exact path="/" component={ChoiceGrid} />
     <Route exact path="/numbershapescrush" component={NumberShapesCrush} />
   </Switch>
