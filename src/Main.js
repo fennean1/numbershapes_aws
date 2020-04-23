@@ -18,6 +18,8 @@ import ChoiceGrid from "./ChoiceGrid"
 import QuickImages from "./QuickImages"
 import RedirectPage from "./NumberShapesCrush"
 import NumberShapesCrush from "./NumberShapesCrush";
+import QuickImagePortal from "./QuickImagePortal";
+import LandingPage from "./LandingPage"
 
 const Main = () => (
   <Switch>
@@ -33,7 +35,8 @@ const Main = () => (
     <Route exact path="/lessons" component={LessonList} />
     <Route exact path="/choicegrid" component={ChoiceGrid} />
     <Route exact path="/quickimages" component={QuickImages} />
-    <Route exact path="/" component={ChoiceGrid} />
+    <Route exact path="/" component={LandingPage} />
+    <Route path="/quickimages/:activity" component={QuickImagePortal} />
     <Route exact path="/numbershapescrush" component={NumberShapesCrush} />
   </Switch>
 );

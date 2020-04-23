@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import logo from "./logo.svg";
 import "./App.css";
 //import * as Test from "./js/wallscript.js";
-import NavigationBar from "./NavBar";
-import { Button, Icon, Navbar, NavItem } from "react-materialize";
 import Modal from '@material-ui/core/Modal';
 import Paper from '@material-ui/core/Paper';
 import Drawer from '@material-ui/core/Drawer';

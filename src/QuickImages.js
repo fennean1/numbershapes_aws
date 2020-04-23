@@ -23,52 +23,37 @@ class QuickImages extends Component {
     const height = window.innerHeight;
 
     return (
-      <div className="clouds">
-        <div className="container">
-          <div className="section no-pad-bot" id="index-banner">
-            <h1 className="header center">Quick Images</h1>
-          </div>
+      <div>
+        <div style = {{display: "flex",flexDirection: 'column'}}>
           <div style={{ flexDirection: "row", display: "flex" }}>
-            <div style={{ flexDirection: "column", display: "flex", flex: 1 }}>
+            <div style={{ flexDirection: "column", display: "flex-start", flex: 1 }}>
               <div style={{ margin: 5, flex: 1 }}>
                 {" "}
-                <QuickImageCard data={ACTIVITIES.ACTIVITY_ONE} />
+                <QuickImageCard data={ACTIVITIES.QI_1000} />
               </div>
               <div style={{ margin: 5, flex: 1 }}>
                 {" "}
-                <QuickImageCard  data={ACTIVITIES.ACTIVITY_EIGHT} />
-              </div>
-              <div style={{ margin: 5, flex: 1 }}>
-                {" "}
-                <QuickImageCard data={ACTIVITIES.ACTIVITY_TWO} />
+                <QuickImageCard  data={ACTIVITIES.QI_10x9_1} />
               </div>
             </div>
-            <div style={{ flexDirection: "column", display: "flex", flex: 1 }}>
+            <div style={{ flexDirection: "column", justifyContent: "flex-start", display: "flex-start", flex: 1 }}>
             <div style={{ margin: 5, flex: 1 }}>
                 {" "}
-                <QuickImageCard  data={ACTIVITIES.ACTIVITY_SEVEN} />
+                <QuickImageCard  data={ACTIVITIES.QI_MULT_7x5x6} />
               </div>
               <div style={{ margin: 5, flex: 1 }}>
                 {" "}
-                <QuickImageCard  data={ACTIVITIES.ACTIVITY_THREE} />
-              </div>
-              <div style={{ margin: 5, flex: 1 }}>
-                {" "}
-                <QuickImageCard data={ACTIVITIES.ACTIVITY_FIVE} />
+                <QuickImageCard data={ACTIVITIES.QI_VA_1} />
               </div>
             </div>
-            <div style={{ flexDirection: "column", display: "flex", flex: 1 }}>
-            <div style={{ margin: 5, flex: 1 }}>
+            <div style={{ flexDirection: "column", justifyContent: "flex-start", display: "flex-start", flex: 1 }}>
+              <div style={{ margin: 5, flex: 1 }}>
                 {" "}
-                <QuickImageCard data={ACTIVITIES.ACTIVITY_FOUR} />
+                <QuickImageCard data={ACTIVITIES.QI_MULT_7x5M2} />
               </div>
               <div style={{ margin: 5, flex: 1 }}>
                 {" "}
-                <QuickImageCard  data={ACTIVITIES.ACTIVITY_NINE} />
-              </div>
-              <div style={{ margin: 5, flex: 1 }}>
-                {" "}
-                <QuickImageCard  data={ACTIVITIES.ACTIVITY_SIX} />
+                <QuickImageCard data={ACTIVITIES.QI_OOP} />
               </div>
             </div>
           </div>

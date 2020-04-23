@@ -33,7 +33,8 @@ const useStyles = makeStyles(theme => ({
   card: {},
   media: {
     height: 0,
-    paddingTop: "56.25%" // 16:9
+    paddingTop: "56.25%", // 16:9
+    margin: 10,
   },
   expand: {
     transform: "rotate(0deg)",
@@ -69,33 +70,43 @@ export default function QuickImageCard(props) {
   function handleClose() {
     setAnchorEl(null);
   }
+  
+  
+  function printList(items) {
+    if (items) { return items.map((q, i) => { return <p key={i}>{q}<br /><br /></p> }) }
+  }
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
   return (
-    <Card  style = {{borderWidth: 40,borderColor: 0x000000}}className={classes.card}>
-      <CardHeader   title={props.data.title}
-      />
-      <CardMedia
+    <Card  style = {{borderWidth: 40,borderColor: 0x000000}} className={classes.card}>
+           <CardHeader   title={props.data.title}/>
+      <CardMedia 
         className={classes.media}
         image={require("./assets/"+ props.data.previewImg)}
       />
       <CardContent>
-        <Typography className={classes.typography}>
-          {props.data.activityDescription}
-        </Typography>
-        {props.data.shortText}
+
       </CardContent>
       <CardActions disableSpacing>
-        <Link target = "_blank" to={""+props.data.tool}>
-          <Button>Start</Button>
+        <Link style={{ textDecoration: 'none' }}  to={"/quickimages/"+props.data.id}>
+          <Button variant = "outlined">Open</Button>
         </Link>
+        <IconButton
+          className={clsx(classes.expand, {
+            [classes.expandOpen]: expanded
+          })}
+          onClick={handleExpandClick}
+          aria-expanded={expanded}
+          aria-label="Show more">
+          <ExpandMoreIcon/>
+        </IconButton>
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-          <Typography variant="h6">Getting Started</Typography>
-          <Typography paragraph> {props.data.coreSkillDescription}</Typography>
+          <Typography variant="h6">Questions</Typography>
+        <Typography paragraph>{printList(props.data.questions)}</Typography>
         </CardContent>
       </Collapse>
     </Card>

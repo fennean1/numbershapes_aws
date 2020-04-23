@@ -63,6 +63,7 @@ export default function LessonCard(props) {
   function handleClose() {
     setAnchorEl(null);
   }
+  
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
@@ -77,20 +78,20 @@ export default function LessonCard(props) {
         action={
           <div>
             <Button onClick={handleClick}>{props.data.track}</Button>
-            <Popover
-              id={id}
-              open={open}
-              anchorEl={anchorEl}
-              onClose={handleClose}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "right"
-              }}
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left"
-              }}
-            >
+              <Popover
+                id={id}
+                open={open}
+                anchorEl={anchorEl}
+                onClose={handleClose}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "right"
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "left"
+                }}
+              >
               <Typography className={classes.typography}>
                 {props.data.track}
               </Typography>
