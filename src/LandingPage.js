@@ -47,7 +47,7 @@ export default function ConceptsCarousel(props) {
 
   return (
     <div className="clouds" style = {{display: "flex",flexDirection: 'column'}}>
-<Typography style = {{display: "flex", margin: "auto",padding: 50,fontFamily: "Chalkboard SE"}} variant="h1" component="h2">
+<Typography style = {{display: "flex", margin: "auto",padding: 20,fontFamily: "Chalkboard SE"}} variant="h2" component="h2">
 Welcome!
 </Typography>
    <div className = "container">

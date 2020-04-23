@@ -5,7 +5,7 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
+import Grid from "@material-ui/core/Grid";
 import MenuIcon from "@material-ui/icons/Menu";
 import LessonCard from "./LessonCard";
 import { Switch, Route, Link } from "react-router-dom";
@@ -24,7 +24,8 @@ class ChoiceGrid extends Component {
     return (
       <div >
         <div style = {{display: "flex",flexDirection: 'column'}} >
-          <div style={{ flexDirection: "row", display: "flex" }}>
+        <Grid  container>
+          <Grid xs = {12} sm = {4} >
             <div style={{ flexDirection: "column", display: "flex", flex: 1 }}>
               <div style={{ margin: 5, flex: 1 }}>
                 {" "}
@@ -39,6 +40,8 @@ class ChoiceGrid extends Component {
                 <LessonCard data={ACTIVITIES.ACTIVITY_TWO} />
               </div>
             </div>
+            </Grid>
+            <Grid xs = {12} sm = {4} >
             <div style={{ flexDirection: "column", display: "flex", flex: 1 }}>
             <div style={{ margin: 5, flex: 1 }}>
                 {" "}
@@ -53,6 +56,8 @@ class ChoiceGrid extends Component {
                 <LessonCard data={ACTIVITIES.ACTIVITY_FIVE} />
               </div>
             </div>
+            </Grid>
+            <Grid xs = {12} sm = {4} >
             <div style={{ flexDirection: "column", display: "flex", flex: 1 }}>
             <div style={{ margin: 5, flex: 1 }}>
                 {" "}
@@ -67,7 +72,8 @@ class ChoiceGrid extends Component {
                 <LessonCard data={ACTIVITIES.ACTIVITY_SIX} />
               </div>
             </div>
-          </div>
+            </Grid>
+          </Grid>
         </div>
       </div>
     );
