@@ -79,6 +79,7 @@ export const QI_1000= {
   id: "QI_1000",
   questions: ["What groups do you see?","What patterns do you see?","How many altogether?",],
   previewImg: "QI_1000.png",
+  tags: [1,3,4]
 };
 
 export const QI_10x9_1= {
@@ -86,6 +87,7 @@ export const QI_10x9_1= {
   id: "QI_10x9_1",
   questions: ["Which one has more?","How do you know without counting",],
   previewImg: "QI_10x9_1.png",
+  tags: [1,3,4]
 };
 
 export const QI_MULT_7x5M2 = {
@@ -93,6 +95,7 @@ export const QI_MULT_7x5M2 = {
   id: "QI_MULT_7x5M2",
   questions: ["What multiplication facts do you see?","Which one has more?","What's the easiest way to compare them?",],
   previewImg: "QI_MULT_7x5M2.png",
+  tags: [1,3,4]
 };
 
 export const QI_MULT_7x5x6 = {
@@ -100,6 +103,7 @@ export const QI_MULT_7x5x6 = {
   id: "QI_MULT_7x5x6",
   questions: ["Which one has more?","How could you know without counting?"],
   previewImg: "QI_MULT_7x5x6.png",
+  tags: [1,3,4]
 };
 
 export const QI_OOP = {
@@ -107,6 +111,7 @@ export const QI_OOP = {
   id: "QI_OOP",
   questions: ["Can you write the expression with symbols?","How are they the same?","How are they different?",],
   previewImg: "QI_OOP.png",
+  tags: [1,3,4]
 };
 
 export const QI_VA_1 = {
@@ -117,5 +122,6 @@ export const QI_VA_1 = {
     "Can you write the picture with numbers?",
     "Can you draw your own problem using pictures?"],
   previewImg: "QI_VA_1.png",
+  tags: [1,3,4]
 };
 

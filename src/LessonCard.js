@@ -30,7 +30,9 @@ import { promises } from "fs";
 let BLUE_OBJECTS = ASSETS.BLUE_OBJS() 
 
 const useStyles = makeStyles(theme => ({
-  card: {},
+  card: {
+    fontFamily: "Chalkboard SE"
+  },
   media: {
     height: 0,
     paddingTop: "56.25%" // 16:9
@@ -44,6 +46,9 @@ const useStyles = makeStyles(theme => ({
   },
   expandOpen: {
     transform: "rotate(180deg)"
+  },
+  title: {
+    fontFamily: "Chalkboard SE"
   },
   avatar: {
     backgroundColor: red[500]
@@ -74,8 +79,8 @@ export default function LessonCard(props) {
   const id = open ? "simple-popover" : undefined;
 
   return (
-    <Card  style = {{borderWidth: 40,borderColor: 0x000000}}className={classes.card}>
-      <CardHeader   title={props.data.title}
+    <Card  style = {{borderWidth: 40,borderColor: 0x000000}} className={classes.card}>
+      <CardHeader classes = {{title: classes.title}} title={props.data.title}
       />
       <CardMedia
         className={classes.media}

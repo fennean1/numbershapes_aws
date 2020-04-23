@@ -16,6 +16,7 @@ import FavoriteIcon from "@material-ui/icons/Favorite";
 import ShareIcon from "@material-ui/icons/Share";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
+import RecordVoiceOver from "@material-ui/icons/RecordVoiceOver";
 import AlarmIcon from "@material-ui/icons/Alarm";
 import FaceIcon from "@material-ui/icons/Face";
 import InfoIcon from "@material-ui/icons/Info";
@@ -42,6 +43,9 @@ const useStyles = makeStyles(theme => ({
     transition: theme.transitions.create("transform", {
       duration: theme.transitions.duration.shortest
     })
+  },
+  title: {
+    fontFamily: "Chalkboard SE"
   },
   expandOpen: {
     transform: "rotate(180deg)"
@@ -81,26 +85,23 @@ export default function QuickImageCard(props) {
 
   return (
     <Card  style = {{borderWidth: 40,borderColor: 0x000000}} className={classes.card}>
-           <CardHeader   title={props.data.title}/>
+           <CardHeader   classes = {{title: classes.title}} title={props.data.title}/>
       <CardMedia 
         className={classes.media}
         image={require("./assets/"+ props.data.previewImg)}
       />
       <CardContent>
-
       </CardContent>
       <CardActions disableSpacing>
         <Link style={{ textDecoration: 'none' }}  to={"/quickimages/"+props.data.id}>
           <Button variant = "outlined">Open</Button>
         </Link>
         <IconButton
-          className={clsx(classes.expand, {
-            [classes.expandOpen]: expanded
-          })}
+          className={clsx(classes.expand)}
           onClick={handleExpandClick}
           aria-expanded={expanded}
           aria-label="Show more">
-          <ExpandMoreIcon/>
+          <RecordVoiceOver/>
         </IconButton>
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>

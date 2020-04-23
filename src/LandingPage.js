@@ -4,6 +4,7 @@ import SwipeableViews from "react-swipeable-views";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
+import Typography from "@material-ui/core/Typography";
 import QuickImages from './QuickImages';
 import Activities from './ChoiceGrid';
 import ChoiceGrid from "./ChoiceGrid";
@@ -45,9 +46,10 @@ export default function ConceptsCarousel(props) {
   }
 
   return (
-    <div className="clouds" style = {{fontSize: 30,fontFamily: "Chalkboard SE",display: "flex",flexDirection: 'column'}}>
-
-    <h1 style = {{padding: 50,display: "flex",margin: "auto"}}>Welcome!</h1>
+    <div className="clouds" style = {{display: "flex",flexDirection: 'column'}}>
+<Typography style = {{display: "flex", margin: "auto",padding: 50,fontFamily: "Chalkboard SE"}} variant="h1" component="h2">
+Welcome!
+</Typography>
    <div className = "container">
       <Tabs
         value={value}
