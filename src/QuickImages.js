@@ -28,6 +28,10 @@ class QuickImages extends Component {
           <Grid  container>
           <Grid xs = {12} sm = {4} >
             <div style={{ flexDirection: "column", display: "flex-start", flex: 1 }}>
+            <div style={{ margin: 5, flex: 1 }}>
+                {" "}
+                <QuickImageCard data={ACTIVITIES.QI_7x7x7} />
+              </div>
               <div style={{ margin: 5, flex: 1 }}>
                 {" "}
                 <QuickImageCard data={ACTIVITIES.QI_1000} />

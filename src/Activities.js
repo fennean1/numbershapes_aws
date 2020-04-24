@@ -125,3 +125,12 @@ export const QI_VA_1 = {
   tags: [1,3,4]
 };
 
+export const QI_7x7x7 = {
+  title: "Powers",
+  id: "QI_7x7x7",
+  questions: ["How many different ways can you think to solve this using a calculator?"],
+  previewImg: "QI_7x7x7.png",
+  tags: [1,3,4]
+};
+
+
