@@ -62,9 +62,8 @@ Welcome!
         
 
       >
-        <Tab style = {{fontSize: 30,fontFamily: "Chalkboard SE"}} className = "white" label= "Activities" />
-        <Tab style = {{fontSize: 30,fontFamily: "Chalkboard SE"}} className = "white" label= "Quick Images" />
-
+        <Tab style = {{fontSize: "3.5vw",fontFamily: "Chalkboard SE"}} className = "white" label= "Activities" />
+        <Tab style = {{fontSize: "3.5vw",fontFamily: "Chalkboard SE"}} className = "white" label= "Quick Images" />
       </Tabs>
 
       <SwipeableViews
