@@ -54,7 +54,7 @@ class QuickImages extends Component {
               </div>
             </div>
             </Grid>
-            <Grid xs = {12} sm = {4} >
+            <Grid xs = {12} sm = {4}>
             <div style={{ flexDirection: "column", justifyContent: "flex-start", display: "flex-start", flex: 1 }}>
               <div style={{ margin: 5, flex: 1 }}>
                 {" "}

@@ -8,6 +8,7 @@ import { Switch, Route, Link } from "react-router-dom";
 import AppCard from "./LessonCard";
 import Arena from "./Arena"
 import * as subitizer from "./subitizer.js"
+import * as test from "./test.js"
 import * as dotsgame from "./dotsgame.js"
 import * as Subitization from "./activities/Subitization.json";
 import * as Addition from "./activities/Addition.json";
@@ -38,6 +39,7 @@ const Main = () => (
     <Route exact path="/" component={LandingPage} />
     <Route path="/quickimages/:activity" component={QuickImagePortal} />
     <Route exact path="/numbershapescrush" component={NumberShapesCrush} />
+    <Route exact path="/multiplication" component={()=><Arena fullscreen = {true} lesson = {Addition} type = {1} script = {test.init}/>} />
   </Switch>
 );
 

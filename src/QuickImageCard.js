@@ -94,7 +94,10 @@ export default function QuickImageCard(props) {
       </CardContent>
       <CardActions disableSpacing>
         <Link style={{ textDecoration: 'none' }}  to={"/quickimages/"+props.data.id}>
-          <Button variant = "outlined">Open</Button>
+          <Button variant = "outlined">Image</Button>
+        </Link>
+        <Link style={{ textDecoration: 'none',marginLeft: 4 }}  to={"/multiplication"}>
+          <Button variant = "outlined">Interactive</Button>
         </Link>
         <IconButton
           className={clsx(classes.expand)}

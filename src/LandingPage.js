@@ -1,10 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 import SwipeableViews from "react-swipeable-views";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
+import Button from "@material-ui/core/Button";
 import QuickImages from './QuickImages';
 import Activities from './ChoiceGrid';
 import ChoiceGrid from "./ChoiceGrid";
@@ -48,8 +50,13 @@ export default function ConceptsCarousel(props) {
   return (
     <div className="clouds" style = {{display: "flex",flexDirection: 'column'}}>
 <Typography style = {{flex: 1,fontSize: "5.5vw",display: "flex", margin: "auto",padding: 20,fontFamily: "Chalkboard SE"}} variant="h2" component="h2">
-Welcome!
+Welcome
 </Typography>
+<Link style={{ textDecoration: 'none',margin: "auto",display: "flex"}}  to={"/multiplication"}>
+          <Button color = "secondary" variant = "contained"><Typography style = {{flex: 1,fontSize: "1.5vw",display: "flex", margin: "auto",padding: 20,fontFamily: "Chalkboard SE"}} variant="h2" component="h2">
+New Interactive For Multiplication!
+</Typography></Button>
+        </Link>
    <div className = "container">
       <Tabs
         value={value}
