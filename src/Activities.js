@@ -73,6 +73,15 @@ export const ACTIVITY_NINE = {
     "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
 };
 
+export const NUMBER_CARDS = {
+  shortText: "Build Your Own Number Cards",
+  title: "Number Cards",
+  previewImg: "NumberCard.png",
+  tool: "NumberCardStock.pdf",
+  coreSkillDescription:
+    "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
+};
+
 
 export const QI_1000= {
   title: "Thinking In Tens",

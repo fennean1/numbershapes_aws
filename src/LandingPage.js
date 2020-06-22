@@ -49,10 +49,6 @@ export default function ConceptsCarousel(props) {
 
   return (
     <div className="clouds" style = {{display: "flex",flexDirection: 'column'}}>
-<Link target = "_blank" style={{ textDecoration: 'none',margin: "auto",display: "flex"}}  to={"/NumberCardStock.pdf"}>
-          <Button color = "secondary" variant = "contained">
-Number Card</Button>
-        </Link>
    <div className = "container">
       <Tabs
         value={value}

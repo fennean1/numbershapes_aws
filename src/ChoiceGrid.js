@@ -27,6 +27,10 @@ class ChoiceGrid extends Component {
         <Grid  container>
           <Grid xs = {12} sm = {4} >
             <div style={{ flexDirection: "column", display: "flex", flex: 1 }}>
+            <div style={{ margin: 5, flex: 1 }}>
+                {" "}
+                <LessonCard data={ACTIVITIES.NUMBER_CARDS} />
+              </div>
               <div style={{ margin: 5, flex: 1 }}>
                 {" "}
                 <LessonCard data={ACTIVITIES.ACTIVITY_ONE} />
