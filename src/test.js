@@ -79,14 +79,7 @@ export const init = (app, setup) => {
   let potOfGoldIndex = 0;
 
   app.stage.backGround = 0xffffff;
-  app.stage.alpha = 0;
-  window.createjs.Tween.get(app.stage).to(
-    {
-      alpha: 1,
-    },
-    1000,
-    window.createjs.Ease.getPowInOut(4)
-  );
+
 
   // Setup
   let backGround = new PIXI.Sprite.from(Clouds);

@@ -53,7 +53,7 @@ export default function ConceptsCarousel(props) {
 Welcome!
 </Typography>
 <Link style={{ textDecoration: 'none',margin: "auto",display: "flex"}} target = "_blank" to={"/NumberCardStock.pdf"}>
-          <Button color = "secondary" variant = "contained"><Typography style = {{flex: 1,fontSize: "1.5vw",display: "flex", margin: "auto",padding: 20,fontFamily: "Chalkboard SE"}} variant="h2" component="h2">
+          <Button color = "secondary" variant = "contained"><Typography style = {{height: 20,fontSize: "1.5vw",display: "flex", margin: "auto",padding: 20,fontFamily: "Chalkboard SE"}} variant="h2" component="h2">
 Number Cards
 </Typography></Button>
         </Link>

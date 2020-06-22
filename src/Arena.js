@@ -32,6 +32,7 @@ class Arena extends Component {
   componentWillMount() {
     Pixi.settings.RESOLUTION = 2
     this.app = new Pixi.Application(0,0,{backgroundColor: 0xffffff,antialias: false});
+    this.app.renderer.backgroundColor = 0xffffff
     this.app.renderer.resolution = 2
     this.app.renderer.autoDensity = true
   }
@@ -55,6 +56,16 @@ class Arena extends Component {
     this.app.renderer.resize(this.gameCanvas.clientWidth,this.gameCanvas.clientHeight)
 
     this.props.script(this.app, setup);
+
+    window.onresize = () => {
+      const setup = {
+        height: this.gameCanvas.clientHeight,
+        width: this.gameCanvas.clientWidth,
+        props: this.props
+      };
+      this.app.renderer.resize(this.gameCanvas.clientWidth,this.gameCanvas.clientHeight)
+      this.props.script(this.app, setup);
+    }
    
   }
 
