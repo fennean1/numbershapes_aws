@@ -49,11 +49,13 @@ export default function ConceptsCarousel(props) {
 
   return (
     <div className="clouds" style = {{display: "flex",flexDirection: 'column'}}>
-<Link style={{ flex:1, textDecoration: 'none',margin: "auto",display: "flex"}} target = "_blank" to={"/NumberCardStock.pdf"}>
-          <Button style = {{flex: 1,margin: 5}}color = "secondary" variant = "contained"><Typography style = {{flex: 1,fontSize: 20,display: "flex", margin: "auto",fontFamily: "Chalkboard SE"}} variant="h2" component="h2">
+<Typography style = {{flex: 1,fontSize: "5.5vw",display: "flex", margin: "auto",padding: 20,fontFamily: "Chalkboard SE"}} variant="h2" component="h2">
+<Link style={{ textDecoration: 'none',margin: "auto",display: "flex"}} target = "_blank" to={"/NumberCardStock.pdf"}>
+          <Button style = {{height: 20}}color = "secondary" variant = "contained"><Typography style = {{flex: 1,fontSize: "1.5vw",display: "flex", margin: "auto",padding: 20,fontFamily: "Chalkboard SE"}} variant="h2" component="h2">
 Number Cards
 </Typography></Button>
         </Link>
+</Typography>
    <div className = "container">
       <Tabs
         value={value}
