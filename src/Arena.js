@@ -30,10 +30,9 @@ class Arena extends Component {
   }
 
   componentWillMount() {
-    Pixi.settings.RESOLUTION = 3
-    this.app = new Pixi.Application(0,0,{backgroundColor: 0xffffff,antialias: true});
-    this.app.renderer.backgroundColor = 0xffffff;
-    this.app.renderer.resolution = 3
+    Pixi.settings.RESOLUTION = 2
+    this.app = new Pixi.Application(0,0,{backgroundColor: 0xffffff,antialias: false});
+    this.app.renderer.resolution = 2
     this.app.renderer.autoDensity = true
   }
 

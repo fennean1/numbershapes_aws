@@ -129,11 +129,13 @@ export const init = (app, setup) => {
   });
   //app.stage.addChild(moreAppsButton)
 
+  const BTN_MULTIPLIER = 4
+
   let addShapeButton = new PIXI.Sprite.from(Plus);
-  addShapeButton.x = dx / 4 + dx
-  addShapeButton.y = 0
-  addShapeButton.width = dx
-  addShapeButton.height = dx
+  addShapeButton.x = window.innerWidth - dx*(BTN_MULTIPLIER+1)
+  addShapeButton.y = dx
+  addShapeButton.width = dx*BTN_MULTIPLIER
+  addShapeButton.height = dx*BTN_MULTIPLIER
   addShapeButton.interactive = true;
   addShapeButton.on("pointerdown", () => {
     disableButtons()
@@ -143,10 +145,10 @@ export const init = (app, setup) => {
   app.stage.addChild(addShapeButton);
 
   let removeShapeButton = new PIXI.Sprite.from(Minus);
-  removeShapeButton.x = dx / 4
-  removeShapeButton.y = 0
-  removeShapeButton.width = dx
-  removeShapeButton.height = dx
+  removeShapeButton.x = window.innerWidth - dx*(BTN_MULTIPLIER+1)
+  removeShapeButton.y = dx + dx*(BTN_MULTIPLIER+1)
+  removeShapeButton.width = dx*BTN_MULTIPLIER
+  removeShapeButton.height = dx*BTN_MULTIPLIER
   removeShapeButton.interactive = true;
   removeShapeButton.on("pointerdown",  () => {
     disableButtons()
@@ -157,10 +159,10 @@ export const init = (app, setup) => {
 
 
   let addToEachButton = new PIXI.Sprite.from(Plus);
-  addToEachButton.x = dx / 4;
-  addToEachButton.y = 1.1*(2*dx)
-  addToEachButton.width = dx
-  addToEachButton.height = dx
+  addToEachButton.x = dx
+  addToEachButton.y = dx
+  addToEachButton.width = dx*BTN_MULTIPLIER
+  addToEachButton.height = dx*BTN_MULTIPLIER
   addToEachButton.interactive = true;
   addToEachButton.on("pointerdown",  () => {
     disableButtons()
@@ -170,10 +172,10 @@ export const init = (app, setup) => {
   app.stage.addChild(addToEachButton);
 
   let removeFromEachButton = new PIXI.Sprite.from(Minus);
-  removeFromEachButton.x = dx / 4;
-  removeFromEachButton.y = 1.1*(3*dx)
-  removeFromEachButton.width = dx
-  removeFromEachButton.height = dx
+  removeFromEachButton.x = dx
+  removeFromEachButton.y = dx*(BTN_MULTIPLIER+1)
+  removeFromEachButton.width = dx*BTN_MULTIPLIER
+  removeFromEachButton.height = dx*BTN_MULTIPLIER
   removeFromEachButton.interactive = true
   removeFromEachButton.on("pointerdown",  () => {
     console.log("pointerdown")
@@ -626,7 +628,8 @@ export const init = (app, setup) => {
   }
 
   function init() {
-  compositeShape = new CompositeNumberShape([5,5,5,5,5,5,5,5,5,5])
+  app.resizable = false
+  compositeShape = new CompositeNumberShape([5,5,5,5,5,5,5,5])
   app.stage.addChild(compositeShape)
   compositeShape.x = window.innerWidth/2 - compositeShape.width/2
   compositeShape.y = window.innerHeight/2 - compositeShape.height/2
