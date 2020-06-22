@@ -49,9 +49,6 @@ export default function ConceptsCarousel(props) {
 
   return (
     <div className="clouds" style = {{display: "flex",flexDirection: 'column'}}>
-<Typography style = {{flex: 1,fontSize: "5.5vw",display: "flex", margin: "auto",padding: 20,fontFamily: "Chalkboard SE"}} variant="h2" component="h2">
-Welcome!
-</Typography>
 <Link style={{ height: 20, textDecoration: 'none',margin: "auto",display: "flex"}} target = "_blank" to={"/NumberCardStock.pdf"}>
           <Button color = "secondary" variant = "contained"><Typography style = {{height: 20,fontSize: "1.5vw",display: "flex", margin: "auto",padding: 20,fontFamily: "Chalkboard SE"}} variant="h2" component="h2">
 Number Cards
