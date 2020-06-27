@@ -82,6 +82,15 @@ export const NUMBER_CARDS = {
     "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
 };
 
+export const MATCH_GAME = {
+  shortText: "Match Different Numbers",
+  title: "Match Game",
+  previewImg: "MatchGame.png",
+  tool: "matchgame",
+  coreSkillDescription:
+    "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
+};
+
 
 export const QI_1000= {
   title: "Thinking In Tens",
