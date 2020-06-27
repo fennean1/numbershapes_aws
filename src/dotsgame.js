@@ -300,7 +300,6 @@ export const init = (app, setup) => {
     
       for (let b of balls){
         let inthesplat = inSplat(b.x+b.width/2,b.y+b.height/2)
-        console.log("in splat",inthesplat)
         if (inthesplat){
           number += 1
         }
@@ -311,7 +310,6 @@ export const init = (app, setup) => {
     function moveSplat(ballState,cords){
       switch (ballState) {
       case BALL_STATES.FRAME:
-          console.log("CALLING FRAME")
           let frameWidth = balls.length > 5 ? 5*dx : balls.length*dx
           let kX = randBetween(0,5)
           let kY = randBetween(-1,2)
@@ -329,12 +327,12 @@ export const init = (app, setup) => {
         );
       break;
       case BALL_STATES.RANDOM:
-          console.log("cods",cords)
+
           let heightAndWidthOfCords = randomCoordinates.getHeightAndWidthOfCords(cords)
           console.log()
           let i = heightAndWidthOfCords[0]
           let j = heightAndWidthOfCords[1]
-          console.log("I,J",i,j)
+
           let splatWidth = dx + randBetween(0,i+1)*dx
           let splatHeight = dx + randBetween(0,j+1)*dx
           let randX = randBetween(0,i-1)*dx

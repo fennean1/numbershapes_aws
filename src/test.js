@@ -1,5 +1,6 @@
 // Problem que setup
 import * as PIXI from "pixi.js";
+import {TweenMax} from "gsap";
 import * as randomCoordinates from "./randomCoordinates.js";
 import { getWidthAndHeightOfNumberShape } from './numbershapes.js'
 import Clouds from "./assets/Clouds.png";

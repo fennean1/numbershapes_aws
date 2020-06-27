@@ -190,6 +190,7 @@ export const RED_OBJS = () => {return REDS.map((e,i) => {return {img: e,value:i+
 export const GREEN_OBJS = () => {return GREENS.map((e,i) => {return {img: e,value:i+1}})}
 export const PURPLE_OBJS = () => {return PURPLES.map((e,i) => {return {img: e,value:i+1}})}
 export const PINK_OBJS = () => {return PINKS.map((e,i) => {return {img: e,value:i+1}})}
+export const NUMERAL_OBJS = () => {return NUMBERS.map((e,i) => {return {img: e,value:i+1}})}
 
 
 
