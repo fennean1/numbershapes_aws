@@ -75,7 +75,6 @@ export default function QuickImageCard(props) {
     setAnchorEl(null);
   }
   
-  
   function printList(items) {
     if (items) { return items.map((q, i) => { return <p key={i}>{q}<br /><br /></p> }) }
   }
@@ -83,16 +82,9 @@ export default function QuickImageCard(props) {
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
-
-      /*
-      <Link style={{ textDecoration: 'none',marginLeft: 4 }}  to={"/multiplication"}>
-          <Button variant = "outlined">Interactive</Button>
-        </Link>
-        */
-
   return (
-    <Card  style = {{borderWidth: 40,borderColor: 0x000000}} className={classes.card}>
-           <CardHeader   classes = {{title: classes.title}} title={props.data.title}/>
+    <Card style = {{borderWidth: 40,borderColor: 0x000000}} className={classes.card}>
+           <CardHeader classes = {{title: classes.title}} title={props.data.title}/>
       <CardMedia 
         className={classes.media}
         image={require("./assets/"+ props.data.previewImg)}
@@ -100,16 +92,9 @@ export default function QuickImageCard(props) {
       <CardContent>
       </CardContent>
       <CardActions disableSpacing>
-        <Link style={{ textDecoration: 'none' }}  to={"/quickimages/"+props.data.id}>
-          <Button variant = "outlined">Open</Button>
+        <Link style={{ textDecoration: 'none',marginLeft: 4 }}  to={""+props.data.game}>
+          <Button variant = "outlined">Play Game</Button>
         </Link>
-        <IconButton
-          className={clsx(classes.expand)}
-          onClick={handleExpandClick}
-          aria-expanded={expanded}
-          aria-label="Show more">
-          <RecordVoiceOver/>
-        </IconButton>
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>

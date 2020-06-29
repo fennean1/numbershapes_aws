@@ -27,19 +27,11 @@ const GRASS_Y = setup.height - GRASS_HEIGHT
 
 let backGround;
 let grass;
+let playAgainButton;
 
 let cardPool
 
 let features;
-let BLUES;
-let REDS;
-let PINKS;
-let PURPLES;
-let GREENS;
-let ORANGES;
-let NUMERALS
-
-let ctr = 0
 
 let cards = []
 let balls = []
@@ -68,9 +60,17 @@ class CardPool {
   getCardBankKeysFromType(type){
     let keys = []
     switch(type){
-      case "LEVEL_ONE":
+      case "ADVANCED_MATCHING":
         for (let c = 0;c<6;c++){
           for (let n = 4;n<9;n++){
+            keys.push({color: c,number: n})
+          }
+        }
+        keys = [...keys,...keys]
+      break;
+      case "BASIC_MATCHING":
+        for (let c = 0;c<6;c++){
+          for (let n = 0;n<4;n++){
             keys.push({color: c,number: n})
           }
         }
@@ -146,8 +146,8 @@ function showScore() {
     let j = (i - i%10)/10
     let startX = setup.width/2 - width/2
     let startY = setup.height/2 - DY
-    //T.to(b,1,{x: startX+j*DX/4,y: i%10*DY/5,ease: "power2.inOut"},"-=0.95")
-    TweenLite.to(b,1,{x: startX+j*DX/4,y: startY + i%10*DY/5,ease: "power2.inOut"})
+    T.to(b,1,{x: startX+j*DX/4,y: startY + i%10*DY/5,ease: "power2.inOut"},"-=0.95")
+    //TweenLite.to(b,1,{x: startX+j*DX/4,y: startY + i%10*DY/5,ease: "power2.inOut"})
   })
 
 
@@ -261,29 +261,23 @@ function init(){
 
 
   // Load Features
-  if (setup.features){
-    features = setup.features
+  if (setup.props.features){
+    features = setup.props.features
   }
 
+    
+  cardBank = [BLUE,RED,PINK,PURPLE,GREEN,ORANGE,NUMERAL]
 
- let x = [{x: 0,y: 1},{x: 3,y: 1},{x: 2,y: 1},{x: -4,y: 1}] 
- let sorted = x.sort((a,b)=>{return (a.x - b.x)})
- console.log("ax",sorted)
- 
- cardBank = [BLUE,RED,PINK,PURPLE,GREEN,ORANGE,NUMERAL]
+  ballTextureCache = BALLS.map(b=>{return new PIXI.Texture.from(b)} )
+  
+  textureCache = cardBank.map(r=>{
+    let row = r.map(c=>{
+      return new PIXI.Texture.from(c.img)
+    })
+    return row
+  })
 
-
-ballTextureCache = BALLS.map(b=>{return new PIXI.Texture.from(b)} )
-
- textureCache = cardBank.map(r=>{
-   let row = r.map(c=>{
-     return new PIXI.Texture.from(c.img)
-   })
-   return row
- })
-
-cardPool = new CardPool('LEVEL_ONE')
-
+  cardPool = new CardPool(features.type)
 
   for (let i = 0;i<5;i++){
     let newRow = []

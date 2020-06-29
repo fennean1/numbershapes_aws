@@ -16,14 +16,15 @@ export const ACTIVITY_TWO = {
   coreSkillDescription:
     "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
 };
-export const ACTIVITY_THREE = {
+export const NUMBERSHAPES_CRUSH = {
   shortText: "Candy Crush Style Game for iOS",
   title: "NumberShapes Crush",
   previewImg: "NumberShapesCrush.png",
-  tool: "NumberShapesCrush",
+  game: "NumberShapesCrush",
   coreSkillDescription:
     "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
 };
+
 export const ACTIVITY_FOUR = {
   shortText: "Create Subtraction Sentences from Pictures.",
   title: "Clover Subtraction",
@@ -82,14 +83,24 @@ export const NUMBER_CARDS = {
     "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
 };
 
-export const MATCH_GAME = {
-  shortText: "Match Different Numbers",
-  title: "Match Game",
+export const MATCH_GAME_6_10 = {
+  shortText: "Matching Numbers from 6-10",
+  title: "Advanced Matching",
   previewImg: "MatchGame.png",
-  tool: "matchgame",
+  game: "matchgame",
   coreSkillDescription:
     "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
 };
+
+export const MATCH_GAME_1_4 = {
+  shortText: "Matching Numbers from 1-4",
+  title: "Basic Matching",
+  previewImg: "MatchGame.png",
+  game: "matchgame1-4",
+  coreSkillDescription:
+    "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
+};
+
 
 
 export const QI_1000= {

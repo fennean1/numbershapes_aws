@@ -10,6 +10,7 @@ import Button from "@material-ui/core/Button";
 import QuickImages from './QuickImages';
 import Activities from './ChoiceGrid';
 import ChoiceGrid from "./ChoiceGrid";
+import CardGames from "./CardGames";
 import QuickImageCard from "./QuickImageCard";
 
 
@@ -49,7 +50,7 @@ export default function ConceptsCarousel(props) {
 
   return (
     <div className="clouds" style = {{display: "flex",flexDirection: 'column'}}>
-   <div className = "container">
+   <div className = "container" style = {{marginTop: 50}}>
       <Tabs
         value={value}
         onChange={handleChange}
@@ -57,12 +58,10 @@ export default function ConceptsCarousel(props) {
         textColor="green"
         variant = "fullWidth"
         centered
-        style = {{color: "#000000"}}
-        
-
-      >
-        <Tab style = {{fontSize: "3.5vw",fontFamily: "Chalkboard SE"}} className = "white" label= "Activities" />
-        <Tab style = {{fontSize: "3.5vw",fontFamily: "Chalkboard SE"}} className = "white" label= "Quick Images" />
+        style = {{color: "#000000"}}>
+        <Tab style = {{fontSize: "2vw",fontFamily: "Chalkboard SE"}} className = "white" label= "Activities" />
+        <Tab style = {{fontSize: "2vw",fontFamily: "Chalkboard SE"}} className = "white" label= "Quick Images" />
+        <Tab style = {{fontSize: "2vw",fontFamily: "Chalkboard SE"}} className = "white" label= "Games" />
       </Tabs>
 
       <SwipeableViews
@@ -78,6 +77,11 @@ export default function ConceptsCarousel(props) {
         <TabContainer dir={theme.direction}>
           {value == 1 && (
             <QuickImages/>
+          )}
+        </TabContainer>
+        <TabContainer dir={theme.direction}>
+          {value == 2 && (
+            <CardGames/>
           )}
         </TabContainer>
       </SwipeableViews>

@@ -23,9 +23,6 @@ class Arena extends Component {
 
 
   componentWillUnmount(){
-    console.log("Destroying all")
-    //this.app.destroyAll()
-    console.log("this.app.destroy",this.app.destroy)
     this.app.destroy(true)
   }
 
@@ -52,65 +49,21 @@ class Arena extends Component {
 
     this.app.help = () => this.loadInstructions()
 
-
     this.app.renderer.resize(this.gameCanvas.clientWidth,this.gameCanvas.clientHeight)
 
     this.props.script(this.app, setup);
-
-    /*
-    window.onresize = () => {
-      const setup = {
-        height: this.gameCanvas.clientHeight,
-        width: this.gameCanvas.clientWidth,
-        props: this.props
-      };
-      this.app.renderer.resize(this.gameCanvas.clientWidth,this.gameCanvas.clientHeight)
-      this.props.script(this.app, setup);
-    }
-    */
    
   }
 
   // Need fullscreen prop
-
   render() {
-
-    /*
-    if (this.props.show == true) {
-      console.log("Animating alpha");
-      window.createjs.Tween.get(this.app.stage).to(
-        {
-          alpha: 1
-        },
-        500,
-        window.createjs.Ease.getPowInOut(4)
-      );
-    } else {
-      window.createjs.Tween.get(this.app.stage).to(
-        {
-          alpha: 0
-        },
-        500,
-        window.createjs.Ease.getPowInOut(4)
-      );
-    }
-    */
-
-   let worksheet = 'https://drive.google.com/file/d/0B8L_uJ1iQlGJTFYxNzF1SkxsMlk/view'
-   //this.props.lesson.worksheet
-
-
     let styleType = this.props.fullscreen ? { height: "100vh" } : null;
     return (
-
-
-      <div>
       <div style = {styleType}
         ref={me => {
           this.gameCanvas = me;
         }}
       />
-      </div>
     );
   }
 }

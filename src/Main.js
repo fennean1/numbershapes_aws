@@ -26,7 +26,8 @@ import LandingPage from "./LandingPage"
 const Main = () => (
   <Switch>
     <Route exact path="/goldrush" component={()=><Arena fullscreen = {true} lesson = {Addition} type = {1} script = {subitizer.init}/>} />
-    <Route exact path="/matchgame" component={()=><Arena fullscreen = {true} lesson = {Addition} type = {1} script = {matchgame.init}/>} />
+    <Route exact path="/matchgame" component={()=><Arena fullscreen = {true} features = {{type: "ADVANCED_MATCHING"}} type = {1} script = {matchgame.init}/>} />
+    <Route exact path="/matchgame1-4" component={()=><Arena fullscreen = {true} features = {{type: "BASIC_MATCHING"}} type = {1} script = {matchgame.init}/>} />
     <Route exact path="/addition" component={()=><Arena fullscreen = {true} lesson = {Addition} type = {2} script = {subitizer.init}/>} />
     <Route exact path="/subtraction" component={()=><Arena fullscreen = {true} lesson = {Subtraction} type = {3} script = {subitizer.init}/>} />
     <Route exact path="/mixed" component={()=><Arena fullscreen = {true} lesson = {Pivot} type = {5} script = {subitizer.init}/>} />
