@@ -16,6 +16,21 @@ export class Button extends PIXI.Sprite {
   }
 }
 
+export const getRandomInt = max => {
+  return Math.floor(Math.random() * Math.floor(max));
+};
+
+export const shuffle = arr => {
+  let n = arr.length - 1
+  for (let i = 0;i < arr.length;i++) {
+    let rand = getRandomInt(n)
+    let randomElement = arr.splice(rand,1)
+    arr.push(...randomElement)
+    n -= 1
+  }
+  return arr
+}
+
 
 export class Keypad extends PIXI.Container {
   constructor(height){

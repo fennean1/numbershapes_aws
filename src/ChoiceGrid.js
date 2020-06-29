@@ -29,7 +29,7 @@ class ChoiceGrid extends Component {
             <div style={{ flexDirection: "column", display: "flex", flex: 1 }}>
             <div style={{ margin: 5, flex: 1 }}>
                 {" "}
-                <LessonCard data={ACTIVITIES.NUMBER_CARDS} />
+                <LessonCard data={ACTIVITIES.MATCH_GAME} />
               </div>
               <div style={{ margin: 5, flex: 1 }}>
                 {" "}
@@ -49,7 +49,7 @@ class ChoiceGrid extends Component {
             <div style={{ flexDirection: "column", display: "flex", flex: 1 }}>
             <div style={{ margin: 5, flex: 1 }}>
                 {" "}
-                <LessonCard data={ACTIVITIES.MATCH_GAME} />
+                <LessonCard data={ACTIVITIES.NUMBER_CARDS} />
               </div>
             <div style={{ margin: 5, flex: 1 }}>
                 {" "}

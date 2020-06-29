@@ -51,12 +51,13 @@ class Arena extends Component {
     };
 
     this.app.help = () => this.loadInstructions()
-    this.app.goToApps = () => {window.location.href = 'https://apps.apple.com/au/app/numbershapes-whiteboard/id1052209727'}
+
 
     this.app.renderer.resize(this.gameCanvas.clientWidth,this.gameCanvas.clientHeight)
 
     this.props.script(this.app, setup);
 
+    /*
     window.onresize = () => {
       const setup = {
         height: this.gameCanvas.clientHeight,
@@ -66,6 +67,7 @@ class Arena extends Component {
       this.app.renderer.resize(this.gameCanvas.clientWidth,this.gameCanvas.clientHeight)
       this.props.script(this.app, setup);
     }
+    */
    
   }
 
@@ -103,18 +105,6 @@ class Arena extends Component {
 
 
       <div>
-      <Drawer anchor="bottom" open={this.state.open} onClose={this.handleClose.bind(this)}>
-      <div className ="card">
-        <div className ="card-content">
-          <span className ="card-title">Getting Started</span>
-          <p>{this.props.lesson.coreSkillDescription}</p>
-        </div>
-        <div className="card-action">
-          <a className = "black-text" href={worksheet}>Workbook</a>
-        </div>
-  </div>
-         
-      </Drawer>
       <div style = {styleType}
         ref={me => {
           this.gameCanvas = me;

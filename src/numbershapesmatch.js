@@ -1,8 +1,12 @@
 import * as PIXI from "pixi.js";
 import {TweenMax,TweenLite,TimelineLite} from "gsap";
 import Clouds from "./assets/Clouds.png";
-import {BLUE_OBJS,RED_OBJS,GREEN_OBJS,ORANGE_OBJS,PURPLE_OBJS,PINK_OBJS,NUMERAL_OBJS} from "./AssetManager.js"
-import { blue } from "@material-ui/core/colors";
+import Grass from "./assets/Grass.png";
+import BlankCard from "./assets/BlankCard.png";
+import {BLUE,RED,GREEN,ORANGE,PURPLE,PINK,NUMERAL, BALLS} from "./AssetManager.js"
+import {shuffle} from "./api.js"
+import { Tween } from "gsap/gsap-core";
+
 
 export const init = (app, setup) => {
 
@@ -15,11 +19,18 @@ const CARD_HEIGHT = CARD_WIDTH
 const DX = GRID_WIDTH/(5*(1+CARD_SPACING_PERCENTAGE)) 
 const DY = DX
 const GRID_X = setup.width/2 - GRID_WIDTH/2 + CARD_WIDTH/2
-const GRID_Y = setup.height/2 - GRID_HEIGHT/2 + CARD_HEIGHT/2
+const GRID_Y = setup.height/2 - GRID_HEIGHT/2
+const GRASS_HEIGHT = setup.height/10
+const GRASS_WIDTH = setup.width
+const GRASS_Y = setup.height - GRASS_HEIGHT
 
+
+let backGround;
+let grass;
+
+let cardPool
 
 let features;
-let backGround;
 let BLUES;
 let REDS;
 let PINKS;
@@ -31,9 +42,67 @@ let NUMERALS
 let ctr = 0
 
 let cards = []
+let balls = []
 let cardBank;
+let textureCache;
+let ballTextureCache;
 let A = null
 let B = null
+
+class CardPool {
+  constructor(type){
+    this.keys = this.getCardBankKeysFromType(type)
+    this.makeTextures()
+    this.numberofDefaults = 0
+    
+    this.defaultTexture = new PIXI.Texture.from(BlankCard)
+    this.defaultTexture.value = 0
+    this.defaultTexture.color = 0
+    this.defaultTexture.number = 0
+    this.defaultTexture.isDefault = true
+    this.defaultTexture.markedForUpdate = false
+    this.textures.push(this.defaultTexture)
+
+  }
+
+  getCardBankKeysFromType(type){
+    let keys = []
+    switch(type){
+      case "LEVEL_ONE":
+        for (let c = 0;c<6;c++){
+          for (let n = 4;n<9;n++){
+            keys.push({color: c,number: n})
+          }
+        }
+        keys = [...keys,...keys]
+      break;
+      default:
+    }
+    return keys
+  }
+
+  makeTextures(){
+    let shuffledKeys = shuffle(this.keys)
+    this.textures = shuffledKeys.map(k=>{
+      let card = cardBank[k.color][k.number]
+      let newTexture = textureCache[k.color][k.number]
+      newTexture.value = card.value
+      newTexture.color = k.color 
+      newTexture.number = k.number
+      return newTexture
+    })
+  }
+
+  get() {
+    if (this.textures.length != 0){
+      let t = this.textures.shift()
+      return t
+    } else {
+      this.numberofDefaults += 1
+      return this.defaultTexture
+    }
+  }
+}
 
 const synchCards = () => {
   A = null 
@@ -41,24 +110,23 @@ const synchCards = () => {
   cards.forEach((r,i)=>{
     r.forEach((c,j)=>{
       if (c.markedForUpdate){
-        console.log("marked for update")
-        let n = Math.round(Math.random()*5)
-        let m = Math.round(Math.random()*9)
-        let newAsset = cardBank[n][m]
-        let newTexture = new PIXI.Texture.from(newAsset.img)
-        c.texture.destroy()
-        c.texture = newTexture
+        let newAsset = cardPool.get()
         c.value = newAsset.value
-        c.n = n 
-        c.m = m
+        c.color = newAsset.color
+        c.number = newAsset.number
+        c.texture = newAsset
+        c.isDefault = newAsset.isDefault
       }
       c.width = DX 
       c.height = DY
       c.markedForUpdate = false
       c.rotation = 0
-      c.interactive = true
+      c.interactive = c.isDefault ? false : true
     })
   })
+  if (cardPool.numberofDefaults == 24){
+    cardsForEach(c=>{TweenLite.to(c,2,{alpha: 0,onComplete:  showScore})})
+  }
 }
 
 function cardsForEach(callback){
@@ -69,11 +137,27 @@ function cardsForEach(callback){
   })
 }
 
+function showScore() {
+  let T = new TimelineLite()
+  let tens = (balls.length - balls.length%10)/10
+  let width = (tens+1)*DX/4
+  
+  balls.forEach((b,i)=>{
+    let j = (i - i%10)/10
+    let startX = setup.width/2 - width/2
+    let startY = setup.height/2 - DY
+    //T.to(b,1,{x: startX+j*DX/4,y: i%10*DY/5,ease: "power2.inOut"},"-=0.95")
+    TweenLite.to(b,1,{x: startX+j*DX/4,y: startY + i%10*DY/5,ease: "power2.inOut"})
+  })
+
+
+  
+}
+
 function cardClicked(){
-  let numeralTexture = new PIXI.Texture.from(NUMERALS[this.value].img)
+  let numeralTexture = textureCache[6][this.value]
   this.texture = numeralTexture
-  // MEMORY LEAK!
-  this.markedForUpdate = true 
+  this.markedForUpdate = true
  if (A) {
    cardsForEach(e=>e.interactive = false)
     if (this.value == A.value && A != this) {
@@ -81,6 +165,10 @@ function cardClicked(){
     const onComplete = ()=>{
       A.y = -DY
       this.y = -DY
+      if (A.color != this.color){
+        dropBalls(this.number,this.color)
+        dropBalls(A.number,A.color)
+      }
       condenseCards(cards)
       animateCards()
       synchCards()
@@ -91,8 +179,8 @@ function cardClicked(){
       const onComplete = ()=>{
         A.markedForUpdate = false 
         this.markedForUpdate = false
-        A.texture = new PIXI.Texture.from(cardBank[A.n][A.m].img)
-        this.texture = new PIXI.Texture.from(cardBank[this.n][this.m].img)
+        A.texture = textureCache[A.color][A.number]
+        this.texture = textureCache[this.color][this.number]
         synchCards()
       }
       let t = new TimelineLite()
@@ -100,24 +188,41 @@ function cardClicked(){
       t.to([A,this],0.3,{rotation: 0,ease: "bounce"})
       t.to([A,this],0.1,{rotation: 0,ease: "bounce",onComplete: onComplete})
     } else {
-      cardsForEach(e=>e.interactive = true)
-      A.texture = new PIXI.Texture.from(cardBank[A.n][A.m].img)
-      A.markedForUpdate = false
-      A = null
+      cardsForEach(e=>{e.interactive = true})
+        A.texture = textureCache[A.color][A.number]
+        A.markedForUpdate = false
+        A = null
     }
   } else {
     A = this
   } 
 }
 
-const animateCards = () => {
+function dropBalls(number,color){
+  let ballTexture = ballTextureCache[color]
+  for (let i = 0;i<number+1;i++){
+    let newBall = new PIXI.Sprite.from(BlankCard)
+    newBall.texture = ballTexture
+    newBall.x = DX/2 + setup.width*Math.random() - DX
+    newBall.y = -DY/5
+    newBall.width = DX/5
+    newBall.height = DY/5
+    TweenLite.to(newBall,1+0.5*Math.random(),{y: grass.y - newBall.width,ease: 'bounce'})
+    app.stage.addChild(newBall)
+    balls.push(newBall)
+  }
+  balls.sort(function(a,b){
+    return (a.x - b.x)})
+}
 
+
+
+const animateCards = () => {
   cards.forEach((r,i)=>{
     r.forEach((c,j)=>{
       TweenLite.to(c,1,{x: GRID_X + i*DX*1.05,y: GRID_Y+j*DX*1.05,ease: "bounce"})
     })
   })
-
 }
 
 const condenseCards = cards => {
@@ -148,36 +253,51 @@ function init(){
   backGround.height = setup.height;
   app.stage.addChild(backGround);
 
+  grass = new PIXI.Sprite.from(Grass);
+  grass.width = GRASS_WIDTH
+  grass.height = GRASS_HEIGHT
+  grass.y = GRASS_Y
+  app.stage.addChild(grass);
+
 
   // Load Features
   if (setup.features){
     features = setup.features
   }
 
- BLUES = BLUE_OBJS()
- REDS = RED_OBJS()
- PINKS = PINK_OBJS()
- PURPLES = PURPLE_OBJS()
- GREENS = GREEN_OBJS()
- ORANGES = ORANGE_OBJS()
- NUMERALS = NUMERAL_OBJS()
+
+ let x = [{x: 0,y: 1},{x: 3,y: 1},{x: 2,y: 1},{x: -4,y: 1}] 
+ let sorted = x.sort((a,b)=>{return (a.x - b.x)})
+ console.log("ax",sorted)
  
- cardBank = [BLUES,REDS,PINKS,PURPLES,GREENS,ORANGES]
+ cardBank = [BLUE,RED,PINK,PURPLE,GREEN,ORANGE,NUMERAL]
+
+
+ballTextureCache = BALLS.map(b=>{return new PIXI.Texture.from(b)} )
+
+ textureCache = cardBank.map(r=>{
+   let row = r.map(c=>{
+     return new PIXI.Texture.from(c.img)
+   })
+   return row
+ })
+
+cardPool = new CardPool('LEVEL_ONE')
 
 
   for (let i = 0;i<5;i++){
     let newRow = []
     for (let j=0;j<5;j++){
-      let n = Math.round(Math.random()*5)
-      let m = Math.round(Math.random()*9)
-      let cardAsset = cardBank[n][m]
-      let newCard =  new PIXI.Sprite.from(cardAsset.img)
+      let cardAsset = cardPool.get()
+      let newCard =  new PIXI.Sprite()
+      newCard.texture = cardAsset
+      newCard.isDefault = cardAsset.isDefault
       newCard.anchor.set(0.5)
       newCard.value = cardAsset.value
       newCard.width = DX 
       newCard.height = DY
-      newCard.n = n 
-      newCard.m = m
+      newCard.color = cardAsset.color
+      newCard.number = cardAsset.number
       newCard.interactive = true
       newCard.on('pointerdown',cardClicked)
       app.stage.addChild(newCard)

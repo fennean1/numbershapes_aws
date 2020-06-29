@@ -88,7 +88,15 @@ import Nine_O from "./assets/Nine_O.png";
 import Ten_O from "./assets/Ten_O.png";
 
 
+import RedBall from "./assets/RedBall.png"
+import BlueBall from "./assets/BlueBall.png"
+import PinkBall from "./assets/PinkBall.png"
+import PurpleBall from "./assets/PurpleBall.png"
+import OrangeBall from "./assets/OrangeBall.png"
+import GreenBall from "./assets/GreenBall.png"
 
+
+export const BALLS = [BlueBall,RedBall,PinkBall,PurpleBall,GreenBall,OrangeBall]
 
 
 
@@ -193,5 +201,11 @@ export const PINK_OBJS = () => {return PINKS.map((e,i) => {return {img: e,value:
 export const NUMERAL_OBJS = () => {return NUMBERS.map((e,i) => {return {img: e,value:i+1}})}
 
 
-
+export const BLUE = BLUE_OBJS()
+export const RED = RED_OBJS()
+export const PINK = PINK_OBJS()
+export const PURPLE = PURPLE_OBJS()
+export const GREEN = GREEN_OBJS()
+export const ORANGE = ORANGE_OBJS()
+export const NUMERAL = NUMERAL_OBJS()
 
