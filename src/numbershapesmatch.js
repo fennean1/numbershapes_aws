@@ -4,7 +4,7 @@ import Clouds from "./assets/Clouds.png";
 import Mountains from "./assets/Mountains.png";
 import Grass from "./assets/Grass.png";
 import BlankCard from "./assets/BlankCard.png";
-import {BLUE,RED,GREEN,ORANGE,PURPLE,PINK,NUMERAL, BALLS} from "./AssetManager.js"
+import {BLUE,RED,GREEN,ORANGE,PURPLE,PINK,NUMERAL,BALLS,BUTTONS} from "./AssetManager.js"
 import {shuffle} from "./api.js"
 import { Tween } from "gsap/gsap-core";
 
@@ -56,7 +56,15 @@ class CardPool {
     this.defaultTexture.isDefault = true
     this.defaultTexture.markedForUpdate = false
     this.textures.push(this.defaultTexture)
+    
+    // Save these textures
+    this.textureCache = [...this.textures]
+  }
 
+  reload(){
+    this.textures = this.textureCache
+    this.numberofDefaults = 0
+    console.log('this.textures.length',this.textures.length)
   }
 
   getCardBankKeysFromType(type){
@@ -127,8 +135,27 @@ const synchCards = () => {
     })
   })
   if (cardPool.numberofDefaults == 24){
+    // MOOOOOOOOOOO - HERE"S WHERE THE ANIMATION IS
     cardsForEach(c=>{TweenLite.to(c,2,{alpha: 0,onComplete:  showScore})})
   }
+}
+
+function reloadGame(){
+  console.log("reloading game")
+  cardsForEach(c=> {
+    c.markedForUpdate = true
+    c.x = -DX 
+    c.y = -DY
+    c.alpha = 1
+})
+  balls.forEach(b=>{
+    app.stage.removeChild(b)
+    b.destroy()
+  })
+  cardPool.reload()
+  synchCards()
+  animateCards()
+  TweenLite.to(this,{duration: 1,y: -2*DY})
 }
 
 function cardsForEach(callback){
@@ -140,9 +167,14 @@ function cardsForEach(callback){
 }
 
 function showScore() {
-  let T = new TimelineLite({paused: true})
+  const onComplete = ()=> {
+    TweenLite.to(playAgainButton,0.5,{y: DY/2})
+  }
+  let T = new TimelineLite({paused: true,onComplete: onComplete})
   let tens = (balls.length - balls.length%10)/10
   let width = (tens+1)*DX/4
+
+  let tweens = []
   
   balls.forEach((b,i)=>{
     let j = (i - i%10)/10
@@ -150,17 +182,14 @@ function showScore() {
     let startY = setup.height/2 - DY
     let toX = startX+j*DX/4
     let toY = startY + i%10*DY/5
-    /*
-    if (i < 2){
-      T.to(b,0.5,{x: toX,y: toY,ease: "power2"})
+    if (i==0){
+      T.to(b,{duration: 1,x: toX,y: toY,ease: "power2.inOut"})
     } else {
-      T.to(b,1,{x: toX,y: toY,ease: "power2"},"-=0.95")
+      T.to(b,{duration: 1,x: toX,y: toY,ease: "power2.inOut"},"-=0.95")
     }
-    */
-    TweenLite.to(b,1,{x: startX+j*DX/4,y: startY + i%10*DY/5,ease: "power2.inOut"})
   })
 
-  setTimeout(()=>{T.play()})
+   T.play()
 
 }
 
@@ -269,7 +298,14 @@ function init(){
   grass.y = GRASS_Y
   //app.stage.addChild(grass);
 
-  playAgainButton = new PIXI.Sprite.from(Grass)
+  playAgainButton = new PIXI.Sprite.from(BUTTONS.PLAY_AGAIN)
+  playAgainButton.width = 4*DX
+  playAgainButton.height = DX
+  playAgainButton.x = setup.width/2 - playAgainButton.width/2
+  playAgainButton.y = - 2*DX
+  playAgainButton.interactive = true 
+  playAgainButton.on('pointerdown',reloadGame)
+  app.stage.addChild(playAgainButton)
 
 
   // Load Features

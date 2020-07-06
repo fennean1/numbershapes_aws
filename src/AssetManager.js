@@ -95,10 +95,14 @@ import PurpleBall from "./assets/PurpleBall.png"
 import OrangeBall from "./assets/OrangeBall.png"
 import GreenBall from "./assets/GreenBall.png"
 
+import PlayAgain from "./assets/PlayAgain.png"
+
 
 export const BALLS = [BlueBall,RedBall,PinkBall,PurpleBall,GreenBall,OrangeBall]
 
-
+export const BUTTONS = {
+  PLAY_AGAIN: PlayAgain
+}
 
 const BLUES = [
   One_B,
