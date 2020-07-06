@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
 import {TweenMax,TweenLite,TimelineLite} from "gsap";
 import Clouds from "./assets/Clouds.png";
+import Mountains from "./assets/Mountains.png";
 import Grass from "./assets/Grass.png";
 import BlankCard from "./assets/BlankCard.png";
 import {BLUE,RED,GREEN,ORANGE,PURPLE,PINK,NUMERAL, BALLS} from "./AssetManager.js"
@@ -29,7 +30,7 @@ let backGround;
 let grass;
 let playAgainButton;
 
-let cardPool
+let cardPool;
 
 let features;
 
@@ -40,6 +41,7 @@ let textureCache;
 let ballTextureCache;
 let A = null
 let B = null
+
 
 class CardPool {
   constructor(type){
@@ -138,7 +140,7 @@ function cardsForEach(callback){
 }
 
 function showScore() {
-  let T = new TimelineLite()
+  let T = new TimelineLite({paused: true})
   let tens = (balls.length - balls.length%10)/10
   let width = (tens+1)*DX/4
   
@@ -146,12 +148,20 @@ function showScore() {
     let j = (i - i%10)/10
     let startX = setup.width/2 - width/2
     let startY = setup.height/2 - DY
-    T.to(b,1,{x: startX+j*DX/4,y: startY + i%10*DY/5,ease: "power2.inOut"},"-=0.95")
-    //TweenLite.to(b,1,{x: startX+j*DX/4,y: startY + i%10*DY/5,ease: "power2.inOut"})
+    let toX = startX+j*DX/4
+    let toY = startY + i%10*DY/5
+    /*
+    if (i < 2){
+      T.to(b,0.5,{x: toX,y: toY,ease: "power2"})
+    } else {
+      T.to(b,1,{x: toX,y: toY,ease: "power2"},"-=0.95")
+    }
+    */
+    TweenLite.to(b,1,{x: startX+j*DX/4,y: startY + i%10*DY/5,ease: "power2.inOut"})
   })
 
+  setTimeout(()=>{T.play()})
 
-  
 }
 
 function cardClicked(){
@@ -248,7 +258,7 @@ const condenseCards = cards => {
 function init(){
 
   // Background
-  backGround = new PIXI.Sprite.from(Clouds);
+  backGround = new PIXI.Sprite.from(Mountains);
   backGround.width = setup.width;
   backGround.height = setup.height;
   app.stage.addChild(backGround);
@@ -257,7 +267,9 @@ function init(){
   grass.width = GRASS_WIDTH
   grass.height = GRASS_HEIGHT
   grass.y = GRASS_Y
-  app.stage.addChild(grass);
+  //app.stage.addChild(grass);
+
+  playAgainButton = new PIXI.Sprite.from(Grass)
 
 
   // Load Features
