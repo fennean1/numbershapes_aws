@@ -102,6 +102,16 @@ export const MATCH_GAME_1_4 = {
 };
 
 
+export const MATCH_GAME_3_7 = {
+  shortText: "Matching Numbers from 3-7",
+  title: "Intermediate Matching",
+  previewImg: "MatchGame.png",
+  game: "matchgame3-7",
+  coreSkillDescription:
+    "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
+};
+
+
 
 export const QI_1000= {
   title: "Thinking In Tens",

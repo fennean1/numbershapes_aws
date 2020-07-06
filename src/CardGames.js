@@ -29,6 +29,22 @@ class QuickImages extends Component {
           <Grid  container>
           <Grid xs = {12} sm = {4} >
             <div style={{ flexDirection: "column", display: "flex-start", flex: 1 }}>
+              <div style={{ margin: 5, flex: 1 }}>
+                {" "}
+                <CardGameCard data={ACTIVITIES.MATCH_GAME_1_4} />
+              </div>
+            </div>
+            </Grid>
+            <Grid xs = {12} sm = {4} >
+            <div style={{ flexDirection: "column", display: "flex-start", flex: 1 }}>
+              <div style={{ margin: 5, flex: 1 }}>
+                {" "}
+                <CardGameCard data={ACTIVITIES.MATCH_GAME_3_7} />
+              </div>
+            </div>
+            </Grid>
+          <Grid xs = {12} sm = {4} >
+            <div style={{ flexDirection: "column", display: "flex-start", flex: 1 }}>
             <div style={{ margin: 5, flex: 1 }}>
                 {" "}
                 <CardGameCard data={ACTIVITIES.MATCH_GAME_6_10} />
@@ -40,14 +56,6 @@ class QuickImages extends Component {
               <div style={{ margin: 5, flex: 1 }}>
                 {" "}
                 <CardGameCard data={ACTIVITIES.NUMBERSHAPES_CRUSH} />
-              </div>
-            </div>
-            </Grid>
-            <Grid xs = {12} sm = {4} >
-            <div style={{ flexDirection: "column", display: "flex-start", flex: 1 }}>
-              <div style={{ margin: 5, flex: 1 }}>
-                {" "}
-                <CardGameCard data={ACTIVITIES.MATCH_GAME_1_4} />
               </div>
             </div>
             </Grid>

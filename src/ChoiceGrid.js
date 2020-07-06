@@ -67,10 +67,6 @@ class ChoiceGrid extends Component {
                 {" "}
                 <LessonCard data={ACTIVITIES.ACTIVITY_NINE} />
               </div>
-              <div style={{ margin: 5, flex: 1 }}>
-                {" "}
-                <LessonCard data={ACTIVITIES.ACTIVITY_SIX} />
-              </div>
             </div>
             </Grid>
           </Grid>

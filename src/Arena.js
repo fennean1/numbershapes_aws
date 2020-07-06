@@ -38,6 +38,10 @@ class Arena extends Component {
     this.setState({open: true})
   }
 
+  goHome(){
+    window.location.assign("http://www.numbershapes.com")
+  }
+
   componentDidMount() {
     this.gameCanvas.appendChild(this.app.view);
 
@@ -48,6 +52,7 @@ class Arena extends Component {
     };
 
     this.app.help = () => this.loadInstructions()
+    this.app.goHome = ()=> this.goHome()
 
     this.app.renderer.resize(this.gameCanvas.clientWidth,this.gameCanvas.clientHeight)
 

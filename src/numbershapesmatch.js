@@ -29,6 +29,7 @@ const GRASS_Y = setup.height - GRASS_HEIGHT
 let backGround;
 let grass;
 let playAgainButton;
+let homeButton;
 
 let cardPool;
 
@@ -72,7 +73,15 @@ class CardPool {
     switch(type){
       case "ADVANCED_MATCHING":
         for (let c = 0;c<6;c++){
-          for (let n = 4;n<9;n++){
+          for (let n = 6;n<10;n++){
+            keys.push({color: c,number: n})
+          }
+        }
+        keys = [...keys,...keys]
+      break;
+      case "MEDIUM_MATCHING":
+        for (let c = 0;c<6;c++){
+          for (let n = 3;n<7;n++){
             keys.push({color: c,number: n})
           }
         }
@@ -80,7 +89,7 @@ class CardPool {
       break;
       case "BASIC_MATCHING":
         for (let c = 0;c<6;c++){
-          for (let n = 0;n<4;n++){
+          for (let n = 1;n<5;n++){
             keys.push({color: c,number: n})
           }
         }
@@ -308,6 +317,16 @@ function init(){
   playAgainButton.interactive = true 
   playAgainButton.on('pointerdown',reloadGame)
   app.stage.addChild(playAgainButton)
+
+
+  homeButton = new PIXI.Sprite.from(BUTTONS.HOME)
+  homeButton.width = DX
+  homeButton.height = DX
+  homeButton.x = DX/4
+  homeButton.y = DX/4
+  homeButton.interactive = true
+  homeButton.on('pointerdown',()=>app.goHome())
+  app.stage.addChild(homeButton)
 
 
   // Load Features
