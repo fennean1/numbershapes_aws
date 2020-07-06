@@ -55,14 +55,14 @@ class CardPool {
     this.defaultTexture.number = 0
     this.defaultTexture.isDefault = true
     this.defaultTexture.markedForUpdate = false
-    this.textures.push(this.defaultTexture)
+    //this.textures.push(this.defaultTexture)
     
     // Save these textures
     this.textureCache = [...this.textures]
   }
 
   reload(){
-    this.textures = this.textureCache
+    this.textures = [...this.textureCache]
     this.numberofDefaults = 0
     console.log('this.textures.length',this.textures.length)
   }
@@ -134,14 +134,13 @@ const synchCards = () => {
       c.interactive = c.isDefault ? false : true
     })
   })
-  if (cardPool.numberofDefaults == 24){
-    // MOOOOOOOOOOO - HERE"S WHERE THE ANIMATION IS
+  if (cardPool.numberofDefaults >= 25){
     cardsForEach(c=>{TweenLite.to(c,2,{alpha: 0,onComplete:  showScore})})
   }
 }
 
 function reloadGame(){
-  console.log("reloading game")
+  // Reset cards.
   cardsForEach(c=> {
     c.markedForUpdate = true
     c.x = -DX 
@@ -152,12 +151,15 @@ function reloadGame(){
     app.stage.removeChild(b)
     b.destroy()
   })
+  balls = []
   cardPool.reload()
   synchCards()
   animateCards()
   TweenLite.to(this,{duration: 1,y: -2*DY})
 }
 
+
+// Helper function for iterating through cards.
 function cardsForEach(callback){
   cards.forEach((r,i)=>{
     r.forEach((c,j)=>{
@@ -340,7 +342,12 @@ function init(){
       newCard.height = DY
       newCard.color = cardAsset.color
       newCard.number = cardAsset.number
-      newCard.interactive = true
+      if (newCard.isDefault){
+        newCard.interactive = false
+        cardPool.numberofDefaults += 1
+      } else {
+        newCard.interactive = true
+      }
       newCard.on('pointerdown',cardClicked)
       app.stage.addChild(newCard)
       newRow.push(newCard)
