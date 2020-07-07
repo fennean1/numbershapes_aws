@@ -31,6 +31,9 @@ const Main = () => (
     <Route exact path="/games/matchgame" component={()=><Arena fullscreen = {true} features = {{type: "ADVANCED_MATCHING"}} type = {1} script = {matchgame.init}/>} />
     <Route exact path="/games/matchgame3-7" component={()=><Arena fullscreen = {true} features = {{type: "MEDIUM_MATCHING"}} type = {1} script = {matchgame.init}/>} />
     <Route exact path="/games/matchgame1-4" component={()=><Arena fullscreen = {true} features = {{type: "BASIC_MATCHING"}} type = {1} script = {matchgame.init}/>} />
+    <Route exact path="/matchgame" component={()=><Arena fullscreen = {true} features = {{type: "ADVANCED_MATCHING"}} type = {1} script = {matchgame.init}/>} />
+    <Route exact path="/matchgame3-7" component={()=><Arena fullscreen = {true} features = {{type: "MEDIUM_MATCHING"}} type = {1} script = {matchgame.init}/>} />
+    <Route exact path="/matchgame1-4" component={()=><Arena fullscreen = {true} features = {{type: "BASIC_MATCHING"}} type = {1} script = {matchgame.init}/>} />
     <Route exact path="/mixed" component={()=><Arena fullscreen = {true} lesson = {Pivot} type = {5} script = {subitizer.init}/>} />
     <Route exact path="/dotsgame" component={()=><Arena fullscreen = {true} lesson = {Pivot} value = {8} script = {dotsgame.init}/>} />
     <Route exact path="/makingten" component={()=><Arena fullscreen = {true} lesson = {Addition} type = {4} script = {subitizer.init}/>} />
