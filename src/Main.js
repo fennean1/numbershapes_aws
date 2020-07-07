@@ -26,9 +26,9 @@ import LandingPage from "./LandingPage"
 const Main = () => (
   <Switch>
     <Route exact path="/goldrush" component={()=><Arena fullscreen = {true} lesson = {Addition} type = {1} script = {subitizer.init}/>} />
-    <Route exact path="/matchgame" component={()=><Arena fullscreen = {true} features = {{type: "ADVANCED_MATCHING"}} type = {1} script = {matchgame.init}/>} />
-    <Route exact path="/matchgame3-7" component={()=><Arena fullscreen = {true} features = {{type: "MEDIUM_MATCHING"}} type = {1} script = {matchgame.init}/>} />
-    <Route exact path="/matchgame1-4" component={()=><Arena fullscreen = {true} features = {{type: "BASIC_MATCHING"}} type = {1} script = {matchgame.init}/>} />
+    <Route exact path="/games/matchgame" component={()=><Arena fullscreen = {true} features = {{type: "ADVANCED_MATCHING"}} type = {1} script = {matchgame.init}/>} />
+    <Route exact path="/games/matchgame3-7" component={()=><Arena fullscreen = {true} features = {{type: "MEDIUM_MATCHING"}} type = {1} script = {matchgame.init}/>} />
+    <Route exact path="/games/matchgame1-4" component={()=><Arena fullscreen = {true} features = {{type: "BASIC_MATCHING"}} type = {1} script = {matchgame.init}/>} />
     <Route exact path="/addition" component={()=><Arena fullscreen = {true} lesson = {Addition} type = {2} script = {subitizer.init}/>} />
     <Route exact path="/subtraction" component={()=><Arena fullscreen = {true} lesson = {Subtraction} type = {3} script = {subitizer.init}/>} />
     <Route exact path="/mixed" component={()=><Arena fullscreen = {true} lesson = {Pivot} type = {5} script = {subitizer.init}/>} />
@@ -41,6 +41,7 @@ const Main = () => (
     <Route exact path="/choicegrid" component={ChoiceGrid} />
     <Route exact path="/quickimages" component={QuickImages} />
     <Route exact path="/" component={LandingPage} />
+    <Route path="/content" component={LandingPage} />
     <Route path="/quickimages/:activity" component={QuickImagePortal} />
     <Route exact path="/numbershapescrush" component={NumberShapesCrush} />
     <Route exact path="/multiplication" component={()=><Arena fullscreen = {true} lesson = {Addition} type = {1} script = {test.init}/>} />

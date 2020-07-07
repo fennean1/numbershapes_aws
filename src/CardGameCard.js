@@ -92,7 +92,7 @@ export default function QuickImageCard(props) {
       <CardContent>
       </CardContent>
       <CardActions disableSpacing>
-        <Link style={{ textDecoration: 'none',marginLeft: 4 }}  to={""+props.data.game}>
+        <Link style={{ textDecoration: 'none',marginLeft: 4 }}  to={"/games/"+props.data.game}>
           <Button variant = "outlined">Play Game</Button>
         </Link>
       </CardActions>

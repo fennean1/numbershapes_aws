@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter, Switch, Route, Link} from "react-router-dom";
+import {BrowserHistory} from 'react-router'
 import SwipeableViews from "react-swipeable-views";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Tabs from "@material-ui/core/Tabs";
@@ -38,50 +39,63 @@ export default function ConceptsCarousel(props) {
 
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
-
+  const {path} = props.match
 
   function handleChange(event, newValue) {
+    if (newValue == 0){
+      props.history.push(`${path}/games`)
+    } else if (newValue == 1){
+      props.history.push(`${path}/activities`)
+    } else if (newValue == 2){
+      props.history.push(`${path}/images`)
+    }
     setValue(newValue);
   }
+
 
   function handleChangeIndex(index) {
     setValue(index);
   }
 
+  const routes = () => <Switch>
+  <Route exact path={`${path}/activities`} component={ChoiceGrid} />
+  <Route exact path ={`${path}/games`} component={CardGames} />
+  <Route exact path ={`${path}/images`} component={QuickImages} />
+</Switch>
+
   return (
-    <div className="clouds" style = {{display: "flex",flexDirection: 'column'}}>
-   <div className = "container" style = {{marginTop: 50}}>
-      <Tabs
-        value={value}
-        onChange={handleChange}
-        indicatorColor="primary"
-        textColor="green"
-        variant = "fullWidth"
-        centered
-        style = {{color: "#000000"}}>
-        <Tab style = {{fontSize: "2vw",fontFamily: "Chalkboard SE"}} className = "white" label= "Activities" />
-        <Tab style = {{fontSize: "2vw",fontFamily: "Chalkboard SE"}} className = "white" label= "Quick Images" />
-        <Tab style = {{fontSize: "2vw",fontFamily: "Chalkboard SE"}} className = "white" label= "Games" />
-      </Tabs>
+  <div className="clouds" style = {{display: "flex",flexDirection: 'column'}}>
+    <div className = "container" style = {{marginTop: 50}}>
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          indicatorColor="primary"
+          variant = "fullWidth"
+          centered
+          style = {{color: "#000000"}}>
+          <Tab style = {{fontSize: "2vw",fontFamily: "Chalkboard SE"}} className = "white" label= "Games" />
+          <Tab style = {{fontSize: "2vw",fontFamily: "Chalkboard SE"}} className = "white" label= "Activities" />
+          <Tab style = {{fontSize: "2vw",fontFamily: "Chalkboard SE"}} className = "white" label= "Quick Images" />
+        </Tabs>
 
       <SwipeableViews
         axis={theme.direction === "rtl" ? "x-reverse" : "x"}
         index={value}
         onChangeIndex={handleChangeIndex}
       >
-        <TabContainer dir={theme.direction}>
+              <TabContainer dir={theme.direction}>
           {value == 0 && (
-            <ChoiceGrid/>
+             routes()
           )}
         </TabContainer>
         <TabContainer dir={theme.direction}>
           {value == 1 && (
-            <QuickImages/>
+               routes()
           )}
         </TabContainer>
         <TabContainer dir={theme.direction}>
           {value == 2 && (
-            <CardGames/>
+               routes()
           )}
         </TabContainer>
       </SwipeableViews>
@@ -89,3 +103,29 @@ export default function ConceptsCarousel(props) {
     </div>
   );
 }
+
+
+/*
+
+      <TabContainer dir={theme.direction}>
+          {value == 0 && (
+            <CardGames/>
+          )}
+        </TabContainer>
+        <TabContainer dir={theme.direction}>
+          {value == 1 && (
+            <ChoiceGrid/>
+          )}
+        </TabContainer>
+        <TabContainer dir={theme.direction}>
+          {value == 2 && (
+            <QuickImages/>
+          )}
+        </TabContainer>
+
+ <Switch>
+            <Route path={`${path}`} exact component={Profile} />
+            <Route path={`${path}/comments`} component={Comments} />
+            <Route path={`${path}/contact`} component={Contact} />
+          </Switch>
+*/

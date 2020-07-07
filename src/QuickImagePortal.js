@@ -44,7 +44,7 @@ export default function QuickImagePortal(props) {
 
   return (
     <div style={{ height: "100vh", flexDirection: "column" }}>
-    <Drawer style = {{fontSize: 30,fontFamily: "Chalkboard SE"}} anchor="left" open={tipsOpen} onClose={() => setTipsOpen(false)}>
+    <Drawer style = {{fontSize: "2vw",fontFamily: "Chalkboard SE"}} anchor="bottom" open={tipsOpen} onClose={() => setTipsOpen(false)}>
       <div className="flow-text" style={{ margin: 10, width: window.innerWidth / 3 }}>
         {printList(data.questions)}
       </div>
