@@ -43,11 +43,11 @@ export default function ConceptsCarousel(props) {
 
   function handleChange(event, newValue) {
     if (newValue == 0){
-      props.history.push(`${path}/games`)
+      props.history.push("/content/games")
     } else if (newValue == 1){
-      props.history.push(`${path}/activities`)
+      props.history.push("/content/activities")
     } else if (newValue == 2){
-      props.history.push(`${path}/images`)
+      props.history.push("/content/images")
     }
     setValue(newValue);
   }
@@ -58,9 +58,10 @@ export default function ConceptsCarousel(props) {
   }
 
   const routes = () => <Switch>
-  <Route exact path={`${path}/activities`} component={ChoiceGrid} />
-  <Route exact path ={`${path}/games`} component={CardGames} />
-  <Route exact path ={`${path}/images`} component={QuickImages} />
+  <Route exact path={"/"} component={CardGames} />
+  <Route exact path={"/content/activities"} component={ChoiceGrid} />
+  <Route exact path ={"/content/games"} component={CardGames} />
+  <Route exact path ={"/content/images"} component={QuickImages} />
 </Switch>
 
   return (
