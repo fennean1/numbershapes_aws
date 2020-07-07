@@ -4,7 +4,7 @@ export const ACTIVITY_ONE = {
   shortText: "Guess how many coins are in the pot of gold!",
   title: "Gold Rush",
   previewImg: "GoldRush.png",
-  tool: "/goldrush",
+  tool: "goldrush",
   coreSkillDescription:
     "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
 };

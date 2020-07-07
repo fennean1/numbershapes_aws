@@ -93,7 +93,7 @@ export default function LessonCard(props) {
         {props.data.shortText}
       </CardContent>
       <CardActions disableSpacing>
-        <Link style={{ textDecoration: 'none' }} target = "_blank" to={""+props.data.tool}>
+        <Link style={{ textDecoration: 'none' }}  to={"/"+props.data.tool}>
           <Button variant = "outlined" >Start</Button>
         </Link>
       </CardActions>
