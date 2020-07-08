@@ -411,7 +411,7 @@ export const init = (app, setup) => {
 
       for (let i = 0;i<=k;i++){
         let aBall = i == k ? new PIXI.Sprite.from(PotOfGold) : new PIXI.Sprite.from(Coin)
-        if (i==k){
+        if (i==k && setup.props.type == SUBITIZER_TYPES.NORMAL){
           aBall.on('pointerdown',giveFeedBack)
         }
         aBalls.push(aBall)
@@ -437,7 +437,7 @@ export const init = (app, setup) => {
         let rand = randBetween(0,EGGS.length)
         CounterImage = EGGS[rand]
         let aBall = new PIXI.Sprite.from(CounterImage)
-        if (i==k){
+        if (i==k && setup.props.type == SUBITIZER_TYPES.NORMAL){
           aBall.on('pointerdown',giveFeedBack)
         }
         aBalls.push(aBall)
