@@ -26,7 +26,7 @@ export default function Pdf(props) {
 
   return (
   <div style = {{display: "flex",flexDirection: 'column'}}>
-        <Document  file= "Addition.pdf">
+        <Document  file= "/Addition.pdf">
           <Page width = {window.innerWidth} pageNumber = {1} />
         </Document>
     </div>
