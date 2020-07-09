@@ -22,7 +22,7 @@ import RedirectPage from "./NumberShapesCrush"
 import NumberShapesCrush from "./NumberShapesCrush";
 import QuickImagePortal from "./QuickImagePortal";
 import LandingPage from "./LandingPage"
-import Pdf from "./pdf"
+
 
 const Main = () => (
   <Switch>
