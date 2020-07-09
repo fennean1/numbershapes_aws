@@ -14,6 +14,11 @@ import * as ACTIVITIES from "./Activities.js";
 import QuickImageCard from "./QuickImageCard";
 import CardGameCard from "./CardGameCard";
 
+
+import { Document, Page, pdfjs } from 'react-pdf';
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+
+
 class QuickImages extends Component {
   constructor(props) {
     super(props);
@@ -25,6 +30,7 @@ class QuickImages extends Component {
 
     return (
       <div>
+
         <div style = {{display: "flex",flexDirection: 'column'}}>
           <Grid  container>
           <Grid xs = {12} sm = {4} >
