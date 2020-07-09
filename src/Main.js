@@ -45,7 +45,6 @@ const Main = () => (
     <Route exact path="/choicegrid" component={ChoiceGrid} />
     <Route exact path="/quickimages" component={QuickImages} />
     <Route exact path="/" component={LandingPage} />
-    <Route exact path="/pdf" component={Pdf} />
     <Route path="/content" component={LandingPage} />
     <Route path="/quickimages/:activity" component={QuickImagePortal} />
     <Route exact path="/numbershapescrush" component={NumberShapesCrush} />
