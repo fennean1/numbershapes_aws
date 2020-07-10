@@ -47,7 +47,7 @@ const Main = () => (
     <Route exact path="/" component={LandingPage} />
     <Route path="/content" component={LandingPage} />
     <Route path="/quickimages/:activity" component={QuickImagePortal} />
-    <Route exact path="/numbershapescrush" component={NumberShapesCrush} />
+    <Route exact path="/games/numbershapescrush" component={NumberShapesCrush} />
     <Route exact path="/multiplication" component={()=><Arena fullscreen = {true} lesson = {Addition} type = {1} script = {test.init}/>} />
   </Switch>
 );

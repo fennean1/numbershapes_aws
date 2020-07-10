@@ -27,9 +27,13 @@ class ChoiceGrid extends Component {
         <Grid  container>
           <Grid xs = {12} sm = {4} >
             <div style={{ flexDirection: "column", display: "flex", flex: 1 }}>
+            <div style={{ margin: 5, flex: 1 }}>
+                {" "}
+                <LessonCard data={ACTIVITIES.NUMBERSHAPES_CARDS} />
+              </div>
               <div style={{ margin: 5, flex: 1 }}>
                 {" "}
-                <LessonCard data={ACTIVITIES.ACTIVITY_ONE} />
+                <LessonCard data={ACTIVITIES.ACTIVITY_EIGHT} />
               </div>
             </div>
             </Grid>
@@ -37,15 +41,23 @@ class ChoiceGrid extends Component {
             <div style={{ flexDirection: "column", display: "flex", flex: 1 }}>
             <div style={{ margin: 5, flex: 1 }}>
                 {" "}
-                <LessonCard data={ACTIVITIES.ACTIVITY_TWO} />
+                <LessonCard data={ACTIVITIES.NUMBER_CARDS} />
+              </div>
+            <div style={{ margin: 5, flex: 1 }}>
+                {" "}
+                <LessonCard data={ACTIVITIES.ACTIVITY_SEVEN} />
               </div>
             </div>
             </Grid>
             <Grid xs = {12} sm = {4} >
             <div style={{ flexDirection: "column", display: "flex", flex: 1 }}>
-            <div style={{ margin: 5, flex: 1 }}>
+              <div style={{ margin: 5, flex: 1 }}>
                 {" "}
-                <LessonCard data={ACTIVITIES.ACTIVITY_FOUR} />
+                <LessonCard data={ACTIVITIES.ACTIVITY_NINE} />
+              </div>
+              <div style={{ margin: 5, flex: 1 }}>
+                {" "}
+                <LessonCard data={ACTIVITIES.ACTIVITY_FIVE} />
               </div>
             </div>
             </Grid>

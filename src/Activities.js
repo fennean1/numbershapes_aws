@@ -20,7 +20,7 @@ export const NUMBERSHAPES_CRUSH = {
   shortText: "Candy Crush Style Game for iOS",
   title: "NumberShapes Crush",
   previewImg: "NumberShapesCrush.png",
-  game: "NumberShapesCrush",
+  game: "numbershapescrush",
   coreSkillDescription:
     "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
 };
@@ -74,6 +74,15 @@ export const ACTIVITY_NINE = {
     "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
 };
 
+export const NUMBERSHAPES_CARDS = {
+  shortText: "Card Based Matching Game",
+  title: "Card Based Matching Game",
+  previewImg: "NumberCardImage.png",
+  tool: "/NumberSheet.pdf",
+  coreSkillDescription:
+    "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
+};
+
 export const NUMBER_CARDS = {
   shortText: "Build Your Own Number Cards",
   title: "Number Cards",
@@ -85,8 +94,8 @@ export const NUMBER_CARDS = {
 
 export const MATCH_GAME_6_10 = {
   shortText: "Matching Numbers from 6-10",
-  title: "Advanced Matching",
-  previewImg: "MatchGame.png",
+  title: "Matching 7-10",
+  previewImg: "Matching7-10.png",
   game: "matchgame",
   coreSkillDescription:
     "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
@@ -94,8 +103,8 @@ export const MATCH_GAME_6_10 = {
 
 export const MATCH_GAME_1_4 = {
   shortText: "Matching Numbers from 1-4",
-  title: "Basic Matching",
-  previewImg: "MatchGame.png",
+  title: "Matching 2-5",
+  previewImg: "Matching2-5.png",
   game: "matchgame1-4",
   coreSkillDescription:
     "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
@@ -104,8 +113,8 @@ export const MATCH_GAME_1_4 = {
 
 export const MATCH_GAME_3_7 = {
   shortText: "Matching Numbers from 3-7",
-  title: "Intermediate Matching",
-  previewImg: "MatchGame.png",
+  title: "Matching 4 - 7",
+  previewImg: "Matching4-7.png",
   game: "matchgame3-7",
   coreSkillDescription:
     "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",

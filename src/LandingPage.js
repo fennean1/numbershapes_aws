@@ -12,6 +12,7 @@ import QuickImages from './QuickImages';
 import Activities from './ChoiceGrid';
 import ChoiceGrid from "./ChoiceGrid";
 import CardGames from "./CardGames";
+import Printables from "./Printables";
 import QuickImageCard from "./QuickImageCard";
 
 
@@ -48,7 +49,9 @@ export default function ConceptsCarousel(props) {
       props.history.push("/content/activities")
     } else if (newValue == 2){
       props.history.push("/content/images")
-    }
+    } else if (newValue == 3){
+    props.history.push("/content/printables")
+  }
     setValue(newValue);
   }
 
@@ -62,6 +65,7 @@ export default function ConceptsCarousel(props) {
   <Route exact path={"/content/activities"} component={ChoiceGrid} />
   <Route exact path ={"/content/games"} component={CardGames} />
   <Route exact path ={"/content/images"} component={QuickImages} />
+  <Route exact path ={"/content/printables"} component={Printables} />
 </Switch>
 
   return (
@@ -75,8 +79,9 @@ export default function ConceptsCarousel(props) {
           centered
           style = {{color: "#000000"}}>
           <Tab style = {{fontSize: "2vw",fontFamily: "Chalkboard SE"}} className = "white" label= "Games" />
-          <Tab style = {{fontSize: "2vw",fontFamily: "Chalkboard SE"}} className = "white" label= "Activities" />
+          <Tab style = {{fontSize: "2vw",fontFamily: "Chalkboard SE"}} className = "white" label= "Interactives" />
           <Tab style = {{fontSize: "2vw",fontFamily: "Chalkboard SE"}} className = "white" label= "Quick Images" />
+          <Tab style = {{fontSize: "2vw",fontFamily: "Chalkboard SE"}} className = "white" label= "Printables" />
         </Tabs>
 
       <SwipeableViews
@@ -96,6 +101,11 @@ export default function ConceptsCarousel(props) {
         </TabContainer>
         <TabContainer dir={theme.direction}>
           {value == 2 && (
+               routes()
+          )}
+        </TabContainer>
+        <TabContainer dir={theme.direction}>
+          {value == 3 && (
                routes()
           )}
         </TabContainer>
