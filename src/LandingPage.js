@@ -78,7 +78,7 @@ export default function ConceptsCarousel(props) {
           value={value}
           onChange={handleChange}
           indicatorColor="primary"
-          variant = "fullWidth"
+          variant = "scrollable"
           centered
           style = {{color: "#000000"}}>
           <Tab style = {{fontSize: "2vw",fontFamily: "Chalkboard SE"}} className = "white" label= "Games" />
