@@ -57,8 +57,19 @@ export default function ConceptsCarousel(props) {
     setValue(newValue);
   }
 
-
   function handleChangeIndex(index) {
+    let newValue = index
+    if (newValue == 0){
+      props.history.push("/content/games")
+    } else if (newValue == 1){
+      props.history.push("/content/apps")
+    } else if (newValue == 2){
+      props.history.push("/content/activities")
+    } else if (newValue == 3){
+    props.history.push("/content/printables")
+  } else if (newValue == 4){
+    props.history.push("/content/images")
+  }
     setValue(index);
   }
 
