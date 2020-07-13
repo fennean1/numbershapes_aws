@@ -1,5 +1,3 @@
-import QI_1000_IMG from "./assets/QI_1000.png"
-
 export const ACTIVITY_ONE = {
   shortText: "Guess how many coins are in the pot of gold!",
   title: "Gold Rush",
@@ -20,10 +18,29 @@ export const NUMBERSHAPES_CRUSH = {
   shortText: "Candy Crush Style Game for iOS",
   title: "NumberShapes Crush",
   previewImg: "NumberShapesCrush.png",
-  game: "numbershapescrush",
+  game: "crush",
   coreSkillDescription:
     "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
 };
+
+export const NUMBERSHAPES_WHITEBOARD = {
+  shortText: "Virtual Manipulative for iOS",
+  title: "NumberShapes Whiteboard",
+  previewImg: "Whiteboard.png",
+  game: "whiteboard",
+  coreSkillDescription:
+    "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
+};
+
+export const NUMBERSHAPES_MULTIPLICATION = {
+  shortText: "Multiplication Practice for iOS",
+  title: "Multiplication Fact Workout",
+  previewImg: "MultiplicationApp.png",
+  game: "multiplication",
+  coreSkillDescription:
+    "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
+};
+
 
 export const ACTIVITY_FOUR = {
   shortText: "Create Subtraction Sentences from Pictures.",
@@ -93,8 +110,8 @@ export const NUMBER_CARDS = {
 };
 
 export const MATCH_GAME_6_10 = {
-  shortText: "Matching Numbers from 6-10",
-  title: "Matching 7-10",
+  shortText: "Matching Numbers from 7-10",
+  title: "Matching 7 - 10",
   previewImg: "Matching7-10.png",
   game: "matchgame",
   coreSkillDescription:
@@ -103,7 +120,7 @@ export const MATCH_GAME_6_10 = {
 
 export const MATCH_GAME_1_4 = {
   shortText: "Matching Numbers from 1-4",
-  title: "Matching 2-5",
+  title: "Matching 2 - 5",
   previewImg: "Matching2-5.png",
   game: "matchgame1-4",
   coreSkillDescription:

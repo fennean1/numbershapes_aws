@@ -96,6 +96,16 @@ import OrangeBall from "./assets/OrangeBall.png"
 import GreenBall from "./assets/GreenBall.png"
 
 
+// Dots
+import RedDot from "./assets/RedCritterSphere.png"
+import BlueDot from "./assets/BlueCritterSphere.png"
+import PinkDot from "./assets/PinkCritterSphere.png"
+import PurpleDot from "./assets/PurpleCritterSphere.png"
+import OrangeDot from "./assets/OrangeCritterSphere.png"
+import GreenDot from "./assets/GreenCritterSphere.png"
+
+
+
 // Buttons
 import PlayAgain from "./assets/PlayAgain.png"
 import Home from "./assets/Home.png"
@@ -199,6 +209,15 @@ export const NUMBERS = [
   Nine,
   Ten
 ]
+
+export const DOTS = {
+  BLUE: BlueDot,
+  RED: RedDot,
+  GREEN: GreenDot, 
+  ORANGE: OrangeDot,
+  PINK: PinkDot,
+  PURPLE: PurpleDot
+}
 
 export const BLUE_OBJS = () => {return BLUES.map((e,i) => {return {img: e,value:i+1}})}
 export const ORANGE_OBJS = () => {return ORANGES.map((e,i) => {return {img: e,value:i+1}})}

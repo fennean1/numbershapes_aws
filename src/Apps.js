@@ -11,12 +11,12 @@ import LessonCard from "./LessonCard";
 import { Switch, Route, Link } from "react-router-dom";
 import * as ASSETS from "./AssetManager.js";
 import * as ACTIVITIES from "./Activities.js";
-import QuickImageCard from "./QuickImageCard";
+import AppCard from "./AppCard";
 import CardGameCard from "./CardGameCard";
 
 
 
-class QuickImages extends Component {
+export default class Apps extends Component {
   constructor(props) {
     super(props);
   }
@@ -30,11 +30,11 @@ class QuickImages extends Component {
 
         <div style = {{display: "flex",flexDirection: 'column'}}>
           <Grid  container>
-          <Grid xs = {12} sm = {4} >
+            <Grid xs = {12} sm = {4} >
             <div style={{ flexDirection: "column", display: "flex-start", flex: 1 }}>
               <div style={{ margin: 5, flex: 1 }}>
                 {" "}
-                <CardGameCard data={ACTIVITIES.MATCH_GAME_1_4} />
+                <AppCard data={ACTIVITIES.NUMBERSHAPES_CRUSH} />
               </div>
             </div>
             </Grid>
@@ -42,15 +42,15 @@ class QuickImages extends Component {
             <div style={{ flexDirection: "column", display: "flex-start", flex: 1 }}>
               <div style={{ margin: 5, flex: 1 }}>
                 {" "}
-                <CardGameCard data={ACTIVITIES.MATCH_GAME_3_7} />
+                <AppCard data={ACTIVITIES.NUMBERSHAPES_MULTIPLICATION} />
               </div>
             </div>
             </Grid>
-          <Grid xs = {12} sm = {4} >
+            <Grid xs = {12} sm = {4} >
             <div style={{ flexDirection: "column", display: "flex-start", flex: 1 }}>
-            <div style={{ margin: 5, flex: 1 }}>
+              <div style={{ margin: 5, flex: 1 }}>
                 {" "}
-                <CardGameCard data={ACTIVITIES.MATCH_GAME_6_10} />
+                <AppCard data={ACTIVITIES.NUMBERSHAPES_WHITEBOARD} />
               </div>
             </div>
             </Grid>
@@ -62,4 +62,3 @@ class QuickImages extends Component {
   }
 }
 
-export default QuickImages;

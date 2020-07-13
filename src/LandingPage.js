@@ -14,7 +14,7 @@ import ChoiceGrid from "./ChoiceGrid";
 import CardGames from "./CardGames";
 import Printables from "./Printables";
 import QuickImageCard from "./QuickImageCard";
-
+import Apps from "./Apps"
 
 function TabContainer({ children, dir }) {
   return (
@@ -51,6 +51,8 @@ export default function ConceptsCarousel(props) {
       props.history.push("/content/images")
     } else if (newValue == 3){
     props.history.push("/content/printables")
+  } else if (newValue == 4){
+    props.history.push("/content/apps")
   }
     setValue(newValue);
   }
@@ -66,6 +68,7 @@ export default function ConceptsCarousel(props) {
   <Route exact path ={"/content/games"} component={CardGames} />
   <Route exact path ={"/content/images"} component={QuickImages} />
   <Route exact path ={"/content/printables"} component={Printables} />
+  <Route exact path ={"/content/apps"} component={Apps} />
 </Switch>
 
   return (
@@ -80,8 +83,9 @@ export default function ConceptsCarousel(props) {
           style = {{color: "#000000"}}>
           <Tab style = {{fontSize: "2vw",fontFamily: "Chalkboard SE"}} className = "white" label= "Games" />
           <Tab style = {{fontSize: "2vw",fontFamily: "Chalkboard SE"}} className = "white" label= "Interactives" />
-          <Tab style = {{fontSize: "2vw",fontFamily: "Chalkboard SE"}} className = "white" label= "Quick Images" />
+          <Tab style = {{fontSize: "2vw",fontFamily: "Chalkboard SE"}} className = "white" label= "QI's" />
           <Tab style = {{fontSize: "2vw",fontFamily: "Chalkboard SE"}} className = "white" label= "Printables" />
+          <Tab style = {{fontSize: "2vw",fontFamily: "Chalkboard SE"}} className = "white" label= "Apps" />
         </Tabs>
 
       <SwipeableViews
@@ -106,6 +110,11 @@ export default function ConceptsCarousel(props) {
         </TabContainer>
         <TabContainer dir={theme.direction}>
           {value == 3 && (
+               routes()
+          )}
+        </TabContainer>
+        <TabContainer dir={theme.direction}>
+          {value == 4 && (
                routes()
           )}
         </TabContainer>

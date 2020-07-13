@@ -9,6 +9,7 @@ import AppCard from "./LessonCard";
 import Arena from "./Arena"
 import * as subitizer from "./subitizer.js"
 import * as matchgame from "./numbershapesmatch.js"
+import * as dotrateproblem from "./dotrateproblem.js"
 import * as test from "./test.js"
 import * as dotsgame from "./dotsgame.js"
 import * as Subitization from "./activities/Subitization.json";
@@ -18,8 +19,7 @@ import * as Pivot from "./activities/Pivot.json";
 import LessonList from "./LessonList"
 import ChoiceGrid from "./ChoiceGrid"
 import QuickImages from "./QuickImages"
-import RedirectPage from "./NumberShapesCrush"
-import NumberShapesCrush from "./NumberShapesCrush";
+import WebLink from "./WebLink";
 import QuickImagePortal from "./QuickImagePortal";
 import LandingPage from "./LandingPage"
 
@@ -27,6 +27,7 @@ import LandingPage from "./LandingPage"
 const Main = () => (
   <Switch>
     <Route exact path="/goldrush" component={()=><Arena fullscreen = {true} lesson = {Addition} type = {1} script = {subitizer.init}/>} />
+    <Route exact path="/dotrateproblem" component={()=><Arena fullscreen = {true} script = {dotrateproblem.init}/>} />
     <Route exact path="/addition" component={()=><Arena fullscreen = {true} lesson = {Addition} type = {2} script = {subitizer.init}/>} />
     <Route exact path="/subtraction" component={()=><Arena fullscreen = {true} lesson = {Subtraction} type = {3} script = {subitizer.init}/>} />
     <Route exact path="/games/matchgame" component={()=><Arena fullscreen = {true} features = {{type: "ADVANCED_MATCHING"}} type = {1} script = {matchgame.init}/>} />
@@ -47,7 +48,7 @@ const Main = () => (
     <Route exact path="/" component={LandingPage} />
     <Route path="/content" component={LandingPage} />
     <Route path="/quickimages/:activity" component={QuickImagePortal} />
-    <Route exact path="/games/numbershapescrush" component={NumberShapesCrush} />
+    <Route exact path="/myapps/:app" component={WebLink} />
     <Route exact path="/multiplication" component={()=><Arena fullscreen = {true} lesson = {Addition} type = {1} script = {test.init}/>} />
   </Switch>
 );
