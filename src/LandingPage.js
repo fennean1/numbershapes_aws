@@ -46,13 +46,13 @@ export default function ConceptsCarousel(props) {
     if (newValue == 0){
       props.history.push("/content/games")
     } else if (newValue == 1){
-      props.history.push("/content/activities")
+      props.history.push("/content/apps")
     } else if (newValue == 2){
-      props.history.push("/content/images")
+      props.history.push("/content/activities")
     } else if (newValue == 3){
     props.history.push("/content/printables")
   } else if (newValue == 4){
-    props.history.push("/content/apps")
+    props.history.push("/content/images")
   }
     setValue(newValue);
   }
@@ -82,10 +82,10 @@ export default function ConceptsCarousel(props) {
           centered
           style = {{color: "#000000"}}>
           <Tab style = {{fontSize: "2vw",fontFamily: "Chalkboard SE"}} className = "white" label= "Games" />
-          <Tab style = {{fontSize: "2vw",fontFamily: "Chalkboard SE"}} className = "white" label= "Interactives" />
-          <Tab style = {{fontSize: "2vw",fontFamily: "Chalkboard SE"}} className = "white" label= "QI's" />
-          <Tab style = {{fontSize: "2vw",fontFamily: "Chalkboard SE"}} className = "white" label= "Printables" />
           <Tab style = {{fontSize: "2vw",fontFamily: "Chalkboard SE"}} className = "white" label= "Apps" />
+          <Tab style = {{fontSize: "2vw",fontFamily: "Chalkboard SE"}} className = "white" label= "Activities" />
+          <Tab style = {{fontSize: "2vw",fontFamily: "Chalkboard SE"}} className = "white" label= "Printables" />
+          <Tab style = {{fontSize: "2vw",fontFamily: "Chalkboard SE"}} className = "white" label= "Images" />
         </Tabs>
 
       <SwipeableViews
