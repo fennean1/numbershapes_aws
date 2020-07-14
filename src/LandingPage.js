@@ -111,7 +111,7 @@ export default function ConceptsCarousel(props) {
           <Tab
             style={{ fontSize: "2vw", fontFamily: "Chalkboard SE" }}
             className="white"
-            label="Printables"
+            label="PDFs"
           />
           <Tab
             style={{ fontSize: "2vw", fontFamily: "Chalkboard SE" }}
