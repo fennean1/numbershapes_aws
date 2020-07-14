@@ -12,7 +12,7 @@ import { Switch, Route, Link } from "react-router-dom";
 import * as ASSETS from "./AssetManager.js";
 import * as ACTIVITIES from "./Activities.js";
 
-class ChoiceGrid extends Component {
+export default class Interactives extends Component {
   constructor(props) {
     super(props);
   }
@@ -56,4 +56,3 @@ class ChoiceGrid extends Component {
   }
 }
 
-export default ChoiceGrid;

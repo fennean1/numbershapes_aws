@@ -58,7 +58,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function LessonCard(props) {
+export default function InteractiveCard(props) {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -87,9 +87,6 @@ export default function LessonCard(props) {
         image={require("./assets/"+ props.data.previewImg)}
       />
       <CardContent>
-        <Typography className={classes.typography}>
-          {props.data.activityDescription}
-        </Typography>
         {props.data.shortText}
       </CardContent>
       <CardActions disableSpacing>

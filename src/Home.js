@@ -1,13 +1,4 @@
 import React, { Component } from "react";
-import ReactDOM from "react-dom";
-
-import logo from "./logo.svg";
-import $ from "jquery";
-import { Button, Icon, Card, CardTitle, Row, Col } from "react-materialize";
-import { Stage, Layer, Rect, Text, Star } from "react-konva";
-import Konva from "konva";
-import { Parallax } from "react-scroll-parallax";
-import materialize from "materialize-css";
 import { Editor, EditorState } from "draft-js";
 import { convertFromRaw, convertToRaw } from "draft-js";
 

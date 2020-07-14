@@ -27,7 +27,6 @@ class QuickImages extends Component {
 
     return (
       <div>
-
         <div style = {{display: "flex",flexDirection: 'column'}}>
           <Grid  container>
           <Grid xs = {12} sm = {4} >

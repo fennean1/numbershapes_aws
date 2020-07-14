@@ -15,7 +15,7 @@ export const ACTIVITY_TWO = {
     "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
 };
 export const NUMBERSHAPES_CRUSH = {
-  shortText: "Candy Crush Style Game for iOS",
+  shortText: "Candy Crush Style Game for iOS written with React Native & Javascript",
   title: "NumberShapes Crush",
   previewImg: "NumberShapesCrush.png",
   game: "crush",
@@ -24,7 +24,7 @@ export const NUMBERSHAPES_CRUSH = {
 };
 
 export const NUMBERSHAPES_WHITEBOARD = {
-  shortText: "Virtual Manipulative for iOS",
+  shortText: "Virtual Manipulative for iOS written in Swift with UIKit & Gesture Recognizers",
   title: "NumberShapes Whiteboard",
   previewImg: "Whiteboard.png",
   game: "whiteboard",
@@ -33,7 +33,7 @@ export const NUMBERSHAPES_WHITEBOARD = {
 };
 
 export const NUMBERSHAPES_MULTIPLICATION = {
-  shortText: "Multiplication Practice for iOS",
+  shortText: "Multiplication Practice for iOS written in Swift utilizing Core Data for progress tracking.",
   title: "Multiplication Fact Workout",
   previewImg: "MultiplicationApp.png",
   game: "multiplication",

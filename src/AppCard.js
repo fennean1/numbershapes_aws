@@ -18,7 +18,9 @@ import * as ASSETS from "./AssetManager.js"
 let BLUE_OBJECTS = ASSETS.BLUE_OBJS() 
 
 const useStyles = makeStyles(theme => ({
-  card: {},
+  card: {
+    fontFamily: "Chalkboard SE"
+  },
   media: {
     height: 0,
     paddingTop: "56.25%", // 16:9
@@ -77,6 +79,7 @@ export default function AppCard(props) {
         image={require("./assets/"+ props.data.previewImg)}
       />
       <CardContent>
+      {props.data.shortText}
       </CardContent>
       <CardActions disableSpacing>
         <Link style={{ textDecoration: 'none',marginLeft: 4 }}  to={"/myapps/"+props.data.game}>

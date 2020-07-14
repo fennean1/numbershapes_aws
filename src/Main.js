@@ -17,9 +17,9 @@ import * as Addition from "./activities/Addition.json";
 import * as Subtraction from "./activities/Subtraction.json";
 import * as Pivot from "./activities/Pivot.json";
 import LessonList from "./LessonList"
-import ChoiceGrid from "./ChoiceGrid"
+import Interactives from "./Interactives"
 import QuickImages from "./QuickImages"
-import WebLink from "./WebLink";
+import WebLink from "./WebLink"
 import QuickImagePortal from "./QuickImagePortal";
 import LandingPage from "./LandingPage"
 
@@ -43,7 +43,7 @@ const Main = () => (
     <Route exact path="/appcard" component={()=><AppCard data = {Pivot}/>}/>
     <Route exact path="/fractions" component={FractionList} />
     <Route exact path="/lessons" component={LessonList} />
-    <Route exact path="/choicegrid" component={ChoiceGrid} />
+    <Route exact path="/choicegrid" component={Interactives} />
     <Route exact path="/quickimages" component={QuickImages} />
     <Route exact path="/" component={LandingPage} />
     <Route path="/content" component={LandingPage} />
