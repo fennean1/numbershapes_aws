@@ -1,15 +1,8 @@
 import React, { Component } from "react";
 import logo from "./logo.svg";
 import "./App.css";
-import { Stage, Layer, Rect, Text, Star, Circle } from "react-konva";
-import InputRange from "react-input-range";
-import Measure from "react-measure";
 import "rc-slider/assets/index.css";
-import Konva from "konva";
-import { Switch, Route } from "react-router-dom";
-import * as randCords from "./randomCoordinates"
-
-
+import TextField from "@material-ui/core/TextField";
 
 const Slider = require("rc-slider");
 const createSliderWithTooltip = Slider.createSliderWithTooltip;
@@ -33,9 +26,15 @@ class FractionList extends Component {
   constructor(props) {
     super(props);
 
-    this.threeColors = [ "#4079ff" , "#ff4063","#787878"]
+    this.threeColors = ["#4079ff", "#ff4063", "#787878"];
 
     this.colorIndex = 0;
+
+    this.liStyle = {
+      background: "#4079ff",
+      color: "#ffffff",
+      margin: 1,
+    };
 
     this.state = {
       whole: 24,
@@ -48,21 +47,14 @@ class FractionList extends Component {
       arr.push(i);
     }
 
-    this.colorIndex +=1
-    let index = this.colorIndex%3
-    let color = this.threeColors[index]
-
-    const liStyle = { background: color,color: "#ffffff",marginTop: 5,marginLeft: 3 };
-
-    return arr.map(e => (
-      <div className="grow" style={liStyle}>
-        {this.state.whole / n}
+    return arr.map((e) => (
+      <div className="grow" style={this.liStyle}>
+        <p style = {{fontSize: 20, fontFamily: "Chalkboard SE"}}>{this.state.whole / n}</p>
       </div>
     ));
   }
 
   handleChange(event) {
-    this.colorIndex = 0
     this.setState({ whole: event.target.value });
   }
 
@@ -71,11 +63,10 @@ class FractionList extends Component {
       return null;
     } else {
       let arr = [];
-      let testArr = [1, 2, 3];
-      for (let i = 1; i <= n; i++) {
+      for (let i = 2; i <= n; i++) {
         arr.push(i);
       }
-      return arr.map(e => (
+      return arr.map((e) => (
         <div className="flexMe">
           {(this.state.whole / e) % 1 == 0 && this.returnNBlocks(e)}
         </div>
@@ -83,19 +74,17 @@ class FractionList extends Component {
     }
   }
   render() {
-
-    randCords.generateRandomCoordinates(10)
-
     return (
-      <div className = "clouds">
-        <div className="container">
-          <input
-            className="centerText"
-            type="text"
-            value={this.state.whole}
-            onChange={this.handleChange.bind(this)}
-          />
-          <div className="scroller">{this.renderRows(this.state.whole)}</div>
+      <div className="clouds">
+        <div className="container" style = {{padding: 20,flexDirection: 'column',display: 'flex',alignContent: 'center'}}>
+            <div className = "flexMe" style = {this.liStyle}>
+                <input
+                  style = {{fontFamily: "Chalkboard SE",fontSize: 20, textAlign: 'center',flex: 1,display: "flex",margin: 20}}
+                  value={this.state.whole}
+                  onChange={this.handleChange.bind(this)}
+              />
+            </div>
+          <div className="scroller" style = {{flex: 1}}>{this.renderRows(this.state.whole)}</div>
         </div>
       </div>
     );

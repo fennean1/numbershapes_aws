@@ -1,7 +1,7 @@
 // Problem que setup
 import * as PIXI from "pixi.js";
 
-import {NUMBERS} from "./AssetManager.js"
+import {NUMBERS} from "../AssetManager.js"
 
 
 export class Button extends PIXI.Sprite {

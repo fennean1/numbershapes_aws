@@ -1,11 +1,10 @@
 import * as PIXI from "pixi.js";
 import {TweenMax,TweenLite,TimelineLite} from "gsap";
-import Clouds from "./assets/Clouds.png";
-import Mountains from "./assets/Mountains.png";
-import IceBlock from "./assets/IceBlock.png";
-import Grass from "./assets/Grass.png";
-import BlankCard from "./assets/BlankCard.png";
-import {BLUE,RED,GREEN,ORANGE,PURPLE,PINK,NUMERAL,BALLS,BUTTONS,DOTS} from "./AssetManager.js"
+import Clouds from "../assets/Clouds.png";
+import Mountains from "../assets/Mountains.png";
+import Grass from "../assets/Grass.png";
+import BlankCard from "../assets/BlankCard.png";
+import {BLUE,RED,GREEN,ORANGE,PURPLE,PINK,NUMERAL,BALLS,BUTTONS} from "../AssetManager.js"
 import {shuffle} from "./api.js"
 import { Tween } from "gsap/gsap-core";
 
@@ -22,9 +21,9 @@ const DX = GRID_WIDTH/(5*(1+CARD_SPACING_PERCENTAGE))
 const DY = DX
 const GRID_X = setup.width/2 - GRID_WIDTH/2 + CARD_WIDTH/2
 const GRID_Y = setup.height/2 - GRID_HEIGHT/2
-const GRASS_HEIGHT = setup.height/5
-const GRASS_WIDTH = setup.width/2
-const GRASS_Y = setup.height - GRASS_HEIGHT*1.2
+const GRASS_HEIGHT = setup.height/10
+const GRASS_WIDTH = setup.width
+const GRASS_Y = setup.height - GRASS_HEIGHT
 
 
 let backGround;
@@ -36,7 +35,6 @@ let cardPool;
 
 let features;
 
-let dots = []
 let cards = []
 let balls = []
 let cardBank;
@@ -67,6 +65,7 @@ class CardPool {
   reload(){
     this.textures = [...this.textureCache]
     this.numberofDefaults = 0
+    console.log('this.textures.length',this.textures.length)
   }
 
   getCardBankKeysFromType(type){
@@ -295,23 +294,6 @@ const condenseCards = cards => {
 };
 
 
-function animateDots(){
-  let T = new TimelineLite({paused: true})
-
-  dots.forEach((d,i)=>{
-    let offset = i == 0 ? 0 : "-=0.8"
-    let t = new TimelineLite()
-    let l = dots.length
-    let dot = dots[l-i-1]
-    t.to(dot,{duration: 1,x: setup.width/2.2,ease: "linear"})
-    t.to(dot,{duration: 1,x: setup.width,ease: "linear"})
-    t.to(dot,{duration: 0.5,y: grass.y + grass.height-dot.height,ease: "bounce"},"-=1")
-    T.add(t,offset)
-  })
-
-  T.play()
-  
-}
 
 function init(){
 
@@ -321,11 +303,11 @@ function init(){
   backGround.height = setup.height;
   app.stage.addChild(backGround);
 
-  grass = new PIXI.Sprite.from(IceBlock);
+  grass = new PIXI.Sprite.from(Grass);
   grass.width = GRASS_WIDTH
   grass.height = GRASS_HEIGHT
   grass.y = GRASS_Y
-  app.stage.addChild(grass);
+  //app.stage.addChild(grass);
 
   playAgainButton = new PIXI.Sprite.from(BUTTONS.PLAY_AGAIN)
   playAgainButton.width = 4*DX
@@ -343,26 +325,16 @@ function init(){
   homeButton.x = DX/4
   homeButton.y = DX/4
   homeButton.interactive = true
-  homeButton.on('pointerdown',animateDots)
+  homeButton.on('pointerdown',()=>app.goHome())
   app.stage.addChild(homeButton)
 
-
-
-  for (let i = 0;i<5;i++){
-    let dot = new PIXI.Sprite.from(DOTS.BLUE)
-    app.stage.addChild(dot)
-    dot.height = DY/2 
-    dot.width = DX/2
-    dot.y = grass.y - dot.height
-    dot.x = dot.width*i
-    dots.push(dot)
-  }
 
   // Load Features
   if (setup.props.features){
     features = setup.props.features
   }
 
+    
   cardBank = [BLUE,RED,PINK,PURPLE,GREEN,ORANGE,NUMERAL]
 
   ballTextureCache = BALLS.map(b=>{return new PIXI.Texture.from(b)} )
@@ -373,6 +345,35 @@ function init(){
     })
     return row
   })
+
+  cardPool = new CardPool(features.type)
+
+  for (let i = 0;i<5;i++){
+    let newRow = []
+    for (let j=0;j<5;j++){
+      let cardAsset = cardPool.get()
+      let newCard =  new PIXI.Sprite()
+      newCard.texture = cardAsset
+      newCard.isDefault = cardAsset.isDefault
+      newCard.anchor.set(0.5)
+      newCard.value = cardAsset.value
+      newCard.width = DX 
+      newCard.height = DY
+      newCard.color = cardAsset.color
+      newCard.number = cardAsset.number
+      if (newCard.isDefault){
+        newCard.interactive = false
+        cardPool.numberofDefaults += 1
+      } else {
+        newCard.interactive = true
+      }
+      newCard.on('pointerdown',cardClicked)
+      app.stage.addChild(newCard)
+      newRow.push(newCard)
+    }
+    cards.push(newRow)
+  }
+  animateCards()
 }
 
   init();

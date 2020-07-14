@@ -15,11 +15,8 @@ export const normalizeCords = cords => {
 }
 
 export const getHeightAndWidthOfCords = cords => {
-  console.log("cords",cords)
   let xCords = cords.map((c)=>{return c[0]})
   let yCords = cords.map((c)=>{return c[1]})
-  console.log("xCords",xCords)
-  console.log("yCords",yCords)
   let xMax = Math.max(...xCords)
   let xMin = Math.min(...xCords)
   let yMax = Math.max(...yCords)

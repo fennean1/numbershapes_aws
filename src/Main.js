@@ -1,17 +1,14 @@
 import React, { Component } from "react";
-import logo from "./logo.svg";
 import "./App.css";
-import FractionList from "./FractionList";
-
 import { Switch, Route, Link } from "react-router-dom";
 
 import AppCard from "./LessonCard";
 import Arena from "./Arena"
-import * as subitizer from "./subitizer.js"
-import * as matchgame from "./numbershapesmatch.js"
-import * as dotrateproblem from "./dotrateproblem.js"
-import * as test from "./test.js"
-import * as dotsgame from "./dotsgame.js"
+import * as subitizer from "./js/subitizer.js"
+import * as matchgame from "./js/numbershapesmatch.js"
+import * as dotrateproblem from "./js/dotrateproblem.js"
+import * as test from "./js/test.js"
+import * as dotsgame from "./js/dotsgame.js"
 import * as Subitization from "./activities/Subitization.json";
 import * as Addition from "./activities/Addition.json";
 import * as Subtraction from "./activities/Subtraction.json";
@@ -22,6 +19,7 @@ import QuickImages from "./QuickImages"
 import WebLink from "./WebLink"
 import QuickImagePortal from "./QuickImagePortal";
 import LandingPage from "./LandingPage"
+import FractionList from "./FractionList";
 
 
 const Main = () => (
@@ -45,6 +43,7 @@ const Main = () => (
     <Route exact path="/lessons" component={LessonList} />
     <Route exact path="/choicegrid" component={Interactives} />
     <Route exact path="/quickimages" component={QuickImages} />
+    <Route exact path="/factoring" component={FractionList} />
     <Route exact path="/" component={LandingPage} />
     <Route path="/content" component={LandingPage} />
     <Route path="/quickimages/:activity" component={QuickImagePortal} />
