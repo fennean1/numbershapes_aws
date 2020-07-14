@@ -6,14 +6,7 @@ export const ACTIVITY_ONE = {
   coreSkillDescription:
     "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
 };
-export const ACTIVITY_TWO = {
-  shortText: "Guess how many eggs are hidden!",
-  title: "Egg Hunt",
-  previewImg: "EggHunt.png",
-  tool: "/hiddendots",
-  coreSkillDescription:
-    "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
-};
+
 export const NUMBERSHAPES_CRUSH = {
   shortText: "Candy Crush Style Game for iOS written with React Native & Javascript",
   title: "NumberShapes Crush",
@@ -49,6 +42,25 @@ export const ACTIVITY_FOUR = {
   coreSkillDescription:
     "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
 };
+
+export const FACTOR_WALL = {
+  shortText: "Instantly Visuallize the Factors of Any Number.",
+  title: "Factor Wall",
+  previewImg: "FactorWall.png",
+  tool: "/factorwall",
+  coreSkillDescription:
+    "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
+};
+
+export const ACTIVITY_TWO = {
+  shortText: "Subitize and Count to Find What's Missing",
+  title: "Subitizing",
+  previewImg: "EggHunt.png",
+  tool: "/hiddendots",
+  coreSkillDescription:
+    "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
+};
+
 export const ACTIVITY_FIVE = {
   shortText: "Decode Pictures of Multiplication Facts",
   title: "Multiplication Pictures",

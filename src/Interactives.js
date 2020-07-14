@@ -22,7 +22,7 @@ export default class Interactives extends Component {
             <div style={{ flexDirection: "column", display: "flex", flex: 1 }}>
               <div style={{ margin: 5, flex: 1 }}>
                 {" "}
-                <LessonCard data={ACTIVITIES.ACTIVITY_ONE} />
+                <LessonCard data={ACTIVITIES.FACTOR_WALL} />
               </div>
             </div>
             </Grid>

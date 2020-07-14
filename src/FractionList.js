@@ -3,6 +3,9 @@ import logo from "./logo.svg";
 import "./App.css";
 import "rc-slider/assets/index.css";
 import TextField from "@material-ui/core/TextField";
+import Fab from "@material-ui/core/Fab";
+import RecordVoiceOver from "@material-ui/icons/Home";
+
 
 const Slider = require("rc-slider");
 const createSliderWithTooltip = Slider.createSliderWithTooltip;
@@ -66,16 +69,26 @@ class FractionList extends Component {
       for (let i = 2; i <= n; i++) {
         arr.push(i);
       }
-      return arr.map((e) => (
-        <div className="flexMe">
-          {(this.state.whole / e) % 1 == 0 && this.returnNBlocks(e)}
+      return arr.map(e => {
+        let valid = this.state.whole / e % 1 == 0 &&  e < 51 
+        return <div className="flexMe">
+          {valid && this.returnNBlocks(e)}
         </div>
-      ));
+        }
+      );
     }
   }
   render() {
     return (
       <div className="clouds">
+        <Fab
+          style={{ position: "absolute", top: 20, left: 20 }}
+          onClick={() => this.props.history.push('/content/games')}
+          color="secondary"
+          aria-label="add"
+        >
+          <RecordVoiceOver />
+        </Fab>
         <div className="container" style = {{padding: 20,flexDirection: 'column',display: 'flex',alignContent: 'center'}}>
             <div className = "flexMe" style = {this.liStyle}>
                 <input

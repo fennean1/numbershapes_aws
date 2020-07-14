@@ -24,10 +24,10 @@ import FractionList from "./FractionList";
 
 const Main = () => (
   <Switch>
-    <Route exact path="/goldrush" component={()=><Arena fullscreen = {true} lesson = {Addition} type = {1} script = {subitizer.init}/>} />
+    <Route exact path="/goldrush" component={()=><Arena fullscreen = {true} type = {1} script = {subitizer.init}/>} />
     <Route exact path="/dotrateproblem" component={()=><Arena fullscreen = {true} script = {dotrateproblem.init}/>} />
-    <Route exact path="/addition" component={()=><Arena fullscreen = {true} lesson = {Addition} type = {2} script = {subitizer.init}/>} />
-    <Route exact path="/subtraction" component={()=><Arena fullscreen = {true} lesson = {Subtraction} type = {3} script = {subitizer.init}/>} />
+    <Route exact path="/addition" component={()=><Arena fullscreen = {true} type = {2} script = {subitizer.init}/>} />
+    <Route exact path="/subtraction" component={()=><Arena fullscreen = {true} type = {3} script = {subitizer.init}/>} />
     <Route exact path="/games/matchgame" component={()=><Arena fullscreen = {true} features = {{type: "ADVANCED_MATCHING"}} type = {1} script = {matchgame.init}/>} />
     <Route exact path="/games/matchgame3-7" component={()=><Arena fullscreen = {true} features = {{type: "MEDIUM_MATCHING"}} type = {1} script = {matchgame.init}/>} />
     <Route exact path="/games/matchgame1-4" component={()=><Arena fullscreen = {true} features = {{type: "BASIC_MATCHING"}} type = {1} script = {matchgame.init}/>} />
@@ -39,7 +39,7 @@ const Main = () => (
     <Route exact path="/makingten" component={()=><Arena fullscreen = {true} lesson = {Addition} type = {4} script = {subitizer.init}/>} />
     <Route exact path="/hiddendots" component={()=><Arena fullscreen = {true} lesson = {Subitization} type = {6} script = {subitizer.init}/>} />
     <Route exact path="/appcard" component={()=><AppCard data = {Pivot}/>}/>
-    <Route exact path="/fractions" component={FractionList} />
+    <Route exact path="/factorwall" component={FractionList} />
     <Route exact path="/lessons" component={LessonList} />
     <Route exact path="/choicegrid" component={Interactives} />
     <Route exact path="/quickimages" component={QuickImages} />
