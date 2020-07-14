@@ -56,7 +56,6 @@ export default class Apps extends Component {
             </Grid>
           </Grid>
         </div>
-        
       </div>
     );
   }

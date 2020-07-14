@@ -41,7 +41,6 @@ export const NUMBERSHAPES_MULTIPLICATION = {
     "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
 };
 
-
 export const ACTIVITY_FOUR = {
   shortText: "Create Subtraction Sentences from Pictures.",
   title: "Subtraction",
@@ -110,7 +109,7 @@ export const NUMBER_CARDS = {
 };
 
 export const MATCH_GAME_6_10 = {
-  shortText: "Matching Numbers from 7-10",
+  shortText: "Card Based Match Game in HTML5 with Pixi.js",
   title: "Matching 7 - 10",
   previewImg: "Matching7-10.png",
   game: "matchgame",
@@ -119,7 +118,7 @@ export const MATCH_GAME_6_10 = {
 };
 
 export const MATCH_GAME_1_4 = {
-  shortText: "Matching Numbers from 1-4",
+  shortText: "Card Based Match Game in HTML5 with Pixi.js",
   title: "Matching 2 - 5",
   previewImg: "Matching2-5.png",
   game: "matchgame1-4",
@@ -127,17 +126,14 @@ export const MATCH_GAME_1_4 = {
     "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
 };
 
-
 export const MATCH_GAME_3_7 = {
-  shortText: "Matching Numbers from 3-7",
+  shortText: "Card Based Match Game in HTML5 with Pixi.js",
   title: "Matching 4 - 7",
   previewImg: "Matching4-7.png",
   game: "matchgame3-7",
   coreSkillDescription:
     "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
 };
-
-
 
 export const QI_1000= {
   title: "Thinking In Tens",
