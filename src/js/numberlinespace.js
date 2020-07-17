@@ -35,6 +35,7 @@ export const init = (app, setup) => {
   // Layout Parameters
   let WINDOW_WIDTH = setup.width;
   let WINDOW_HEIGHT = setup.height;
+  let DRAGGER_WIDTH = WINDOW_WIDTH/15
   let H_W_RATIO = setup.height / setup.width;
   let LANDSCAPE = H_W_RATIO < 3 / 4;
   let ARENA_WIDTH = LANDSCAPE ? (4 / 3) * setup.height : setup.width;
@@ -43,7 +44,7 @@ export const init = (app, setup) => {
   let NUMBER_LINE_RANGE = 100;
   let NUMBER_LINE_X = WINDOW_WIDTH / 2 - NUMBER_LINE_WIDTH / 2;
   let NUMBER_LINE_Y = (3 / 4) * WINDOW_HEIGHT;
-  let DRAGGER_Y = NUMBER_LINE_Y + WINDOW_HEIGHT/8
+  let DRAGGER_Y = NUMBER_LINE_Y + DRAGGER_WIDTH/1.5
 
   let focalPoint = { x: 0, y: 0 };
   let anchorAngle = 0;
@@ -110,8 +111,8 @@ export const init = (app, setup) => {
   dragger.anchor.set(0.5);
   app.stage.addChild(dragger);
   dragger.ds = 200000;
-  dragger.width = WINDOW_HEIGHT/10;
-  dragger.height = WINDOW_HEIGHT/10;
+  dragger.width = DRAGGER_WIDTH
+  dragger.height = DRAGGER_WIDTH
   dragger.x = NUMBER_LINE_X + (5 * NUMBER_LINE_WIDTH) / 9;
   dragger.anchorPoint = dragger.x
   dragger.y = DRAGGER_Y
@@ -121,8 +122,8 @@ export const init = (app, setup) => {
   draggerMin.lockY = true;
   draggerMin.anchor.set(0.5);
   app.stage.addChild(draggerMin);
-  draggerMin.width = WINDOW_HEIGHT/10;
-  draggerMin.height = WINDOW_HEIGHT/10;
+  draggerMin.width = DRAGGER_WIDTH
+  draggerMin.height = DRAGGER_WIDTH
   draggerMin.x = NUMBER_LINE_X + 4*NUMBER_LINE_WIDTH / 9;
   draggerMin.anchorPoint = draggerMin.x
   draggerMin.y = DRAGGER_Y
