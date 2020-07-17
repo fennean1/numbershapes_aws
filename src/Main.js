@@ -7,6 +7,7 @@ import Arena from "./Arena"
 import * as subitizer from "./js/subitizer.js"
 import * as matchgame from "./js/numbershapesmatch.js"
 import * as dotrateproblem from "./js/dotrateproblem.js"
+import * as numberlinespace from "./js/numberlinespace.js"
 import * as test from "./js/test.js"
 import * as dotsgame from "./js/dotsgame.js"
 import * as Subitization from "./activities/Subitization.json";
@@ -25,6 +26,7 @@ import FractionList from "./FractionList";
 const Main = () => (
   <Switch>
     <Route exact path="/goldrush" component={()=><Arena fullscreen = {true} type = {1} script = {subitizer.init}/>} />
+    <Route exact path="/numberlinespace" component={()=><Arena fullscreen = {true} type = {1} script = {numberlinespace.init}/>} />
     <Route exact path="/dotrateproblem" component={()=><Arena fullscreen = {true} script = {dotrateproblem.init}/>} />
     <Route exact path="/addition" component={()=><Arena fullscreen = {true} type = {2} script = {subitizer.init}/>} />
     <Route exact path="/subtraction" component={()=><Arena fullscreen = {true} type = {3} script = {subitizer.init}/>} />
