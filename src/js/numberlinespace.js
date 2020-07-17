@@ -2,6 +2,7 @@ import * as PIXI from "pixi.js";
 import blueGradient from "../assets/Clouds.png";
 import spaceGround from "../assets/SpaceGround.png";
 import nightBackground from "../assets/NightBackground.png";
+import {BLUE,RED,GREEN,ORANGE,PURPLE,PINK,NUMERAL,BALLS,BUTTONS} from "../AssetManager.js"
 import * as CONST from "./const.js";
 import { Fraction, Draggable, distance } from "./api.js";
 import {
@@ -19,6 +20,7 @@ export const init = (app, setup) => {
   let features;
   let viewPort = new PIXI.Container();
   let backGround;
+  let homeButton;
   let ground;
   let hundredsJumps;
   let tensJumps;
@@ -910,6 +912,15 @@ function draggerPointerMove() {
     app.stage.addChild(draggerMin)
     app.stage.addChild(dragger)
 
+    homeButton = new PIXI.Sprite.from(BUTTONS.HOME)
+    homeButton.width = DRAGGER_WIDTH
+    homeButton.height = DRAGGER_WIDTH
+    homeButton.x = DRAGGER_WIDTH/4
+    homeButton.y = DRAGGER_WIDTH/4
+    homeButton.interactive = true
+    homeButton.on('pointerdown',()=>app.goHome())
+    app.stage.addChild(homeButton)
+
   }
 
   // Call load script
@@ -917,4 +928,8 @@ function draggerPointerMove() {
   // Not sure where else to put this.
   app.resize = (frame) => resize(frame);
   // app.resizable = true
+
+
+
+
 };
