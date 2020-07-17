@@ -37,6 +37,7 @@ export const init = (app, setup) => {
   let NUMBER_LINE_WIDTH = WINDOW_WIDTH * 0.8;
   let NUMBER_LINE_RANGE = 100;
   let NUMBER_LINE_X = WINDOW_WIDTH / 2 - NUMBER_LINE_WIDTH / 2;
+  let DRAGGER_Y = 3/4*WINDOW_HEIGHT
 
   let focalPoint = { x: 0, y: 0 };
   let anchorAngle = 0;
@@ -105,7 +106,7 @@ export const init = (app, setup) => {
   dragger.height = 50;
   dragger.x = NUMBER_LINE_X + (3 * NUMBER_LINE_WIDTH) / 5;
   dragger.anchorPoint = dragger.x
-  dragger.y = sliderLine.y;
+  dragger.y = DRAGGER_Y
 
   let draggerMin = new Draggable(PIN_TEXTURE);
   draggerMin.interactive = true;
@@ -116,7 +117,7 @@ export const init = (app, setup) => {
   draggerMin.height = 50;
   draggerMin.x = NUMBER_LINE_X + 2*NUMBER_LINE_WIDTH / 5;
   draggerMin.anchorPoint = draggerMin.x
-  draggerMin.y = sliderLine.y;
+  draggerMin.y = DRAGGER_Y
 
   dragger.on("pointermove", draggerPointerMove);
   dragger.on("pointerdown", draggerPointerDown);
