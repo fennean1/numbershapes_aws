@@ -43,6 +43,15 @@ export const ACTIVITY_FOUR = {
     "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
 };
 
+export const SPACE_BUBBLES = {
+  shortText: "Fully Scalable and Interactive Number Line",
+  title: "Space Bubbles",
+  previewImg: "SpaceBubbles.png",
+  tool: "/spacebubbles",
+  coreSkillDescription:
+    "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
+};
+
 export const FACTOR_WALL = {
   shortText: "Instantly Visuallize the Factors of Any Number.",
   title: "Factor Wall",

@@ -1,5 +1,7 @@
 import * as PIXI from "pixi.js";
 import blueGradient from "../assets/Clouds.png";
+import spaceGround from "../assets/SpaceGround.png";
+import nightBackground from "../assets/NightBackground.png";
 import * as CONST from "./const.js";
 import { Fraction, Draggable, distance } from "./api.js";
 import {
@@ -17,6 +19,9 @@ export const init = (app, setup) => {
   let features;
   let viewPort = new PIXI.Container();
   let backGround;
+  let ground;
+  let hundredsJumps;
+  let tensJumps;
   let papers = [];
   let jumps;
   let MAX_STAR_SIZE = 5;
@@ -34,16 +39,19 @@ export const init = (app, setup) => {
   let LANDSCAPE = H_W_RATIO < 3 / 4;
   let ARENA_WIDTH = LANDSCAPE ? (4 / 3) * setup.height : setup.width;
   let ARENA_HEIGHT = LANDSCAPE ? setup.height : (3 / 4) * setup.width;
-  let NUMBER_LINE_WIDTH = WINDOW_WIDTH * 0.8;
+  let NUMBER_LINE_WIDTH = WINDOW_WIDTH;
   let NUMBER_LINE_RANGE = 100;
   let NUMBER_LINE_X = WINDOW_WIDTH / 2 - NUMBER_LINE_WIDTH / 2;
-  let DRAGGER_Y = 3/4*WINDOW_HEIGHT
+  let NUMBER_LINE_Y = (3 / 4) * WINDOW_HEIGHT;
+  let DRAGGER_Y = NUMBER_LINE_Y + 100
 
   let focalPoint = { x: 0, y: 0 };
   let anchorAngle = 0;
   let angle = Math.PI;
 
   backGround = new makeBackground();
+  ground = new makeGround();
+
   let numberline;
   let emitters = [];
   let emitters2 = [];
@@ -90,11 +98,11 @@ export const init = (app, setup) => {
   }
 
   let sliderLine = new PIXI.Graphics();
-  sliderLine.lineStyle(NUMBER_LINE_WIDTH / 300, 0xffffff);
+  sliderLine.lineStyle(NUMBER_LINE_WIDTH / 300, 0xdbdbdb);
   sliderLine.lineTo(1.1 * NUMBER_LINE_WIDTH, 0);
   sliderLine.x = WINDOW_WIDTH / 2 - (1.1 * NUMBER_LINE_WIDTH) / 2;
-  sliderLine.y = (19 / 20) * WINDOW_HEIGHT;
-  app.stage.addChild(sliderLine);
+  sliderLine.y = DRAGGER_Y
+  //app.stage.addChild(sliderLine);
 
   let dragger = new Draggable(PIN_TEXTURE);
   dragger.lockY = true;
@@ -104,7 +112,7 @@ export const init = (app, setup) => {
   dragger.ds = 200000;
   dragger.width = 50;
   dragger.height = 50;
-  dragger.x = NUMBER_LINE_X + (3 * NUMBER_LINE_WIDTH) / 5;
+  dragger.x = NUMBER_LINE_X + (5 * NUMBER_LINE_WIDTH) / 9;
   dragger.anchorPoint = dragger.x
   dragger.y = DRAGGER_Y
 
@@ -115,7 +123,7 @@ export const init = (app, setup) => {
   app.stage.addChild(draggerMin);
   draggerMin.width = 50;
   draggerMin.height = 50;
-  draggerMin.x = NUMBER_LINE_X + 2*NUMBER_LINE_WIDTH / 5;
+  draggerMin.x = NUMBER_LINE_X + 4*NUMBER_LINE_WIDTH / 9;
   draggerMin.anchorPoint = draggerMin.x
   draggerMin.y = DRAGGER_Y
 
@@ -134,23 +142,51 @@ export const init = (app, setup) => {
     this.x = this.anchorPoint;
   }
 
-  function draggerPointerMove() {
-    if (this.touching && numberline.max >= 0.0005) {
-      let delta = this.x - this.initialX;
-      let N = (delta / NUMBER_LINE_WIDTH) * (numberline.max - numberline.min);
-      numberline.draw(numberline.min, this.initialNumberlineLength - N);
-
-    } else if (this.touching) {
-      this.x = NUMBER_LINE_WIDTH / 2;
-      this.initialX = 0;
-    } else if (numberline.max < 0.0005) {
-      numberline.max = 0.0005;
-    }
+  function draggerMinPointerUp() {
+    this.initialX = 0;
+    this.x = this.anchorPoint
   }
+
   function draggerPointerDown() {
     this.initialX = this.x;
     this.initialNumberlineLength = numberline.max
   }
+
+  function draggerMinPointerDown() {
+    this.initialX = this.x;
+    this.initialNumberlineLength = numberline.min
+  }
+
+  function draggerMinPointerMove() {
+
+    if (this.touching) {
+      let delta = this.x - this.initialX
+      let numberlineRange = numberline.max - numberline.min
+      let N = (delta / NUMBER_LINE_WIDTH) * numberlineRange
+      let range = numberlineRange + N
+      if (range >= 0.005 && range <= 500000){
+        numberline.draw(numberline.min-1/10*N,numberline.max);
+      } 
+    } else if (this.touching) {
+      this.x = NUMBER_LINE_WIDTH / 2;
+      this.initialX = 0;
+    }
+}
+
+function draggerPointerMove() {
+  if (this.touching) {
+    let delta = this.x - this.initialX
+    let numberlineRange = numberline.max - numberline.min
+    let N = (delta / NUMBER_LINE_WIDTH) * numberlineRange
+    let range = numberlineRange - N
+    if (range >= 0.005 && range <= 500000){
+      numberline.draw(numberline.min,numberline.max-1/10*N);
+    } 
+  } else if (this.touching) {
+    this.x = NUMBER_LINE_WIDTH / 2;
+    this.initialX = 0;
+  } 
+}
 
   function scaleNumberLineBy(K) {
     let newMax = dragger.initialNumberlineLength * K;
@@ -174,32 +210,7 @@ export const init = (app, setup) => {
     };
 
     TweenMax.to(numberline, 2, { max: newMax, onUpdate: onUpdate });
-
     TweenMax.to(dragger, 2, { ds: newDS, onUpdate: onUpdate2 });
-  }
-
-  function draggerMinPointerUp() {
-    this.initialX = 0;
-    this.x = this.anchorPoint
-  }
-  function draggerMinPointerMove() {
-
-      if (this.touching && numberline.max >= 0.0005) {
-      
-        let delta = this.x - this.initialX;
-        let N = (delta / NUMBER_LINE_WIDTH) * (numberline.max - numberline.min);
-        numberline.draw(this.initialNumberlineLength-N,numberline.max);
-      } else if (this.touching) {
-        this.x = NUMBER_LINE_WIDTH / 2;
-        this.initialX = 0;
-      } else if (numberline.max < 0.0005) {
-        numberline.max = 0.0005;
-      }
-    
-  }
-  function draggerMinPointerDown() {
-    this.initialX = this.x;
-    this.initialNumberlineLength = numberline.min
   }
 
   // Helllooo
@@ -210,8 +221,11 @@ export const init = (app, setup) => {
       this.n = n;
       this.jumps = [];
       this.jumpGraphic = new PIXI.Graphics();
-      this.jumpGraphic.lineStyle(NUMBER_LINE_WIDTH / 300, NL_COLOR);
+      this.jumpGraphic.lineStyle(NUMBER_LINE_WIDTH / 300, 0x75acff);
+      this.jumpGraphic.beginFill(0xffffff)
+      this.jumpGraphic._fillStyle.alpha = 0.15
       this.jumpGraphic.arc(0, 0, 100, -Math.PI, 0); // cx, cy, radius, startAngle, endAngle
+      this.jumpGraphic.endFill()
       this.jumpTexture = app.renderer.generateTexture(this.jumpGraphic);
       this.init();
     }
@@ -227,18 +241,18 @@ export const init = (app, setup) => {
 
     draw(size) {
       this.jumpGraphic.clear();
-      this.jumpGraphic.lineStyle(NUMBER_LINE_WIDTH / 300, NL_COLOR);
+      this.jumpGraphic.lineStyle(NUMBER_LINE_WIDTH / 300, 0x75acff);
+      this.jumpGraphic.beginFill(0xffffff)
+      this.jumpGraphic._fillStyle.alpha = 0.15
       this.jumpGraphic.arc(0, 0, size, -Math.PI, 0);
+      this.jumpGraphic.endFill()
       this.jumpTexture.destroy(true);
       this.jumpTexture = app.renderer.generateTexture(this.jumpGraphic);
       this.jumps.forEach((e, i) => {
         e.texture = this.jumpTexture;
         e.x = i * 2 * size;
-        let _alpha =
-          size < NUMBER_LINE_WIDTH
-            ? 1
-            : Math.abs(size - NUMBER_LINE_WIDTH) / (0.5 * NUMBER_LINE_WIDTH);
-        e.alpha = _alpha;
+        let _alpha = 1 - 1.5*size/NUMBER_LINE_WIDTH
+        e.alpha = _alpha
       });
     }
   }
@@ -301,7 +315,7 @@ export const init = (app, setup) => {
       this.line.lineStyle(this.lineThickness, NL_COLOR);
       this.line.lineTo(width, 0);
 
-      this.addChild(this.line);
+      //this.addChild(this.line);
       this.addChild(this.tensJumps);
       this.addChild(this.hundredsJumps);
 
@@ -383,7 +397,7 @@ export const init = (app, setup) => {
           l.y = 0;
           l.alpha = 1;
           //console.log('majorStep,l.value,l.value % majorStep,l.value',majorStep,l.value,l.value%majorStep)
-          let mod = l.value%majorStep/majorStep
+          let mod = Math.abs(l.value%majorStep/majorStep)
           if (mod < 0.01 || mod > 0.99) {
             //console.log("Major Texture!")
             l.texture = textures[0];
@@ -554,7 +568,6 @@ export const init = (app, setup) => {
       );
 
       let arcWidth = (this.minorDX / this.minorStep) * this.compressionOne 
-      console.log("arcWidth",arcWidth)
 
       if (
         (this.minorDX / this.minorStep) * this.compressionOne >
@@ -586,15 +599,15 @@ export const init = (app, setup) => {
 
       
       this.hundredsJumps.x = 
-        ((0 - this.minFloat%this.compressionOne - this.compressionOne) / this.minorStep) * this.minorDX;
+        ((0 - this.minFloat%this.compressionOne - this.compressionOne) / this.minorStep) * this.minorDX - this.lineThickness/2
 
       this.hundredsJumps.y =
-        ((-this.minorDX / this.minorStep) * this.compressionOne) / 2;
+        ((-this.minorDX / this.minorStep) * this.compressionOne) / 2
 
       this.tensJumps.draw(
         ((this.minorDX / this.minorStep) * this.compressionTwo) / 2
       );
-      this.tensJumps.x = ((0 - this.minFloat%this.compressionTwo - this.compressionTwo) / this.minorStep) * this.minorDX;
+      this.tensJumps.x = ((0 - this.minFloat%this.compressionTwo - this.compressionTwo) / this.minorStep) * this.minorDX - this.lineThickness/2
       this.tensJumps.y =
         ((-this.minorDX / this.minorStep) * this.compressionTwo) / 2;
     }
@@ -669,19 +682,23 @@ export const init = (app, setup) => {
     ];
     let minorSteps = [
       0.00001,
+      0.00005,
       0.0001,
+      0.0005,
       0.001,
+      0.005,
       0.01,
       0.1,
       1,
       5,
       10,
-      25,
       50,
       100,
       500,
       1000,
+      5000,
       10000,
+      50000,
       100000,
     ];
     let minorStepIndex = 0;
@@ -691,19 +708,37 @@ export const init = (app, setup) => {
     let majorStep = 0.0001;
     let minorStep = 0.0001;
 
-    while (digitHeight < width / 40) {
+    while (digitHeight < width / 50) {
       majorStepIndex += 1;
       let numberOfIncrements = Math.round(
         (max - min) / majorSteps[majorStepIndex]
       );
       let maxDigits = 1;
-      if (majorSteps[majorStepIndex] > 1) {
-        maxDigits = digitCount(Math.ceil(max));
+      if (majorSteps[majorStepIndex] >= 1) {
+        if (min < 0){
+          maxDigits = digitCount(Math.floor(Math.abs(min))) + 1
+        } else {
+          maxDigits = digitCount(Math.ceil(max));
+        }
       } else {
-        maxDigits = digitCount(majorSteps[majorStepIndex]);
+        if (min < 0){
+          maxDigits = digitCount(Math.abs(Math.floor(min)))+digitCount(majorSteps[majorStepIndex]) + 1
+        } else {
+          maxDigits = digitCount(Math.ceil(max))+digitCount(majorSteps[majorStepIndex]);
+        }
+
       }
 
+      /*
+      if (min/(max-min) < -0.5){
+        maxDigits = maxDigits + 1
+      } else if (max < 0){
+        maxDigits = maxDigits+2
+      }
+      */
+
       let numberOfDigitWidths = (maxDigits + 1) * (numberOfIncrements - 1);
+
       let digitWidth = width / numberOfDigitWidths;
       digitHeight = (6 / 5) * digitWidth;
       minorStep = minorSteps[majorStepIndex - 1];
@@ -716,7 +751,7 @@ export const init = (app, setup) => {
       minorStep = minorSteps[minorStepIndex];
     }
 
-    digitHeight = width / 40;
+    digitHeight = width / 50;
 
     const params = {
       MAJOR_STEP: majorStep,
@@ -747,7 +782,7 @@ export const init = (app, setup) => {
   // Constructors
   function makeBackground() {
     // Setup Background
-    this.sprite = new PIXI.Sprite.from(blueGradient);
+    this.sprite = new PIXI.Sprite.from(nightBackground);
     this.sprite.width = WINDOW_WIDTH;
     this.sprite.height = WINDOW_HEIGHT;
     this.sprite.x = 0;
@@ -761,6 +796,43 @@ export const init = (app, setup) => {
       this.sprite.height = WINDOW_HEIGHT;
     };
   }
+
+   // Constructors
+   function makeCurtains() {
+    // Setup Background
+    this.sprite = new PIXI.Sprite.from(nightBackground);
+    this.sprite.width = WINDOW_WIDTH;
+    this.sprite.height = WINDOW_HEIGHT;
+    this.sprite.x = 0;
+    this.sprite.y = 0;
+    this.sprite.interactive = true;
+
+    app.stage.addChild(this.sprite);
+
+    this.draw = () => {
+      this.sprite.width = WINDOW_WIDTH;
+      this.sprite.height = WINDOW_HEIGHT;
+    };
+  }
+
+
+    // Constructors
+    function makeGround() {
+      // Setup Background
+      this.sprite = new PIXI.Sprite.from(spaceGround);
+      this.sprite.width = WINDOW_WIDTH;
+      this.sprite.height = WINDOW_HEIGHT/4;
+      this.sprite.x = 0;
+      this.sprite.y = WINDOW_HEIGHT  - this.sprite.height
+      this.sprite.interactive = true;
+  
+      app.stage.addChild(this.sprite);
+  
+      this.draw = () => {
+        this.sprite.width = WINDOW_WIDTH;
+        this.sprite.height = WINDOW_HEIGHT;
+      };
+    }
 
   function updateLayoutParams(newFrame) {
     let frame;
@@ -783,11 +855,11 @@ export const init = (app, setup) => {
       features = setup.props.features;
     }
 
-    numberline = new NumberLine(0, 100, NUMBER_LINE_WIDTH);
+    numberline = new NumberLine(-5, 105, NUMBER_LINE_WIDTH);
 
     app.stage.addChild(numberline);
     numberline.x = WINDOW_WIDTH / 2 - NUMBER_LINE_WIDTH / 2;
-    numberline.y = (3 / 5) * WINDOW_HEIGHT;
+    numberline.y = NUMBER_LINE_Y
 
     let sprite = new PIXI.Sprite.from(blueGradient);
     sprite.width = 0.9 * numberline.x;
@@ -804,7 +876,7 @@ export const init = (app, setup) => {
     sprite2.y = 0;
     //app.stage.addChild(sprite2)
 
-    app.stage.addChild(sliderLine);
+    //app.stage.addChild(sliderLine);
     //app.stage.addChild(draggerMin)
     app.stage.addChild(dragger);
 
