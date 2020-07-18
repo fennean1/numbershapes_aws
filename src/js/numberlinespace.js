@@ -202,6 +202,7 @@ function groundPointerDown(e) {
 function groundPointerUp(e) {
   this.touching = false
   this.initialX = 0
+  numberline.draw(numberline.min,numberline.max)
 }
 
 
@@ -347,10 +348,11 @@ function draggerPointerMove() {
       this.line = new PIXI.Graphics();
       this.line.lineStyle(this.lineThickness, NL_COLOR);
       this.line.lineTo(width, 0);
+      this.line.y = this.line.y + this.lineThickness/2
 
-      //this.addChild(this.line);
       this.addChild(this.tensJumps);
       this.addChild(this.hundredsJumps);
+      this.addChild(this.line);
 
       this.dot = new PIXI.Sprite.from(CONST.ASSETS.BLUE_CIRCLE);
       this.dot.width = width / 50;
