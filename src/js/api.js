@@ -19,12 +19,11 @@ export class FractionFrame extends PIXI.Container {
      // State
      this.value = 0
      // Placeholders
-     this.BAR_HEIGHT = 200
+     this.BAR_HEIGHT = height
      this.LINE_WIDTH = 4
-     this.BTN_WIDTH = width/4
+     this.BTN_WIDTH = height
      this.DESCRIPTOR_WIDTH = width/3
      this.autoRecolor = false
-
 
      // Default values
      this.numerator = 0
@@ -59,25 +58,22 @@ export class FractionFrame extends PIXI.Container {
      this.plusBtn.interactive = true
      this.plusBtn.width = this.BTN_WIDTH
      this.plusBtn.height = this.plusBtn.width
-     this.plusBtn.x = 3 / 4 * this._width
-     this.plusBtn.y = this._height + 1.5 * this.plusBtn.width / 2
+     this.plusBtn.x = this._width + 1.2*this.BTN_WIDTH/2
+     this.plusBtn.y = this.BAR_HEIGHT/2
      this.plusBtn.on('pointerdown', () => {
-       console.log("hello")
        if (this.denominator < 12){
         this.incDenominator(1)
        }
      })
      this.addChild(this.plusBtn)
  
-  
- 
      this.minusBtn = new PIXI.Sprite.from(CONST.ASSETS.MINUS_SQUARE)
      this.minusBtn.anchor.set(0.5)
      this.minusBtn.interactive = true
      this.minusBtn.width = this.BTN_WIDTH
      this.minusBtn.height = this.minusBtn.width
-     this.minusBtn.x = 1 / 4 * this._width
-     this.minusBtn.y = this._height + 1.5 * this.minusBtn.width / 2
+     this.minusBtn.x = -this.BAR_HEIGHT/2*1.2
+     this.minusBtn.y = this.BAR_HEIGHT/2
      this.minusBtn.anchor.set(0.5)
      this.minusBtn.on('pointerdown', () => {
        this.incDenominator(-1)
@@ -162,7 +158,7 @@ export class FractionFrame extends PIXI.Container {
       if (inc > 0){
         const onComplete = ()=>{
           newSprites.forEach(s=>{
-            s.on('pointerdown',this.spritePointerDown)
+          s.on('pointerdown',this.spritePointerDown)
           s.on('pointerup',this.spritePointerUp)
           s.on('pointermove',this.spritePointerMoved)
           s.interactive = true
@@ -271,10 +267,7 @@ export class FractionFrame extends PIXI.Container {
     }
   
     spritePointerUp(event){
-      // previously "activated"
-      console.log("this.parent.dragged",this.parent.dragged)
      if (!this.parent.dragged && this.touched && this.parent.activated) {
-       console.log("this.parent.dragged",this.parent.dragged)
         this.dragged = false
         this.active = !this.active
         this.alpha = 0.2

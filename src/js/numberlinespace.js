@@ -4,7 +4,7 @@ import spaceGround from "../assets/SpaceGround.png";
 import nightBackground from "../assets/NightBackground.png";
 import {BLUE,RED,GREEN,ORANGE,PURPLE,PINK,NUMERAL,BALLS,BUTTONS} from "../AssetManager.js"
 import * as CONST from "./const.js";
-import { Fraction, Draggable, distance } from "./api.js";
+import { Fraction, Draggable, distance, FractionFrame } from "./api.js";
 import {
   TweenMax,
   TimelineLite,
@@ -24,6 +24,7 @@ export const init = (app, setup) => {
   let ground;
   let hundredsJumps;
   let tensJumps;
+  let fractionFrame;
   let papers = [];
   let jumps;
   let MAX_STAR_SIZE = 5;
@@ -111,24 +112,24 @@ export const init = (app, setup) => {
   dragger.lockY = true;
   dragger.interactive = true;
   dragger.anchor.set(0.5);
-  app.stage.addChild(dragger);
   dragger.ds = 200000;
   dragger.width = DRAGGER_WIDTH
   dragger.height = DRAGGER_WIDTH
   dragger.x = NUMBER_LINE_X + (5 * NUMBER_LINE_WIDTH) / 9;
   dragger.anchorPoint = dragger.x
   dragger.y = DRAGGER_Y
+  //app.stage.addChild(dragger);
 
   let draggerMin = new Draggable(PIN_TEXTURE);
   draggerMin.interactive = true;
   draggerMin.lockY = true;
   draggerMin.anchor.set(0.5);
-  app.stage.addChild(draggerMin);
   draggerMin.width = DRAGGER_WIDTH
   draggerMin.height = DRAGGER_WIDTH
   draggerMin.x = NUMBER_LINE_X + 4*NUMBER_LINE_WIDTH / 9;
   draggerMin.anchorPoint = draggerMin.x
   draggerMin.y = DRAGGER_Y
+  //app.stage.addChild(draggerMin);
 
   dragger.on("pointermove", draggerPointerMove);
   dragger.on("pointerdown", draggerPointerDown);
@@ -176,6 +177,36 @@ export const init = (app, setup) => {
     }
 }
 
+function groundPointerMove(e) {
+  if (this.touching) {
+    let delta = e.data.global.x - this.initialX
+    let numberlineRange = numberline.max - numberline.min
+    let N = (delta / NUMBER_LINE_WIDTH) * numberlineRange
+    let range = numberlineRange + N
+    if (this.initialX < WINDOW_WIDTH/2){
+        if (range >= 0.005 && range <= 500000){
+          numberline.draw(numberline.min-1/10*N,numberline.max);
+        } 
+     } else if (this.initialX > WINDOW_WIDTH/2){
+        if (range >= 0.005 && range <= 500000){
+          numberline.draw(numberline.min,numberline.max-1/10*N);
+        } 
+     }
+  }
+
+}
+
+function groundPointerDown(e) {
+  this.touching = true
+  this.initialX = e.data.global.x 
+}
+
+function groundPointerUp(e) {
+  this.touching = false
+  this.initialX = 0
+}
+
+
 function draggerPointerMove() {
   if (this.touching) {
     let delta = this.x - this.initialX
@@ -185,6 +216,7 @@ function draggerPointerMove() {
     if (range >= 0.005 && range <= 500000){
       numberline.draw(numberline.min,numberline.max-1/10*N);
     } 
+    fractionFrame.x = numberline.getNumberLinePositionFromFloatValue(11.5)
   } else if (this.touching) {
     this.x = NUMBER_LINE_WIDTH / 2;
     this.initialX = 0;
@@ -343,6 +375,7 @@ function draggerPointerMove() {
       this.init();
     }
 
+
     // Only responsible for setting labels to the rightful location.
     placeLabels(labels, values, dx, digitHeight) {
       labels.forEach((l) => {
@@ -441,6 +474,10 @@ function draggerPointerMove() {
     getNumberLineFloatValueFromPosition(pos) {
       return (pos * this.minorStep) / this.minorDX + this.minFloat;
     }
+
+   getNumberLinePositionFromFloatValue(val){
+      return (val - this.minFloat)/(this.maxFloat-this.minFloat)*this._width
+   }
 
     pinPointerMove() {
       if (this.touching) {
@@ -879,10 +916,6 @@ function draggerPointerMove() {
     sprite2.y = 0;
     //app.stage.addChild(sprite2)
 
-    //app.stage.addChild(sliderLine);
-    //app.stage.addChild(draggerMin)
-    app.stage.addChild(dragger);
-
     focalPoint.x = numberline.x;
     focalPoint.y = numberline.y;
 
@@ -909,9 +942,6 @@ function draggerPointerMove() {
       newEmitter.update((1 / 6) * dragger.ds);
     }
 
-    app.stage.addChild(draggerMin)
-    app.stage.addChild(dragger)
-
     homeButton = new PIXI.Sprite.from(BUTTONS.HOME)
     homeButton.width = DRAGGER_WIDTH
     homeButton.height = DRAGGER_WIDTH
@@ -920,6 +950,19 @@ function draggerPointerMove() {
     homeButton.interactive = true
     homeButton.on('pointerdown',()=>app.goHome())
     app.stage.addChild(homeButton)
+
+    ground.sprite.on('pointerdown',groundPointerDown)
+    ground.sprite.on('pointerup',groundPointerUp)
+    ground.sprite.on('pointermove',groundPointerMove)
+
+
+    // FRACTION FRAME TEST
+
+    fractionFrame = new FractionFrame(WINDOW_WIDTH/2,DRAGGER_WIDTH/2,6,app)
+    //app.stage.addChild(fractionFrame)
+
+    numberline.draw(numberline.min,numberline.max)
+
 
   }
 
