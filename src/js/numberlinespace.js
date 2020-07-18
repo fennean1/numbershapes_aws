@@ -184,7 +184,6 @@ function groundPointerMove(e) {
     let N = (delta / NUMBER_LINE_WIDTH) * numberlineRange
     let left = this.initialX < WINDOW_WIDTH/2 ? false : true
     let range = left ? numberlineRange - N : numberlineRange + N
-    console.log("range",range)
     if (range >= 0.005 && range <= 500000){
         if (!left){
             numberline.draw(numberline.min-1/10*N,numberline.max);
@@ -193,7 +192,6 @@ function groundPointerMove(e) {
         }
     } 
   }
-
 }
 
 function groundPointerDown(e) {
