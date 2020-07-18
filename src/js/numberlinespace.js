@@ -182,16 +182,16 @@ function groundPointerMove(e) {
     let delta = e.data.global.x - this.initialX
     let numberlineRange = numberline.max - numberline.min
     let N = (delta / NUMBER_LINE_WIDTH) * numberlineRange
-    let range = numberlineRange + N
-    if (this.initialX < WINDOW_WIDTH/2){
-        if (range >= 0.005 && range <= 500000){
-          numberline.draw(numberline.min-1/10*N,numberline.max);
-        } 
-     } else if (this.initialX > WINDOW_WIDTH/2){
-        if (range >= 0.005 && range <= 500000){
-          numberline.draw(numberline.min,numberline.max-1/10*N);
-        } 
-     }
+    let left = this.initialX < WINDOW_WIDTH/2 ? false : true
+    let range = left ? numberlineRange - N : numberlineRange + N
+    console.log("range",range)
+    if (range >= 0.005 && range <= 500000){
+        if (!left){
+            numberline.draw(numberline.min-1/10*N,numberline.max);
+        } else if (left){
+            numberline.draw(numberline.min,numberline.max-1/10*N);
+        }
+    } 
   }
 
 }
@@ -212,7 +212,7 @@ function draggerPointerMove() {
     let delta = this.x - this.initialX
     let numberlineRange = numberline.max - numberline.min
     let N = (delta / NUMBER_LINE_WIDTH) * numberlineRange
-    let range = numberlineRange - N
+    let range = numberlineRange - 10*N
     if (range >= 0.005 && range <= 500000){
       numberline.draw(numberline.min,numberline.max-1/10*N);
     } 
@@ -769,14 +769,6 @@ function draggerPointerMove() {
 
       }
 
-      /*
-      if (min/(max-min) < -0.5){
-        maxDigits = maxDigits + 1
-      } else if (max < 0){
-        maxDigits = maxDigits+2
-      }
-      */
-
       let numberOfDigitWidths = (maxDigits + 1) * (numberOfIncrements - 1);
 
       let digitWidth = width / numberOfDigitWidths;
@@ -953,6 +945,7 @@ function draggerPointerMove() {
 
     ground.sprite.on('pointerdown',groundPointerDown)
     ground.sprite.on('pointerup',groundPointerUp)
+    ground.sprite.on('pointerupoutside',groundPointerUp)
     ground.sprite.on('pointermove',groundPointerMove)
 
 
