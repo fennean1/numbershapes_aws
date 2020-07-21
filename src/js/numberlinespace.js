@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
 import blueGradient from "../assets/Clouds.png";
 import spaceGround from "../assets/SpaceGround.png";
+import spaceShipWindow from "../assets/SpaceShipWindow.png";
 import nightBackground from "../assets/NightBackground.png";
 import {BLUE,RED,GREEN,ORANGE,PURPLE,PINK,NUMERAL,BALLS,BUTTONS} from "../AssetManager.js"
 import * as CONST from "./const.js";
@@ -21,6 +22,7 @@ export const init = (app, setup) => {
   let viewPort = new PIXI.Container();
   let backGround;
   let homeButton;
+  let windowButton;
   let ground;
   let hundredsJumps;
   let tensJumps;
@@ -31,14 +33,18 @@ export const init = (app, setup) => {
   let numberlineVal = 100;
 
   const NL_COLOR = 0x000000;
-  const PIN_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.MOVER_DOT);
+  const MOVER_DOT = new PIXI.Texture.from(CONST.ASSETS.MOVER_DOT);
+  const SPACE_SHIP_WINDOW = new PIXI.Texture.from(spaceShipWindow);
+  const PIN_TEXTURE_2 = new PIXI.Texture.from(CONST.ASSETS.BLUE_SPACE_SHIP);
+  const PIN_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.PINK_SPACE_SHIP);
   const BLUE_CIRCLE = new PIXI.Texture.from(CONST.ASSETS.STAR);
   const SHARP_PIN_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.SHARP_PIN);
 
   // Layout Parameters
   let WINDOW_WIDTH = setup.width;
   let WINDOW_HEIGHT = setup.height;
-  let DRAGGER_WIDTH = WINDOW_WIDTH/15
+  let HOME_BUTTON_WIDTH = WINDOW_WIDTH/15
+  let DRAGGER_WIDTH = WINDOW_WIDTH/10
   let H_W_RATIO = setup.height / setup.width;
   let LANDSCAPE = H_W_RATIO < 3 / 4;
   let ARENA_WIDTH = LANDSCAPE ? (4 / 3) * setup.height : setup.width;
@@ -47,7 +53,7 @@ export const init = (app, setup) => {
   let NUMBER_LINE_RANGE = 100;
   let NUMBER_LINE_X = WINDOW_WIDTH / 2 - NUMBER_LINE_WIDTH / 2;
   let NUMBER_LINE_Y = (3 / 4) * WINDOW_HEIGHT;
-  let DRAGGER_Y = NUMBER_LINE_Y + DRAGGER_WIDTH/1.5
+  let DRAGGER_Y = NUMBER_LINE_Y
 
   let focalPoint = { x: 0, y: 0 };
   let anchorAngle = 0;
@@ -114,22 +120,34 @@ export const init = (app, setup) => {
   dragger.anchor.set(0.5);
   dragger.ds = 200000;
   dragger.width = DRAGGER_WIDTH
-  dragger.height = DRAGGER_WIDTH
+  dragger.height = DRAGGER_WIDTH*2.5
   dragger.x = NUMBER_LINE_X + (5 * NUMBER_LINE_WIDTH) / 9;
   dragger.anchorPoint = dragger.x
-  dragger.y = DRAGGER_Y
+  dragger.y = DRAGGER_Y - dragger.height/2
   //app.stage.addChild(dragger);
 
-  let draggerMin = new Draggable(PIN_TEXTURE);
+  let draggerMin = new Draggable(PIN_TEXTURE_2);
   draggerMin.interactive = true;
   draggerMin.lockY = true;
   draggerMin.anchor.set(0.5);
   draggerMin.width = DRAGGER_WIDTH
-  draggerMin.height = DRAGGER_WIDTH
+  draggerMin.height = DRAGGER_WIDTH*2.5
   draggerMin.x = NUMBER_LINE_X + 4*NUMBER_LINE_WIDTH / 9;
   draggerMin.anchorPoint = draggerMin.x
-  draggerMin.y = DRAGGER_Y
+  draggerMin.y = DRAGGER_Y - dragger.height/2
   //app.stage.addChild(draggerMin);
+
+  let draggerCenter = new Draggable(MOVER_DOT);
+  draggerCenter.interactive = true;
+  draggerCenter.lockY = true;
+  draggerCenter.anchor.set(0.5,0);
+  draggerCenter.height = ground.sprite.height
+  draggerCenter.width = draggerCenter.height/2.5
+  draggerCenter.x = WINDOW_WIDTH/2
+  draggerCenter.anchorPoint = draggerCenter.x
+  draggerCenter.y = NUMBER_LINE_Y
+  //app.stage.addChild(draggerMin);
+
 
   dragger.on("pointermove", draggerPointerMove);
   dragger.on("pointerdown", draggerPointerDown);
@@ -141,14 +159,92 @@ export const init = (app, setup) => {
   draggerMin.on("pointerup", draggerMinPointerUp);
   draggerMin.on("pointerupoutside", draggerMinPointerUp);
 
-  function draggerPointerUp() {
-    this.initialX = 0;
-    this.x = this.anchorPoint;
+  draggerCenter.on("pointermove", draggerCenterPointerMove);
+  draggerCenter.on("pointerdown", draggerCenterPointerDown);
+  draggerCenter.on("pointerup", draggerCenterPointerUp);
+  draggerCenter.on("pointerupoutside", draggerCenterPointerUp);
+
+
+  function zoomToShips(){
+    let minCompression = Math.min(numberline.compressionOne,numberline.compressionTwo)
+    let maxCompression = Math.max(numberline.compressionOne,numberline.compressionTwo)
+    const onUpdate = ()=>{
+      dragger.x = numberline.getNumberLinePositionFromFloatValue(minCompression)
+      draggerMin.x = numberline.getNumberLinePositionFromFloatValue(maxCompression)
+    }
+    numberline.zoomTo(-maxCompression/10,1.1*maxCompression,1,onUpdate,onUpdate)
   }
 
-  function draggerMinPointerUp() {
-    this.initialX = 0;
+
+  function draggerCenterPointerMove(){
+    if (this.touching){
+      let x1 = numberline.getNumberLineFloatValueFromPosition(this.x)
+      let x2 = numberline.getNumberLineFloatValueFromPosition(this.anchorPoint)
+      let delta = x2-x1
+      let _min = this.initialNumberlineMin + delta
+      let _max = this.initialNumberlineMax + delta
+      numberline.draw(_min,_max)
+      let minCompression = Math.min(numberline.compressionOne,numberline.compressionTwo)
+      let maxCompression = Math.max(numberline.compressionOne,numberline.compressionTwo)
+      dragger.x = numberline.getNumberLinePositionFromFloatValue(minCompression)
+      draggerMin.x = numberline.getNumberLinePositionFromFloatValue(maxCompression)
+    }
+  }
+
+  function draggerCenterPointerDown(){
+    this.initialNumberlineMin = numberline.minFloat
+    this.initialNumberlineMax = numberline.maxFloat
+  }
+
+  function draggerCenterPointerUp(e){
+    let minCompression = Math.min(numberline.compressionOne,numberline.compressionTwo)
+    let maxCompression = Math.max(numberline.compressionOne,numberline.compressionTwo)
     this.x = this.anchorPoint
+  }
+
+  // D_POINTER_MOVE
+  function draggerPointerMove() {
+
+    let compression = numberline.getNumberLineFloatValueFromPosition(this.x)  
+    let minCompression = Math.min(numberline.compressionOne,numberline.compressionTwo)
+    let maxCompression = Math.max(numberline.compressionOne,numberline.compressionTwo)
+    let maxCompressionX = numberline.getNumberLinePositionFromFloatValue(maxCompression)
+    let origin = numberline.getNumberLinePositionFromFloatValue(0)
+
+    let minX  = NUMBER_LINE_WIDTH/100 + numberline.getNumberLinePositionFromFloatValue(0)
+    let maxX = origin + (numberline.getNumberLinePositionFromFloatValue(maxCompression) - origin)/2
+
+    if (this.touching && this.x < maxCompressionX && (this.x-origin) > WINDOW_WIDTH/100){
+      
+      if (numberline.compressionOne == minCompression) {
+        numberline.multiplier = numberline.compressionTwo/compression
+        if (this.x < maxX){
+          numberline.multiplierSquared = numberline.multiplier * numberline.multiplier;
+          numberline.compressionOne = compression
+          numberline.hundredsJumps.smallGraphic = false
+          numberline.tensJumps.smallGraphic = true
+        } else {
+          numberline.multiplier = 2
+          numberline.multiplierSquared = numberline.multiplier * numberline.multiplier;
+          numberline.compressionOne = compression
+        }
+      } else {
+        numberline.multiplier = numberline.compressionOne/compression
+        if (this.x < maxX){
+          numberline.multiplierSquared = numberline.multiplier * numberline.multiplier;
+          numberline.compressionTwo = numberline.compressionOne/numberline.multiplier
+          numberline.hundredsJumps.smallGraphic = true
+          numberline.tensJumps.smallGraphic = false
+        } else {
+          numberline.multiplier = 2
+          numberline.multiplierSquared = numberline.multiplier * numberline.multiplier;
+          numberline.compressionTwo = numberline.compressionOne/numberline.multiplier
+        }
+      } 
+      numberline.draw(numberline.min,numberline.max)
+    }  else if (this.x-origin < WINDOW_WIDTH/100){
+        this.x = origin + WINDOW_WIDTH/100
+    }
   }
 
   function draggerPointerDown() {
@@ -156,71 +252,175 @@ export const init = (app, setup) => {
     this.initialNumberlineLength = numberline.max
   }
 
+  function draggerPointerUp(e) {
+    console.log("draggerpointerup")
+    let compression = numberline.getNumberLineFloatValueFromPosition(this.x)  
+    let minCompression = Math.min(numberline.compressionOne,numberline.compressionTwo)
+      
+    if (numberline.compressionOne == minCompression) {
+      let oldMultiplier = numberline.multiplier
+      numberline.multiplier = Math.round(numberline.compressionTwo/compression)
+      if (oldMultiplier > 2){
+        numberline.multiplierSquared = numberline.multiplier * numberline.multiplier;
+        numberline.compressionOne = numberline.compressionTwo/numberline.multiplier
+      } else {
+        numberline.multiplier = 2
+        numberline.multiplierSquared = numberline.multiplier * numberline.multiplier
+        numberline.compressionOne = numberline.compressionTwo/numberline.multiplier;
+      }
+    } else {
+      let oldMultiplier = numberline.multiplier
+      numberline.multiplier = Math.round(numberline.compressionOne/compression)
+      if (oldMultiplier > 2){
+        numberline.multiplierSquared = numberline.multiplier * numberline.multiplier;
+        numberline.compressionTwo = numberline.compressionOne/numberline.multiplier
+      } else {
+        numberline.multiplier = 2
+        numberline.multiplierSquared = numberline.multiplier * numberline.multiplier;
+        numberline.compressionTwo = numberline.compressionOne/numberline.multiplier
+      }
+    }
+    numberline.draw(numberline.min,numberline.max)
+    this.x = numberline.getNumberLinePositionFromFloatValue(Math.min(numberline.compressionOne,numberline.compressionTwo))
+    draggerMin.x = numberline.getNumberLinePositionFromFloatValue(Math.max(numberline.compressionOne,numberline.compressionTwo))
+    this.initialX = 0;
+
+    if (Math.abs(NUMBER_LINE_Y - e.data.global.y)< DRAGGER_WIDTH && numberline.minorStep > 0.005){
+      console.log("zooming")
+      const onComplete = () => {
+        this.x = numberline.getNumberLinePositionFromFloatValue(Math.min(numberline.compressionOne,numberline.compressionTwo))
+        draggerMin.x = numberline.getNumberLinePositionFromFloatValue(Math.max(numberline.compressionOne,numberline.compressionTwo))
+        this.touching = false
+      }
+      numberline.zoomTo(minCompression-2*numberline.minorStep,minCompression+2*numberline.minorStep,1,onComplete,onComplete)
+    }
+  }
+
+  function draggerMinPointerMove() {
+    let min = numberline.getNumberLinePositionFromFloatValue(0) + numberline.minorDX
+
+    if (this.touching && this.x > min){
+      let maxCompression = numberline.getNumberLineFloatValueFromPosition(this.x)
+      let minCompression = Math.min(numberline.compressionOne,numberline.compressionTwo)
+        if (numberline.compressionOne == minCompression) {
+          numberline.compressionTwo = maxCompression
+          numberline.compressionOne = maxCompression/numberline.multiplier
+        } else {
+          numberline.compressionOne = maxCompression
+          numberline.compressionTwo = maxCompression/numberline.multiplier
+        }
+      numberline.draw(numberline.min,numberline.max)
+      dragger.x = numberline.getNumberLinePositionFromFloatValue(minCompression)
+    } else if (this.x < min){
+      this.outOfRange = true 
+      this.x = min
+    }
+}
+
+  function draggerMinPointerUp(e) {
+    let roundedPosition = Math.round(numberline.getNumberLineFloatValueFromPosition(this.x)/numberline.minorStep)*numberline.minorStep
+    let maxCompression = roundedPosition
+    let minCompression = Math.min(numberline.compressionOne,numberline.compressionTwo)
+
+      if (numberline.compressionOne == minCompression) {
+        numberline.compressionTwo = maxCompression
+        numberline.compressionOne = maxCompression/numberline.multiplier
+      } else {
+        numberline.compressionOne = maxCompression
+        numberline.compressionTwo = maxCompression/numberline.multiplier
+      }
+
+    numberline.draw(numberline.min,numberline.max)
+    this.initialX = 0;
+    this.x = numberline.getNumberLinePositionFromFloatValue(Math.max(numberline.compressionOne,numberline.compressionTwo))
+    dragger.x = numberline.getNumberLinePositionFromFloatValue(Math.min(numberline.compressionOne,numberline.compressionTwo))
+
+    if (Math.abs(NUMBER_LINE_Y - e.data.global.y) < DRAGGER_WIDTH && numberline.minorStep > 0.005){
+      console.log("zooming")
+      const onComplete = () => {
+        dragger.x = numberline.getNumberLinePositionFromFloatValue(Math.min(numberline.compressionOne,numberline.compressionTwo))
+        this.x = numberline.getNumberLinePositionFromFloatValue(Math.max(numberline.compressionOne,numberline.compressionTwo))
+        this.touching = false
+      }
+      numberline.zoomTo(maxCompression-2*numberline.minorStep,maxCompression+2*numberline.minorStep,1,onComplete,onComplete)
+    }
+  }
+
   function draggerMinPointerDown() {
     this.initialX = this.x;
     this.initialNumberlineLength = numberline.min
   }
 
-  function draggerMinPointerMove() {
-
-    if (this.touching) {
-      let delta = this.x - this.initialX
-      let numberlineRange = numberline.max - numberline.min
-      let N = (delta / NUMBER_LINE_WIDTH) * numberlineRange
-      let range = numberlineRange + N
-      if (range >= 0.005 && range <= 500000){
-        numberline.draw(numberline.min-1/10*N,numberline.max);
-      } 
-    } else if (this.touching) {
-      this.x = NUMBER_LINE_WIDTH / 2;
-      this.initialX = 0;
-    }
-}
 
 function groundPointerMove(e) {
   if (this.touching) {
+
     let delta = e.data.global.x - this.initialX
+    let minCompression = Math.min(numberline.compressionOne,numberline.compressionTwo)
+    let maxCompression = Math.max(numberline.compressionOne,numberline.compressionTwo)
+    let roundedMinCompression = Math.round(minCompression/numberline.minorStep)*numberline.minorStep
+    let roundedMaxCompression = Math.round(maxCompression/numberline.minorStep)*numberline.minorStep
+
     let numberlineRange = numberline.max - numberline.min
     let N = (delta / NUMBER_LINE_WIDTH) * numberlineRange
-    let left = this.initialX < WINDOW_WIDTH/2 ? false : true
-    let range = left ? numberlineRange - N : numberlineRange + N
-    if (range >= 0.005 && range <= 500000){
-        if (!left){
-            numberline.draw(numberline.min-1/10*N,numberline.max);
-        } else if (left){
-            numberline.draw(numberline.min,numberline.max-1/10*N);
-        }
-    } 
-  }
+    let left = this.initialX < WINDOW_WIDTH/2 ? true : false
+    let range = numberlineRange - N
+    if (range > numberline.lowerRange && range < numberline.upperRange) {
+      if (left){
+            numberline.draw(numberline.min-1/15*N,numberline.max);
+        } else if (!left){
+            numberline.draw(numberline.min,numberline.max-1/15*N);
+      }
+    }
+    dragger.x = numberline.getNumberLinePositionFromFloatValue(minCompression)
+    draggerMin.x = numberline.getNumberLinePositionFromFloatValue(maxCompression)
+  } 
 }
 
+
 function groundPointerDown(e) {
+  const onComplete = ()=>{
+    draggerMin.interactive = false
+    dragger.interactive = false
+  }
+  //TweenLite.to([dragger,draggerMin],{alpha: 0,duration: 0.5,onComplete: onComplete})
   this.touching = true
   this.initialX = e.data.global.x 
 }
 
 function groundPointerUp(e) {
+  let minCompression = Math.min(numberline.compressionOne,numberline.compressionTwo)
+  let maxCompression = Math.max(numberline.compressionOne,numberline.compressionTwo)
+  const onComplete = ()=>{
+    draggerMin.interactive = true
+    dragger.interactive = true
+  }
+
+  const onComplete2 = ()=> {
+    draggerMin.x = numberline.getNumberLinePositionFromFloatValue(maxCompression)
+    dragger.x = numberline.getNumberLinePositionFromFloatValue(minCompression)
+    TweenLite.to([dragger,draggerMin],{alpha: 1,duration: 0.5,onComplete: onComplete})
+  }
+
+  // FEATURES
+  if (features.spaceShips){
+      if (draggerMin.x > WINDOW_WIDTH){
+        //let draggerMinXVal = numberline.getNumberLineFloatValueFromPosition(draggerMin.x)
+        //numberline.zoomTo(numberline.min,numberline.max + (draggerMinXVal-numberline.max)*2,0.3,onComplete2)
+        onComplete2()
+      } else if (dragger.x < 0) {
+        //let min = numberline.getNumberLineFloatValueFromPosition(dragger.x)
+        //numberline.zoomTo(-min/2,numberline.max,0.3,onComplete2)
+      } else {
+        onComplete2()
+      }
+  }
+
   this.touching = false
-  this.initialX = 0
-  numberline.draw(numberline.min,numberline.max)
+  this.initialX = this.x  
 }
 
 
-function draggerPointerMove() {
-  if (this.touching) {
-    let delta = this.x - this.initialX
-    let numberlineRange = numberline.max - numberline.min
-    let N = (delta / NUMBER_LINE_WIDTH) * numberlineRange
-    let range = numberlineRange - 10*N
-    if (range >= 0.005 && range <= 500000){
-      numberline.draw(numberline.min,numberline.max-1/10*N);
-    } 
-    fractionFrame.x = numberline.getNumberLinePositionFromFloatValue(11.5)
-  } else if (this.touching) {
-    this.x = NUMBER_LINE_WIDTH / 2;
-    this.initialX = 0;
-  } 
-}
 
   function scaleNumberLineBy(K) {
     let newMax = dragger.initialNumberlineLength * K;
@@ -255,18 +455,26 @@ function draggerPointerMove() {
       this.n = n;
       this.jumps = [];
       this.jumpGraphic = new PIXI.Graphics();
+      this.colorOne = 0x75acff
+      this.colorTwo = 0xff3bd8
       this.jumpGraphic.lineStyle(NUMBER_LINE_WIDTH / 300, 0x75acff);
       this.jumpGraphic.beginFill(0xffffff)
       this.jumpGraphic._fillStyle.alpha = 0.15
-      this.jumpGraphic.arc(0, 0, 100, -Math.PI, 0); // cx, cy, radius, startAngle, endAngle
+      this.jumpGraphic.arc(0, 0, 50, -Math.PI, 0); // cx, cy, radius, startAngle, endAngle
       this.jumpGraphic.endFill()
+      this.smallGraphic = false
       this.jumpTexture = app.renderer.generateTexture(this.jumpGraphic);
+
+      this.dummyGraphic = new PIXI.Graphics()
+      this.dummyGraphic.drawCircle(0,0,1)
+      this.dummyTexture = app.renderer.generateTexture(this.dummyGraphic)
       this.init();
     }
 
     init() {
       for (let i = 0; i < this.n; i++) {
         let newJump = new PIXI.Sprite();
+        newJump.texture = this.jumpTexture
         this.jumps.push(newJump);
         this.addChild(newJump);
       }
@@ -274,20 +482,32 @@ function draggerPointerMove() {
     }
 
     draw(size) {
-      this.jumpGraphic.clear();
-      this.jumpGraphic.lineStyle(NUMBER_LINE_WIDTH / 300, 0x75acff);
-      this.jumpGraphic.beginFill(0xffffff)
-      this.jumpGraphic._fillStyle.alpha = 0.15
-      this.jumpGraphic.arc(0, 0, size, -Math.PI, 0);
-      this.jumpGraphic.endFill()
-      this.jumpTexture.destroy(true);
-      this.jumpTexture = app.renderer.generateTexture(this.jumpGraphic);
-      this.jumps.forEach((e, i) => {
-        e.texture = this.jumpTexture;
-        e.x = i * 2 * size;
-        let _alpha = 1 - 1.5*size/NUMBER_LINE_WIDTH
-        e.alpha = _alpha
+      this._size = size
+
+      if (size < 0.5*WINDOW_WIDTH && size > 0.005*WINDOW_WIDTH){
+        this.jumpGraphic.clear();
+        if (this.smallGraphic == true) {
+          this.jumpGraphic.lineStyle(NUMBER_LINE_WIDTH / 300, this.colorOne);
+        } else {
+          this.jumpGraphic.lineStyle(NUMBER_LINE_WIDTH / 300, this.colorTwo);
+        }
+        this.jumpGraphic.beginFill(0xffffff)
+        this.jumpGraphic._fillStyle.alpha = 0.15
+        this.jumpGraphic.arc(0, 0, size, -Math.PI, 0);
+        this.jumpGraphic.endFill()
+        this.jumpTexture.destroy(true);
+        this.jumpTexture = app.renderer.generateTexture(this.jumpGraphic);
+        this.jumps.forEach((e, i) => {
+          e.texture = this.jumpTexture;
+          e.x = i * 2 * size;
+          let _alpha = 1 - 1.8*size/NUMBER_LINE_WIDTH
+          e.alpha = _alpha
       });
+      } else {
+        this.jumps.forEach((e, i) => {
+          e.alpha = 0
+      });
+      }
     }
   }
 
@@ -325,6 +545,8 @@ function draggerPointerMove() {
       this.ticks = [];
       this.tensJumps = new Jumps(100);
       this.hundredsJumps = new Jumps(100);
+      this.hundredsJumps.smallGraphic = false
+      this.tensJumps.smallGraphic = true
       this.labels = [];
       this.min = min;
       this.max = max;
@@ -332,6 +554,11 @@ function draggerPointerMove() {
       this.maxFloat = max;
       this._width = width;
       this.lineThickness = width / 300;
+
+      this.upperLimit = 1000000
+      this.lowerLimit = -1000000
+      this.upperRange = 1000000
+      this.lowerRange  = 0.0005
 
       this.setLayoutParams(min, max);
 
@@ -373,6 +600,15 @@ function draggerPointerMove() {
       this.compressionTwo = this.compressionOne * this.multiplier;
 
       this.init();
+    }
+
+    setColorState(multicolored){
+        if (multicolored){
+          // Do nothing
+        } else {
+          this.hundredsJumps.colorTwo = this.hundredsJumps.colorOne
+          this.tensJumps.colorTwo = this.hundredsJumps.colorOne
+        }
     }
 
 
@@ -459,6 +695,8 @@ function draggerPointerMove() {
           newActiveTick.x = (k - this.min) * dx;
           newActiveTick.alpha = 1;
 
+
+          // Why was this here?
           /*
           if (newActiveTick.value % majorStep == 0) {
             newActiveTick.texture = textures[0];
@@ -471,12 +709,24 @@ function draggerPointerMove() {
       });
     }
 
+
+    zoomTo(min,max,duration,onComplete,onUpdate){
+      const update = ()=>{
+        onUpdate()
+        this.draw(this.min,this.max)
+      }
+      TweenLite.to(this,{max: max,min: min,duration: duration,onUpdate: update,onComplete: onComplete})
+    }
+
+
     getNumberLineFloatValueFromPosition(pos) {
       return (pos * this.minorStep) / this.minorDX + this.minFloat;
     }
 
    getNumberLinePositionFromFloatValue(val){
-      return (val - this.minFloat)/(this.maxFloat-this.minFloat)*this._width
+      let pos = (val-this.minFloat)/this.minorStep*this.minorDX
+      let pos1 = (val - this.minFloat)/(this.maxFloat-this.minFloat)*this._width
+      return pos1
    }
 
     pinPointerMove() {
@@ -581,6 +831,7 @@ function draggerPointerMove() {
       this.majorTickThickness = this.minorTickThickness * 1.25;
     }
 
+    // NLD_DRAW
     draw(min, max) {
       this.min = min;
       this.max = max;
@@ -598,7 +849,7 @@ function draggerPointerMove() {
         this.dx,
         this.digitHeight
       );
-      // Why am I passing this.dx here?
+
       this.placeTicks(
         this.ticks,
         numbersNeededForTicks,
@@ -607,31 +858,31 @@ function draggerPointerMove() {
         this.majorStep
       );
 
-      let arcWidth = (this.minorDX / this.minorStep) * this.compressionOne 
-
-      if (
-        (this.minorDX / this.minorStep) * this.compressionOne >
-        this._width * 1.3
-      ) {
-        this.compressionOne = this.compressionOne / this.multiplierSquared;
-      } else if (
-        (this.minorDX / this.minorStep) * this.compressionOne <
-        this._width / this.multiplierSquared
-      ) {
-        this.compressionOne = this.compressionOne * this.multiplierSquared;
-      }
-
-      if (
-        (this.minorDX / this.minorStep) * this.compressionTwo >
-        this._width * 1.3
-      ) {
-        this.compressionTwo = this.compressionTwo / this.multiplierSquared;
-      } else if (
-        (this.minorDX / this.minorStep) * this.compressionTwo <
-        this._width / this.multiplierSquared
-      ) {
-        this.compressionTwo = this.compressionTwo * this.multiplierSquared;
-      }
+      if (this.nestMe){
+          if (
+            (this.minorDX / this.minorStep) * this.compressionOne >
+            this._width * 1.3
+          ) {
+            this.compressionOne = this.compressionOne / this.multiplierSquared;
+          } else if (
+            (this.minorDX / this.minorStep) * this.compressionOne <
+            this._width / this.multiplierSquared
+          ) {
+            this.compressionOne = this.compressionOne * this.multiplierSquared;
+          }
+    
+          if (
+            (this.minorDX / this.minorStep) * this.compressionTwo >
+            this._width * 1.3
+          ) {
+            this.compressionTwo = this.compressionTwo / this.multiplierSquared;
+          } else if (
+            (this.minorDX / this.minorStep) * this.compressionTwo <
+            this._width / this.multiplierSquared
+          ) {
+            this.compressionTwo = this.compressionTwo * this.multiplierSquared;
+          }
+      }  
 
       this.hundredsJumps.draw(
         ((this.minorDX / this.minorStep) * this.compressionOne) / 2
@@ -887,7 +1138,7 @@ function draggerPointerMove() {
       features = setup.props.features;
     }
 
-    numberline = new NumberLine(-5, 105, NUMBER_LINE_WIDTH);
+    numberline = new NumberLine(-10, 155, NUMBER_LINE_WIDTH);
 
     app.stage.addChild(numberline);
     numberline.x = WINDOW_WIDTH / 2 - NUMBER_LINE_WIDTH / 2;
@@ -935,13 +1186,23 @@ function draggerPointerMove() {
     }
 
     homeButton = new PIXI.Sprite.from(BUTTONS.HOME)
-    homeButton.width = DRAGGER_WIDTH
-    homeButton.height = DRAGGER_WIDTH
-    homeButton.x = DRAGGER_WIDTH/4
-    homeButton.y = DRAGGER_WIDTH/4
+    homeButton.width = HOME_BUTTON_WIDTH
+    homeButton.height = HOME_BUTTON_WIDTH
+    homeButton.x = HOME_BUTTON_WIDTH/4
+    homeButton.y = HOME_BUTTON_WIDTH/4
     homeButton.interactive = true
     homeButton.on('pointerdown',()=>app.goHome())
     app.stage.addChild(homeButton)
+
+    windowButton = new PIXI.Sprite.from(spaceShipWindow)
+    windowButton.width = HOME_BUTTON_WIDTH
+    windowButton.height = HOME_BUTTON_WIDTH
+    windowButton.x = WINDOW_WIDTH - HOME_BUTTON_WIDTH - HOME_BUTTON_WIDTH/4
+    windowButton.y = HOME_BUTTON_WIDTH/4
+    windowButton.interactive = true
+    windowButton.on('pointerdown',zoomToShips)
+    //app.stage.addChild(windowButton)
+
 
     ground.sprite.on('pointerdown',groundPointerDown)
     ground.sprite.on('pointerup',groundPointerUp)
@@ -951,11 +1212,30 @@ function draggerPointerMove() {
 
     // FRACTION FRAME TEST
 
-    fractionFrame = new FractionFrame(WINDOW_WIDTH/2,DRAGGER_WIDTH/2,6,app)
-    //app.stage.addChild(fractionFrame)
+
+    // FEATURES
+    if (features.spaceShips){
+      app.stage.addChild(dragger)
+      app.stage.addChild(draggerMin)
+      app.stage.addChild(windowButton)
+    }
+
+    // FEATURES
+    if (features.spaceBubbles){
+      numberline.nestMe =  true
+      // Not multicolored
+      numberline.setColorState(false)
+    }
+
+    app.stage.addChild(draggerCenter)
+    
 
     numberline.draw(numberline.min,numberline.max)
 
+    let minCompression = Math.min(numberline.compressionOne,numberline.compressionTwo)
+    let maxCompression = Math.max(numberline.compressionOne,numberline.compressionTwo)
+    dragger.x = numberline.getNumberLinePositionFromFloatValue(minCompression)
+    draggerMin.x = numberline.getNumberLinePositionFromFloatValue(maxCompression)
 
   }
 

@@ -18,7 +18,7 @@ export default class Interactives extends Component {
       <div >
         <div style = {{display: "flex",flexDirection: 'column'}} >
         <Grid  container>
-          <Grid xs = {12} sm = {4} >
+          <Grid xs = {12} item = {true}  sm = {4} >
             <div style={{ flexDirection: "column", display: "flex", flex: 1 }}>
             <div style={{ margin: 5, flex: 1 }}>
                 {" "}
@@ -30,15 +30,19 @@ export default class Interactives extends Component {
               </div>
             </div>
             </Grid>
-            <Grid xs = {12} sm = {4} >
+            <Grid xs = {12} item = {true}  sm = {4} >
             <div style={{ flexDirection: "column", display: "flex", flex: 1 }}>
+            <div style={{ margin: 5, flex: 1 }}>
+                {" "}
+                <LessonCard data={ACTIVITIES.SPACE_SHIPS} />
+              </div>
             <div style={{ margin: 5, flex: 1 }}>
                 {" "}
                 <LessonCard data={ACTIVITIES.ACTIVITY_TWO} />
               </div>
             </div>
             </Grid>
-            <Grid xs = {12} sm = {4} >
+            <Grid xs = {12} item = {true} sm = {4} >
             <div style={{ flexDirection: "column", display: "flex", flex: 1 }}>
             <div style={{ margin: 5, flex: 1 }}>
                 {" "}

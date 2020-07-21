@@ -52,6 +52,15 @@ export const SPACE_BUBBLES = {
     "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
 };
 
+export const SPACE_SHIPS = {
+  shortText: "Numberline With Adjustable Whole & Part",
+  title: "Space Ships",
+  previewImg: "SpaceShips.png",
+  tool: "/spaceships",
+  coreSkillDescription:
+    "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
+};
+
 export const FACTOR_WALL = {
   shortText: "Instantly Visuallize the Factors of Any Number.",
   title: "Factor Wall",

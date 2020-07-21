@@ -45,6 +45,8 @@ import yellow_circle from "../assets/YellowCircle.png"
 import chalk_board from "../assets/Chalkboard.png"
 import star from "../assets/Cloud.png"
 import space_gradient from "../assets/space-gradient.png"
+import pink_space_ship from "../assets/PinkSpaceShip.png"
+import blue_space_ship from "../assets/BlueSpaceShip.png"
 
 export const ASSETS = {
     BLUE_GRADIENT: blue_gradient,
@@ -93,7 +95,10 @@ export const ASSETS = {
     YELLOW_CIRCLE: yellow_circle,
     CHALK_BOARD: chalk_board,
     STAR: star,
-    SPACE_GRADIENT: space_gradient
+    SPACE_GRADIENT: space_gradient,
+    BLUE_SPACE_SHIP: blue_space_ship,
+    PINK_SPACE_SHIP: pink_space_ship,
+
 }
 
 export const CUISENAIRE_COLORS = {
