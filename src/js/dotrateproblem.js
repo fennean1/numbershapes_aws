@@ -17,7 +17,7 @@ import { Tween } from "gsap/gsap-core";
 
 export const init = (app, setup) => {
 
-// Constants
+// CONSTANTS
 const WINDOW_WIDTH = setup.width
 const WINDOW_HEIGHT = setup.height
 const CARD_SPACING_PERCENTAGE = 0.05
@@ -40,187 +40,38 @@ const RESET_TEXTURE = new PIXI.Texture.from(Reset);
 const PLAY_TEXTURE = new PIXI.Texture.from(PlayButton);
 
 
+
+// UI ELEMENTS
 let backGround;
 let grass;
 let grass2;
-let playAgainButton;
+let playButton;
 let homeButton;
 let waves;
 let cardBank;
-let textureCache;
-let ballTextureCache;
-
-let cardPool;
-
-let features;
-
 let dots = []
 let cards = []
 let balls = []
 let A = null
 let B = null
 
+
+// GLOBAL DATA
+let cardPool;
+let textureCache;
+let ballTextureCache;
+let features;
+
+
+// TIMELINES
 let dotTimeline = new TimelineLite({paused: true})
 let grassTimeline = new TimelineLite({paused: true})
 
-const synchCards = () => {
-  A = null 
-  B = null
-  cards.forEach((r,i)=>{
-    r.forEach((c,j)=>{
-      if (c.markedForUpdate){
-        let newAsset = cardPool.get()
-        c.value = newAsset.value
-        c.color = newAsset.color
-        c.number = newAsset.number
-        c.texture = newAsset
-        c.isDefault = newAsset.isDefault
-      }
-      c.width = DX 
-      c.height = DY
-      c.markedForUpdate = false
-      c.rotation = 0
-      c.interactive = c.isDefault ? false : true
-    })
-  })
-  if (cardPool.numberofDefaults >= 25){
-    cardsForEach(c=>{TweenLite.to(c,2,{alpha: 0,onComplete:  showScore})})
-  }
-}
-
-function reloadGame(){
- 
-}
-
-// Helper function for iterating through cards.
-function cardsForEach(callback){
-  cards.forEach((r,i)=>{
-    r.forEach((c,j)=>{
-      callback(c,j,r,i)
-    })
-  })
-}
-
-function showScore() {
-  const onComplete = ()=> {
-    TweenLite.to(playAgainButton,0.5,{y: DY/2})
-  }
-  let T = new TimelineLite({paused: true,onComplete: onComplete})
-  let tens = (balls.length - balls.length%10)/10
-  let width = (tens+1)*DX/4
-
-  let tweens = []
-  
-  balls.forEach((b,i)=>{
-    let j = (i - i%10)/10
-    let startX = setup.width/2 - width/2
-    let startY = setup.height/2 - DY
-    let toX = startX+j*DX/4
-    let toY = startY + i%10*DY/5
-    if (i==0){
-      T.to(b,{duration: 1,x: toX,y: toY,ease: "power2.inOut"})
-    } else {
-      T.to(b,{duration: 1,x: toX,y: toY,ease: "power2.inOut"},"-=0.95")
-    }
-  })
-
-   T.play()
-
-}
-
-function cardClicked(){
-  let numeralTexture = textureCache[6][this.value]
-  this.texture = numeralTexture
-  this.markedForUpdate = true
- if (A) {
-   cardsForEach(e=>e.interactive = false)
-    if (this.value == A.value && A != this) {
-          
-    const onComplete = ()=>{
-      A.y = -DY
-      this.y = -DY
-      if (A.color != this.color){
-        dropBalls(this.number,this.color)
-        dropBalls(A.number,A.color)
-      }
-      condenseCards(cards)
-      animateCards()
-      synchCards()
-    }
-
-     TweenLite.to([A,this],0.4,{width: DX*1.15,height: DY*1.15,ease: "bounce",onComplete: onComplete})
-    } else if (A != this) {
-      const onComplete = ()=>{
-        A.markedForUpdate = false 
-        this.markedForUpdate = false
-        A.texture = textureCache[A.color][A.number]
-        this.texture = textureCache[this.color][this.number]
-        synchCards()
-      }
-      let t = new TimelineLite()
-      t.to([A,this],0.3,{rotation: Math.PI/6})
-      t.to([A,this],0.3,{rotation: 0,ease: "bounce"})
-      t.to([A,this],0.1,{rotation: 0,ease: "bounce",onComplete: onComplete})
-    } else {
-      cardsForEach(e=>{e.interactive = true})
-        A.texture = textureCache[A.color][A.number]
-        A.markedForUpdate = false
-        A = null
-    }
-  } else {
-    A = this
-  } 
-}
-
-function dropBalls(number,color){
-  let ballTexture = ballTextureCache[color]
-  for (let i = 0;i<number+1;i++){
-    let newBall = new PIXI.Sprite.from(BlankCard)
-    newBall.texture = ballTexture
-    newBall.x = DX/2 + setup.width*Math.random() - DX
-    newBall.y = -DY/5
-    newBall.width = DX/5
-    newBall.height = DY/5
-    TweenLite.to(newBall,1+0.5*Math.random(),{y: grass.y - newBall.width,ease: 'bounce'})
-    app.stage.addChild(newBall)
-    balls.push(newBall)
-  }
-  balls.sort(function(a,b){
-    return (a.x - b.x)})
-}
-
-
-
-const animateCards = () => {
-  cards.forEach((r,i)=>{
-    r.forEach((c,j)=>{
-      TweenLite.to(c,1,{x: GRID_X + i*DX*1.05,y: GRID_Y+j*DX*1.05,ease: "bounce"})
-    })
-  })
-}
-
-const condenseCards = cards => {
-  let spotsToFill = 0;
-  for (let i = 0; i < 5; i++) {
-    spotsToFill = 0;
-    // Iterate through each column
-    for (let j = 4; j >= 0; j--) {
-      if (cards[i][j].markedForUpdate == true) {
-        spotsToFill++;
-      } else if (spotsToFill > 0) {
-        const currentSpot = cards[i][j];
-        const newSpot = cards[i][j + spotsToFill];
-        cards[i][j] = newSpot;
-        cards[i][j + spotsToFill] = currentSpot;
-      }
-    }
-  }
-};
 
 function restartAnimation(){
   dotTimeline.kill()
   grassTimeline.kill()
-  homeButton.animationBegun = false
+  playButton.animationBegun = false
 
   dots.forEach(d=>{
     d.x = -d.width/2
@@ -232,7 +83,7 @@ function restartAnimation(){
 
 function pauseDots(){
 
-if (homeButton.animationBegun == true){
+if (playButton.animationBegun == true){
     if (this.paused == true){
       this.paused = false
       dotTimeline.play()
@@ -292,33 +143,6 @@ grassTimeline.to(grass2,{duration: 26,x: setup.width,ease: Linear.easeNone})
   grassTimeline.play()
 }
 
-/*
-
-function animateDots(){
-
-
-  const onUpdate = (v) => {
-    console.log(v)
-  }
-
-  dots.forEach((d,i)=>{
-    let offset = i == 0 ? 0 : "-=0.8"
-    let t = new TimelineLite()
-    let l = dots.length
-    let dot = dots[l-i-1]
-    t.to(dot,{duration: 1,x: setup.width/2.2,ease: "linear"})
-    t.to(dot,{duration: 1,x: setup.width,ease: "linear"})
-    t.to(dot,{duration: 0.5,y: grass.y + grass.height-dot.height,ease: "bounce"},"-=1")
-    T.add(t,offset)
-  })
-
-  T.play()
-  
-}
-
-*/
-
-
 function init(){
 
   // Background
@@ -352,26 +176,27 @@ function init(){
   grass.x = GAP_START - grass.width
   app.stage.addChild(grass);
 
-  playAgainButton = new PIXI.Sprite.from(Reset)
-  playAgainButton.width = DX
-  playAgainButton.height = DX
-  playAgainButton.x = DX/4
-  playAgainButton.y = DX/4
-  playAgainButton.interactive = true 
-  playAgainButton.on('pointerdown',reloadGame)
-  //app.stage.addChild(playAgainButton)
 
 
-  homeButton = new PIXI.Sprite.from(PlayButton)
+  homeButton = new PIXI.Sprite.from(BUTTONS.HOME)
   homeButton.width = DX
   homeButton.height = DX
   homeButton.x = DX/4
   homeButton.y = DX/4
-  homeButton.animationBegun = false
   homeButton.interactive = true
-  homeButton.on('pointerdown',actionClicked)
+  homeButton.on('pointerdown',()=>{app.goHome()})
+
+  playButton = new PIXI.Sprite.from(PlayButton)
+  playButton.width = DX
+  playButton.height = DX
+  playButton.x = WINDOW_WIDTH-5*DX/4
+  playButton.y = DX/4
+  playButton.animationBegun = false
+  playButton.interactive = true
+  playButton.on('pointerdown',actionClicked)
 
   app.stage.addChild(homeButton)
+  app.stage.addChild(playButton)
   app.stage.addChild(grass2);
 
   for (let i = 0;i<12;i++){

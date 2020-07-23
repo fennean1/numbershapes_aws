@@ -11,6 +11,12 @@ import Interactives from "./Interactives";
 import CardGames from "./CardGames";
 import Printables from "./Printables";
 import Apps from "./Apps";
+import BottomNavigation from '@material-ui/core/BottomNavigation';
+import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
+import RestoreIcon from '@material-ui/icons/Restore';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import LocationOnIcon from '@material-ui/icons/LocationOn';
+
 
 function TabContainer({ children, dir }) {
   return (
@@ -28,14 +34,20 @@ TabContainer.propTypes = {
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.paper,
-    width: 500,
+    width: "100%",
+    flexShrink: 0,
   },
 }));
 
 export default function ConceptsCarousel(props) {
   const theme = useTheme();
+  const classes = useStyles()
   const [value, setValue] = React.useState(0);
+  const [bottomTabValue, setBottomTabValue] = React.useState(0);
   const { path } = props.match;
+  
+  
+  
 
   function handleChange(event, newValue) {
     if (newValue == 0) {
@@ -82,7 +94,7 @@ export default function ConceptsCarousel(props) {
   return (
     <div
       className="clouds"
-      style={{ display: "flex", flexDirection: "column" }}
+      style={{ display: "flex", flexDirection: "column"}}
     >
       <div className="container" style={{ marginTop: 50 }}>
         <Tabs
@@ -145,28 +157,3 @@ export default function ConceptsCarousel(props) {
     </div>
   );
 }
-
-/*
-
-      <TabContainer dir={theme.direction}>
-          {value == 0 && (
-            <CardGames/>
-          )}
-        </TabContainer>
-        <TabContainer dir={theme.direction}>
-          {value == 1 && (
-            <ChoiceGrid/>
-          )}
-        </TabContainer>
-        <TabContainer dir={theme.direction}>
-          {value == 2 && (
-            <QuickImages/>
-          )}
-        </TabContainer>
-
- <Switch>
-            <Route path={`${path}`} exact component={Profile} />
-            <Route path={`${path}/comments`} component={Comments} />
-            <Route path={`${path}/contact`} component={Contact} />
-          </Switch>
-*/
