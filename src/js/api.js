@@ -3,6 +3,7 @@ import * as PIXI from "pixi.js";
 import { TweenMax, TimelineLite, Power2, Elastic, CSSPlugin, TweenLite, TimelineMax } from "gsap";
 import {NUMBERS} from "../AssetManager.js"
 import * as CONST from "./const.js";
+import { timers } from "jquery";
 
 
 export class Row extends PIXI.Container{
@@ -11,6 +12,76 @@ export class Row extends PIXI.Container{
   }
 }
 
+
+export class Timer extends PIXI.Container{
+  constructor(totalTime,width,height,app) {
+    super()
+    this.timeLine = new TimelineLite({paused: true})
+    this.progress = new PIXI.Graphics()
+    this.outline = new PIXI.Graphics()
+    this.tick = new PIXI.Graphics()
+    this.tickTexture;
+    this.ticks = []
+    this.totalTime = totalTime
+    this.dx = width/this.totalTime
+    this.app = app
+    this.currentTime = 0
+
+
+    this.init(width,height)
+  }
+
+  init(width,height){
+    this.strokeWidth = height/10
+    this._width = width 
+    this._height = height
+    this.outline.lineStyle(this.strokeWidth,0x000000)
+    this.outline.drawRoundedRect(0,0,this._width,this._height,this.strokeWidth/10)
+    this.addChild(this.progress)
+    this.addChild(this.outline)
+
+    this.tick.lineStyle(this.strokeWidth,0x000000)
+    this.tick.lineTo(0,this._height/3)
+    this.tickTexture = this.app.renderer.generateTexture(this.tick)
+
+    for (let i = 0;i<this.totalTime;i++) {
+      let newTick = new PIXI.Sprite()
+      newTick.texture = this.tickTexture 
+      newTick.x = (i)*this.dx - this.strokeWidth/2
+      newTick.y = 0
+      this.addChild(newTick)
+      this.ticks.push(newTick)
+    }
+    
+  }
+
+  draw() {
+    let progressPercentage = this.currentTime/this.totalTime
+    let progressWidth = progressPercentage*this._width
+    this.progress.clear()
+    this.progress.beginFill(0xff3b55)
+    this.progress.drawRoundedRect(0,0,progressWidth,this._height,this.strokeWidth/10)
+    this.progress.x = 0
+    this.progress.y = 0
+    this.progress.endFill()
+
+  }
+
+  pause() {
+
+  }
+
+  go(){
+
+  }
+
+  reset(){
+    this.currentTime = 0
+    this.draw()
+  }
+
+
+}
 
 export class FractionFrame extends PIXI.Container {
   constructor(width,height,den,app,vertical,secondColor,descriptor){

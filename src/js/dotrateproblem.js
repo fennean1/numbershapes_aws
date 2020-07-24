@@ -11,9 +11,16 @@ import BlankCard from "../assets/BlankCard.png";
 import Reset from "../assets/Reset.png";
 import PlayButton from "../assets/PlayButton.png";
 import {BLUE,RED,GREEN,ORANGE,PURPLE,PINK,NUMERAL,BALLS,BUTTONS,DOTS} from "../AssetManager.js"
-import {shuffle} from "./api.js"
+import {shuffle, Timer} from "./api.js"
 import { Tween } from "gsap/gsap-core";
 
+
+const STATES =  {
+  INACTIVE: 0,
+  PAUSED: 1,
+  ACTIVE: 2,
+  COMPLETE: 3,
+}
 
 export const init = (app, setup) => {
 
@@ -45,6 +52,7 @@ const PLAY_TEXTURE = new PIXI.Texture.from(PlayButton);
 let backGround;
 let grass;
 let grass2;
+let timer;
 let playButton;
 let homeButton;
 let waves;
@@ -61,17 +69,23 @@ let cardPool;
 let textureCache;
 let ballTextureCache;
 let features;
+let state = STATES.INACTIVE
+
 
 
 // TIMELINES
 let dotTimeline = new TimelineLite({paused: true})
 let grassTimeline = new TimelineLite({paused: true})
+let timerTimeline = new TimelineLite({paused: true})
 
 
 function restartAnimation(){
   dotTimeline.kill()
   grassTimeline.kill()
+  timerTimeline.kill()
+  timer.reset()
   playButton.animationBegun = false
+  playButton.texture = PLAY_TEXTURE
 
   dots.forEach(d=>{
     d.x = -d.width/2
@@ -82,43 +96,62 @@ function restartAnimation(){
 
 
 function pauseDots(){
-
-if (playButton.animationBegun == true){
-    if (this.paused == true){
-      this.paused = false
+  switch (state){
+    case STATES.INACTIVE:
+        // Nothing To Pause
+      break;
+    case STATES.PAUSED:
+      state = STATES.ACTIVE
       dotTimeline.play()
       grassTimeline.play()
-    } else {
-      this.paused = true
+      timerTimeline.play()
+      break;
+    case STATES.ACTIVE:
+      state = STATES.PAUSED
       dotTimeline.pause()
       grassTimeline.pause()
-    }
+      timerTimeline.pause()
+      break;
+    case STATES.COMPLETE:
+      dotTimeline.pause()
+      grassTimeline.pause()
+      timerTimeline.pause()
+      break;
+    default:
+      break;
   }
 }
 
 function actionClicked(){
 
-  if (this.animationBegun == true){
-    this.texture = PLAY_TEXTURE
-    this.animationBegun = false
-    restartAnimation()
-  } else {
-    this.animationBegun = true
+  if (state == STATES.INACTIVE){
     this.texture = RESET_TEXTURE
     animateDots()
+    state = STATES.ACTIVE
+  } else {
+    this.texture = PLAY_TEXTURE
+    state = STATES.INACTIVE
+    restartAnimation()
   }
 }
 
 
 function animateDots(){
-
-
 const onComplete = ()=>{
-  homeButton.alpha = 1
+  state = STATES.COMPLETE
+  pauseDots()
 }
 
-dotTimeline = new TimelineLite({paused: true,onComplete: onComplete})
+
+const onUpdate= ()=>{
+  timer.draw()
+}
+
+dotTimeline = new TimelineLite({paused: true})
 grassTimeline = new TimelineLite({paused: true})
+timerTimeline = new TimelineLite({paused: true,onComplete: onComplete})
+
+timerTimeline.to(timer,{duration: timer.totalTime,currentTime: timer.totalTime,onUpdate: onUpdate,ease: Linear.easeNone})
 grassTimeline.to(grass2,{duration: 26,x: setup.width,ease: Linear.easeNone})
 
   dots.forEach((d,i)=>{
@@ -141,6 +174,7 @@ grassTimeline.to(grass2,{duration: 26,x: setup.width,ease: Linear.easeNone})
   }) 
   dotTimeline.play()
   grassTimeline.play()
+  timerTimeline.play()
 }
 
 function init(){
@@ -218,6 +252,14 @@ function init(){
   if (setup.props.features){
     features = setup.props.features
   }
+  let timerWidth = WINDOW_WIDTH/2
+  timer = new Timer(7,timerWidth,timerWidth/20,app)
+  app.stage.addChild(timer)
+  timer.x = WINDOW_WIDTH/4
+  timer.y = timer.height
+
+  state  = STATES.INACTIVE
+
 }
 
   init();
