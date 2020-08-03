@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js";
 import blueGradient from "../assets/blue-gradient.png";
 import * as CONST from "./const.js";
 import QuestionMark from '../assets/QuestionMark.png'
-import { TweenMax, TimelineLite, Power2, Elastic, CSSPlugin, TweenLite, TimelineMax } from "gsap/TweenMax";
+import { TweenMax, TimelineLite, Power2, Elastic, CSSPlugin, TweenLite, TimelineMax } from "gsap";
 import {Fraction,getIndexOfNearestVertice, Draggable, distance,splitMultiplePolygons,DraggablePoly, getNearestNodeMetadata} from "./api.js"
 const ASSETS = CONST.ASSETS
 
@@ -33,6 +33,8 @@ export const init = (app, setup) => {
   let features;
   let cuttingMode = false
   let activelyCutting = false
+  let fadeAnimation = new TimelineLite({paused: true})
+ 
 
 
 
@@ -113,8 +115,6 @@ export const init = (app, setup) => {
   }
 
 
-  let fadeAnimation = new TimelineLite({paused: true})
- 
   function makeBackground(){
     // Setup Background
     this.sprite = new PIXI.Sprite.from(CONST.ASSETS.BLUE_GRADIENT);

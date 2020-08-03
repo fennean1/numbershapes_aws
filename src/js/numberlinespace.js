@@ -137,15 +137,15 @@ export const init = (app, setup) => {
   draggerMin.y = DRAGGER_Y - dragger.height/2
   //app.stage.addChild(draggerMin);
 
-  let draggerCenter = new Draggable(MOVER_DOT);
+  let draggerCenter = new Draggable(SHARP_PIN_TEXTURE);
   draggerCenter.interactive = true;
   draggerCenter.lockY = true;
   draggerCenter.anchor.set(0.5,0);
-  draggerCenter.height = ground.sprite.height
-  draggerCenter.width = draggerCenter.height/2.5
+  draggerCenter.height = ground.sprite.height/2
+  draggerCenter.width = ground.sprite.height/2
   draggerCenter.x = WINDOW_WIDTH/2
   draggerCenter.anchorPoint = draggerCenter.x
-  draggerCenter.y = NUMBER_LINE_Y
+  draggerCenter.y = 1.10*NUMBER_LINE_Y
   //app.stage.addChild(draggerMin);
 
 
@@ -336,7 +336,6 @@ export const init = (app, setup) => {
     dragger.x = numberline.getNumberLinePositionFromFloatValue(Math.min(numberline.compressionOne,numberline.compressionTwo))
 
     if (Math.abs(NUMBER_LINE_Y - e.data.global.y) < DRAGGER_WIDTH && numberline.minorStep > 0.005){
-      console.log("zooming")
       const onComplete = () => {
         dragger.x = numberline.getNumberLinePositionFromFloatValue(Math.min(numberline.compressionOne,numberline.compressionTwo))
         this.x = numberline.getNumberLinePositionFromFloatValue(Math.max(numberline.compressionOne,numberline.compressionTwo))
@@ -365,11 +364,14 @@ function groundPointerMove(e) {
     let N = (delta / NUMBER_LINE_WIDTH) * numberlineRange
     let left = this.initialX < WINDOW_WIDTH/2 ? true : false
     let range = numberlineRange - N
+
+    let newNumberLineMaxValue = numberline.getNumberLineMaxFromAnchor(this.initialValue,e.data.global.x)
+    let newNumberLineMinValue = numberline.getNumberLineMinFromAnchor(this.initialValue,e.data.global.x)
     if (range > numberline.lowerRange && range < numberline.upperRange) {
       if (left){
-            numberline.draw(numberline.min-1/15*N,numberline.max);
+           numberline.draw(newNumberLineMinValue,numberline.max);
         } else if (!left){
-            numberline.draw(numberline.min,numberline.max-1/15*N);
+            numberline.draw(numberline.min,newNumberLineMaxValue);
       }
     }
     dragger.x = numberline.getNumberLinePositionFromFloatValue(minCompression)
@@ -386,9 +388,14 @@ function groundPointerDown(e) {
   //TweenLite.to([dragger,draggerMin],{alpha: 0,duration: 0.5,onComplete: onComplete})
   this.touching = true
   this.initialX = e.data.global.x 
+  this.initialValue = numberline.getNumberLineFloatValueFromPosition(this.initialX)
+  this.initialMax = numberline.maxFloat
+  this.initialMin = numberline.minFloat
 }
 
 function groundPointerUp(e) {
+  this.initialMax = numberline.maxFloat
+  this.initialMin = numberline.minFloat
   let minCompression = Math.min(numberline.compressionOne,numberline.compressionTwo)
   let maxCompression = Math.max(numberline.compressionOne,numberline.compressionTwo)
   const onComplete = ()=>{
@@ -718,9 +725,28 @@ function groundPointerUp(e) {
       TweenLite.to(this,{max: max,min: min,duration: duration,onUpdate: update,onComplete: onComplete})
     }
 
-
     getNumberLineFloatValueFromPosition(pos) {
       return (pos * this.minorStep) / this.minorDX + this.minFloat;
+    }
+
+    getNumberLineMaxFromAnchor(anchor,position) {
+      let max = this.minFloat + (anchor - this.minFloat)/position*this._width
+      return max
+    }
+
+    getNumberLineMinFromAnchor(anchor,position) {
+
+      /*
+      let position = this._width*(1-(this.maxFloat - anchor)/(this.maxFloat-this.minFloat))
+
+      position/this._width - 1  = (this.maxFloat - anchor)/(this.maxFloat-this.minFloat)
+
+      */
+
+      let min = this.maxFloat - (this.maxFloat - anchor)/(1-position/this._width)
+
+      console.log("min",min)
+      return min
     }
 
    getNumberLinePositionFromFloatValue(val){
