@@ -562,9 +562,9 @@ function groundPointerUp(e) {
       this._width = width;
       this.lineThickness = width / 300;
 
-      this.upperLimit = 1000000
-      this.lowerLimit = -1000000
-      this.upperRange = 1000000
+      this.upperLimit = 10000
+      this.lowerLimit = -10000
+      this.upperRange = 20000
       this.lowerRange  = 0.0005
 
       this.setLayoutParams(min, max);
@@ -859,6 +859,11 @@ function groundPointerUp(e) {
 
     // NLD_DRAW
     draw(min, max) {
+
+    let range = max - min
+
+
+    if (max < this.upperLimit && min > this.lowerLimit && range > this.lowerRange && range < this.upperRange ) {
       this.min = min;
       this.max = max;
       this.minFloat = min;
@@ -927,6 +932,8 @@ function groundPointerUp(e) {
       this.tensJumps.x = ((0 - this.minFloat%this.compressionTwo - this.compressionTwo) / this.minorStep) * this.minorDX - this.lineThickness/2
       this.tensJumps.y =
         ((-this.minorDX / this.minorStep) * this.compressionTwo) / 2;
+
+      }
     }
 
     init() {

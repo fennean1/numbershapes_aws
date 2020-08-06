@@ -4,7 +4,6 @@ import LessonCard from "./LessonCard";
 import * as Subitization from "./activities/Subitization.json";
 import * as Addition from "./activities/Addition.json";
 import * as Subtraction from "./activities/Subtraction.json";
-import * as Pivot from "./activities/Pivot.json";
 
 
 class LessonList extends Component {
@@ -31,9 +30,6 @@ class LessonList extends Component {
           <div className="row">
           <div className="col s6">
             <LessonCard data={Addition} />
-          </div>
-          <div className="col s6">
-            <LessonCard data={Pivot} />
           </div>
          </div> 
       </div>

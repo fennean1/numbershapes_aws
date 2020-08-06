@@ -79,9 +79,12 @@ export class Timer extends PIXI.Container{
     this.currentTime = 0
     this.draw()
   }
-
-
 }
+
+
+
+
+
 
 export class FractionFrame extends PIXI.Container {
   constructor(width,height,den,app,vertical,secondColor,descriptor){
@@ -1568,7 +1571,407 @@ export function getNearestNodeMetadata(nodes,point){
   return nearestMetadata
 }
 
+// Number Line Helpers
+
+function getNumbersNeeded(max, min, step) {
+  let numbersNeeded = {};
+  let start = Math.ceil(min / step) * step;
+  let currentNumber = start;
+  let digits = digitCount(step);
+
+  while (currentNumber <= max && currentNumber >= start) {
+    let cleanNumber = Math.round(currentNumber / step) * step;
+    if (cleanNumber % 1 != 0) {
+      cleanNumber = currentNumber.toFixed(digits - 1);
+    }
+    // Add this number to the list of numbers needed.
+    numbersNeeded[cleanNumber] = true;
+    currentNumber += step;
+  }
+  return numbersNeeded;
+}
+
+function digitCount(n) {
+  var count = 1;
+
+  if (n >= 1) {
+    while (n / 10 >= 1) {
+      n /= 10;
+      ++count;
+    }
+    return count;
+  } else {
+    ++count;
+    while (n % 1 != 0) {
+      n *= 10;
+      ++count;
+    }
+    return count - 1;
+  }
+}
+
 // Number Line
+
+
+export class UltimateNumberLine extends PIXI.Container {
+  constructor(min, max, width,app) {
+    super();
+    this.labels = [];
+    this.ticks = []
+    this.min = min;
+    this.max = max;
+    this.minFloat = min;
+    this.maxFloat = max;
+    this._width = width;
+    this.lineThickness = width / 300;
+
+    this.upperLimit = 1000000
+    this.lowerLimit = -1000000
+    this.upperRange = 1000000
+    this.lowerRange  = 0.0005
+
+    this.setLayoutParams(min, max);
+
+    this.majorTick = new PIXI.Graphics();
+    this.majorTick.lineStyle(this.majorTickThickness, 0x000000);
+    this.majorTick.lineTo(0, this.majorTickHeight);
+    this.majorTickTexture = app.renderer.generateTexture(this.majorTick);
+
+    this.minorTick = new PIXI.Graphics();
+    this.minorTick.lineStyle(this.minorTickThickness, 0x000000);
+    this.minorTick.lineTo(0, this.minorTickHeight);
+    this.minorTickTexture = app.renderer.generateTexture(this.minorTick);
+
+    this.line = new PIXI.Graphics();
+    this.line.lineStyle(this.lineThickness, 0x000000);
+    this.line.lineTo(width, 0);
+    this.line.y = this.line.y + this.lineThickness/2
+    this.addChild(this.line);
+
+    this.init();
+  }
+
+
+
+  numberLineParameters(min, max, width) {
+    let majorSteps = [
+      0.00001,
+      0.00005,
+      0.0001,
+      0.0005,
+      0.001,
+      0.005,
+      0.01,
+      0.05,
+      0.1,
+      0.5,
+      1,
+      5,
+      10,
+      50,
+      100,
+      500,
+      1000,
+      5000,
+      10000,
+      50000,
+      100000,
+    ];
+    let minorSteps = [
+      0.00001,
+      0.00005,
+      0.0001,
+      0.0005,
+      0.001,
+      0.005,
+      0.01,
+      0.1,
+      1,
+      5,
+      10,
+      50,
+      100,
+      500,
+      1000,
+      5000,
+      10000,
+      50000,
+      100000,
+    ];
+    let minorStepIndex = 0;
+    let majorStepIndex = -1;
+    let digitHeight = 0;
+    let ticksNeeded = (max - min) / minorSteps[minorStepIndex];
+    let majorStep = 0.0001;
+    let minorStep = 0.0001;
+
+    while (digitHeight < width / 50) {
+      majorStepIndex += 1;
+      let numberOfIncrements = Math.round(
+        (max - min) / majorSteps[majorStepIndex]
+      );
+      let maxDigits = 1;
+      if (majorSteps[majorStepIndex] >= 1) {
+        if (min < 0){
+          maxDigits = digitCount(Math.floor(Math.abs(min))) + 1
+        } else {
+          maxDigits = digitCount(Math.ceil(max));
+        }
+      } else {
+        if (min < 0){
+          maxDigits = digitCount(Math.abs(Math.floor(min)))+digitCount(majorSteps[majorStepIndex]) + 1
+        } else {
+          maxDigits = digitCount(Math.ceil(max))+digitCount(majorSteps[majorStepIndex]);
+        }
+
+      }
+
+      let numberOfDigitWidths = (maxDigits + 1) * (numberOfIncrements - 1);
+
+      let digitWidth = width / numberOfDigitWidths;
+      digitHeight = (6 / 5) * digitWidth;
+      minorStep = minorSteps[majorStepIndex - 1];
+      majorStep = majorSteps[majorStepIndex];
+    }
+
+    while (ticksNeeded >= 100) {
+      minorStepIndex += 1;
+      ticksNeeded = (max - min) / minorSteps[minorStepIndex];
+      minorStep = minorSteps[minorStepIndex];
+    }
+
+    digitHeight = width / 50;
+
+    const params = {
+      MAJOR_STEP: majorStep,
+      MINOR_STEP: minorStep,
+      DIGIT_HEIGHT: digitHeight,
+    };
+    return params;
+  }
+
+
+  // Only responsible for setting labels to the rightful location.
+  placeLabels(labels, values, dx, digitHeight) {
+    labels.forEach((l) => {
+      let currentValue = l.value;
+      // If the value of this label isn't null, we know it's already active and on the number line.
+      let activeLabel = currentValue != null;
+      let needsToBeSet = activeLabel && values[currentValue];
+      delete values[currentValue];
+      // If the label is active and still a value that needs to be set, reposition it.
+      if (needsToBeSet) {
+        l.text = l.value;
+        l.x = (l.value - this.min) * dx;
+        l.style.fontSize = digitHeight;
+        l.alpha = 1;
+
+        // If it's active, but not part of the new active labels, remove it and set value null.
+      } else if (activeLabel) {
+        // Hide / remove
+        l.value = null;
+        l.alpha = 0;
+      }
+    });
+
+    let empties = labels.filter((l) => l.value == null);
+
+    let valueKeys = Object.keys(values);
+
+    valueKeys.forEach((k) => {
+      if (empties.length != 0) {
+        let newActiveLbl = empties.pop();
+        newActiveLbl.value = k;
+        newActiveLbl.text = k;
+        newActiveLbl.x = (k - this.min) * dx;
+        newActiveLbl.alpha = 1;
+      }
+    });
+  }
+
+  placeTicks(ticks, values, dx, textures, majorStep) {
+
+    ticks.forEach((l, i) => {
+      let currentValue = l.value;
+      let activeLabel = currentValue != null;
+   
+      let needsToBeSet = activeLabel && values[currentValue];
+      delete values[currentValue];
+
+      // If the label is active and still a value that needs to be set, reposition it.
+      if (needsToBeSet) {
+        l.text = l.value;
+        l.x = dx * (l.value - this.min);
+        l.y = 0;
+        l.alpha = 1;
+        let mod = Math.abs(l.value%majorStep/majorStep)
+        if (mod < 0.01 || mod > 0.99) {
+          l.texture = textures[0];
+        } else {
+          l.texture = textures[1];
+        }
+
+        // If it's active, but not part of the new active labels, remove it and set value null.
+      } else if (activeLabel) {
+        l.value = null;
+        l.alpha = 0;
+      }
+    });
+
+    let empties = ticks.filter((l) => l.value == null);
+
+    let valueKeys = Object.keys(values);
+
+    valueKeys.forEach((k) => {
+      if (empties.length != 0) {
+        let newActiveTick = empties.pop();
+        newActiveTick.value = k;
+        newActiveTick.x = (k - this.min) * dx;
+        newActiveTick.alpha = 1;
+      }
+    });
+  }
+
+
+  zoomTo(min,max,duration,onComplete,onUpdate){
+    const update = ()=>{
+      onUpdate()
+      this.draw(this.min,this.max)
+    }
+    TweenLite.to(this,{max: max,min: min,duration: duration,onUpdate: update,onComplete: onComplete})
+  }
+
+  getNumberLineFloatValueFromPosition(pos) {
+    return (pos * this.minorStep) / this.minorDX + this.minFloat;
+  }
+
+  getNumberLineMaxFromAnchor(anchor,position) {
+    let max = this.minFloat + (anchor - this.minFloat)/position*this._width
+    return max
+  }
+
+  getNumberLineMinFromAnchor(anchor,position) {
+
+    let min = this.maxFloat - (this.maxFloat - anchor)/(1-position/this._width)
+
+    return min
+  }
+
+ getNumberLinePositionFromFloatValue(val){
+    let pos = (val-this.minFloat)/this.minorStep*this.minorDX
+    let pos1 = (val - this.minFloat)/(this.maxFloat-this.minFloat)*this._width
+    return pos1
+ }
+
+  pinPointerMove() {
+    if (this.touching) {
+      this.value = this.parent.getNumberLineFloatValueFromPosition(this.x);
+      this.index = Math.round(this.value);
+      this.parent.drawDescriptors();
+    }
+  }
+
+  drawDescriptors() {
+    let value = this.getNumberLineFloatValueFromPosition(this.pin.x);
+
+    let jumpRadius =
+      ((this.minorDX / this.minorStep) * this.compressionOne) / 2;
+    let k = value % this.compressionOne;
+    let to = Math.sqrt(1 - ((k - 50) * (k - 50)) / 2500) * jumpRadius;
+
+    let jumpRadius2 =
+      ((this.minorDX / this.minorStep) * this.compressionTwo) / 2;
+    let k2 = value % this.compressionTwo;
+    let to2 = Math.sqrt(1 - ((k2 - 5) * (k2 - 5)) / 25) * jumpRadius2;
+
+    this.dot.x = this.pin.x;
+    this.dot.y = -to;
+    this.dot2.x = this.pin.x;
+    this.dot2.y = -to2;
+
+    this.lineUp.clear();
+    this.lineUp.lineStyle(2, 0x000000);
+    this.lineUp.lineTo(0, -to);
+
+    this.lineUp.x = this.pin.x;
+  }
+
+  setLayoutParams(min, max) {
+    this.params = this.numberLineParameters(min, max, this._width);
+    this.majorStep = this.params.MAJOR_STEP;
+    this.minorStep = this.params.MINOR_STEP;
+    this.digitHeight = this.params.DIGIT_HEIGHT;
+
+    this.majorDX =
+      (this._width / (this.maxFloat - this.minFloat)) * this.majorStep;
+    this.minorDX =
+      (this._width / (this.maxFloat - this.minFloat)) * this.minorStep;
+
+    this.dx = this._width / (this.maxFloat - this.minFloat);
+
+    this.minorTickHeight = this._width / 60;
+    this.majorTickHeight = 1.5 * this.minorTickHeight;
+
+    this.minorTickThickness = Math.min(this.majorDX / 3, this.lineThickness);
+    this.majorTickThickness = this.minorTickThickness * 1.25;
+  }
+
+  // NLD_DRAW
+  draw(min, max) {
+    this.min = min;
+    this.max = max;
+    this.minFloat = min;
+    this.maxFloat = max;
+
+    this.setLayoutParams(min, max);
+
+    let numbersNeededForLabels = getNumbersNeeded(max, min, this.majorStep);
+    let numbersNeededForTicks = getNumbersNeeded(max, min, this.minorStep);
+
+    this.placeLabels(
+      this.labels,
+      numbersNeededForLabels,
+      this.dx,
+      this.digitHeight
+    );
+
+    this.placeTicks(
+      this.ticks,
+      numbersNeededForTicks,
+      this.dx,
+      [this.majorTickTexture, this.minorTickTexture],
+      this.majorStep
+    );
+
+  }
+
+  init() {
+    for (let i = 0; i <= 100; i++) {
+      let newTick = new PIXI.Sprite(this.majorTickTexture);
+      newTick.anchor.set(0.5, 0);
+      newTick.value = null;
+      newTick.alpha = 0;
+      this.addChild(newTick);
+      this.ticks.push(newTick);
+
+      let newLabel = new PIXI.Text();
+      newLabel.style.fontSize = this.digitHeight;
+      newLabel.style.fontFamily = "Chalkboard SE";
+      newLabel.style.fill = 0x000000;
+      newLabel.anchor.set(0.5, 0);
+      newLabel.text = i;
+      newLabel.value = null;
+      newLabel.alpha = 0;
+      this.addChild(newLabel);
+      this.labels.push(newLabel);
+      newLabel.y = 1.1 * this.majorTickHeight;
+    }
+    this.draw(this.min, this.max);
+  }
+}
+
+
+
 
 export class NumberLine extends PIXI.Container {
   constructor(width,height,max,denominator){

@@ -1,3 +1,25 @@
+export const dot_rate_problem = {
+  id: "dot_rate_problem",
+  title: "Jumping Dots",
+  shortText: "Study rates of change with rich problem solving.",
+  quickStart: [
+    "Students watch the animation using the interactive or YouTube link",
+    "Students write down what they notice about the problem",
+    "Students make a prediction with a brief justification and then compare their answers.",
+  ],
+  synthesis: "Give students time to develop a hypothesis and make estimates. Making estimates is the key to this being a low floor task since it makes the barrier to entry very low. If you’re doing distance learning, you can give students a day or two to organize their thinking before sharing it with the class. Encourage them to make Videos, Google Slides, Pictures or Screenshots to articulate their thinking",
+  previewImg: "DotRateProblem.png",
+  links: {
+    youtube: "https://youtu.be/h5OHjO6yBUo",
+    medium: "https://medium.com/@NumberShapes/rich-tasks-the-crossing-dots-problem-df0243eccc4a",
+    interactive: "dotrateproblem",
+    slides: "https://docs.google.com/presentation/d/16lIEhbjLcgtCDA0SZRqHaFlwbWk2XFEpXeIR-sD0lqA/edit#slide=id.p",
+  },
+  standards: ["standard one", "standard two"],
+  discussion: "The key to unwrapping this activity is in noticing that",
+  grades: ["First", "Second", "Third"],
+};
+
 export const ACTIVITY_ONE = {
   shortText: "Guess how many coins are in the pot of gold!",
   title: "Gold Rush",
@@ -8,7 +30,8 @@ export const ACTIVITY_ONE = {
 };
 
 export const NUMBERSHAPES_CRUSH = {
-  shortText: "Candy Crush Style Game for iOS written with React Native & Javascript",
+  shortText:
+    "Candy Crush Style Game for iOS written with React Native & Javascript",
   title: "NumberShapes Crush",
   previewImg: "NumberShapesCrush.png",
   game: "crush",
@@ -17,7 +40,8 @@ export const NUMBERSHAPES_CRUSH = {
 };
 
 export const NUMBERSHAPES_WHITEBOARD = {
-  shortText: "Virtual Manipulative for iOS written in Swift with UIKit & Gesture Recognizers",
+  shortText:
+    "Virtual Manipulative for iOS written in Swift with UIKit & Gesture Recognizers",
   title: "NumberShapes Whiteboard",
   previewImg: "Whiteboard.png",
   game: "whiteboard",
@@ -26,7 +50,8 @@ export const NUMBERSHAPES_WHITEBOARD = {
 };
 
 export const NUMBERSHAPES_MULTIPLICATION = {
-  shortText: "Multiplication Practice for iOS written in Swift utilizing Core Data for progress tracking.",
+  shortText:
+    "Multiplication Practice for iOS written in Swift utilizing Core Data for progress tracking.",
   title: "Multiplication Fact Workout",
   previewImg: "MultiplicationApp.png",
   game: "multiplication",
@@ -165,63 +190,77 @@ export const MATCH_GAME_3_7 = {
     "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
 };
 
-export const QI_1000= {
+export const QI_1000 = {
   title: "Thinking In Tens",
   id: "QI_1000",
-  questions: ["What groups do you see?","What patterns do you see?","How many altogether?",],
+  questions: [
+    "What groups do you see?",
+    "What patterns do you see?",
+    "How many altogether?",
+  ],
   previewImg: "QI_1000.png",
-  tags: [1,3,4]
+  tags: [1, 3, 4],
 };
 
-export const QI_10x9_1= {
+export const QI_10x9_1 = {
   title: "Comparing Tens",
   id: "QI_10x9_1",
-  questions: ["Which one has more?","How do you know without counting",],
+  questions: ["Which one has more?", "How do you know without counting"],
   previewImg: "QI_10x9_1.png",
-  tags: [1,3,4]
+  tags: [1, 3, 4],
 };
 
 export const QI_MULT_7x5M2 = {
   title: "Multiplying Expressions",
   id: "QI_MULT_7x5M2",
-  questions: ["What multiplication facts do you see?","Which one has more?","What's the easiest way to compare them?",],
+  questions: [
+    "What multiplication facts do you see?",
+    "Which one has more?",
+    "What's the easiest way to compare them?",
+  ],
   previewImg: "QI_MULT_7x5M2.png",
-  tags: [1,3,4]
+  tags: [1, 3, 4],
 };
 
 export const QI_MULT_7x5x6 = {
   title: "Turnaround Facts",
   id: "QI_MULT_7x5x6",
-  questions: ["Which one has more?","How could you know without counting?"],
+  questions: ["Which one has more?", "How could you know without counting?"],
   previewImg: "QI_MULT_7x5x6.png",
-  tags: [1,3,4]
+  tags: [1, 3, 4],
 };
 
 export const QI_OOP = {
   title: "Grouping Operations",
   id: "QI_OOP",
-  questions: ["Can you write the expression with symbols?","How are they the same?","How are they different?",],
+  questions: [
+    "Can you write the expression with symbols?",
+    "How are they the same?",
+    "How are they different?",
+  ],
   previewImg: "QI_OOP.png",
-  tags: [1,3,4]
+  tags: [1, 3, 4],
 };
 
 export const QI_VA_1 = {
   title: "Vertical Addition",
   id: "QI_VA_1",
-  questions: ["What problem is being solved?", 
+  questions: [
+    "What problem is being solved?",
     "What's the answer?",
     "Can you write the picture with numbers?",
-    "Can you draw your own problem using pictures?"],
+    "Can you draw your own problem using pictures?",
+  ],
   previewImg: "QI_VA_1.png",
-  tags: [1,3,4]
+  tags: [1, 3, 4],
 };
 
 export const QI_7x7x7 = {
   title: "Powers",
   id: "QI_7x7x7",
-  questions: ["How many different ways can you think to solve this using a calculator?"],
+  questions: [
+    "How many different ways can you think to solve this using a calculator?",
+  ],
   previewImg: "QI_7x7x7.png",
-  tags: [1,3,4]
+  tags: [1, 3, 4],
 };
-
-

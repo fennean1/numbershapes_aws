@@ -1,0 +1,124 @@
+import React, { Component } from "react";
+import { Switch, Route, Link } from "react-router-dom";
+import Button from "@material-ui/core/Button";
+import * as ACTIVITIES from "./Activities"
+
+export default class ActivityPage extends Component {
+  constructor(props) {
+    super(props);    
+  }
+
+
+  render() {
+    const {activity} =  this.props.match.params
+    const myActivity = ACTIVITIES[activity]
+
+    const keys = Object.keys(myActivity.links)
+
+    const links = keys.map((e) => {
+      switch (e) {
+        case "youtube":
+          return (
+            <div style={{ padding: 10 }}>
+              <a href = {myActivity.links[e]}>
+                <Button>YouTube</Button>
+              </a>
+            </div>
+          );
+          break;
+        case "medium":
+          return (
+            <div style={{ padding: 10 }}>
+              <a href = {myActivity.links[e]}>
+                <Button>Medium Article</Button>
+              </a>
+            </div>
+          );
+          break;
+        case "interactive":
+          return (
+            <div style={{ padding: 10 }}>
+              <Link to={"/"+myActivity.links[e]}>
+                <Button>Interactive</Button>
+              </Link>
+            </div>
+          );
+          break;
+        case "slides":
+          return (
+            <div style={{ padding: 10 }}>
+              <a href = {myActivity.links[e]}>
+                <Button>Google Slides</Button>
+              </a>
+            </div>
+          );
+          break;
+        default:
+          return;
+          break;
+      }
+    });
+
+    const steps = myActivity.quickStart.map((e) => {
+      return (
+        <blockquote style={{ marginLeft: 10 }}>
+          <p class="flow-text">{e}</p>
+        </blockquote>
+      );
+    });
+
+    return (
+      <div
+        style={{
+          padding: "2%",
+          display: "flex",
+          flexDirection: "column",
+          height: "100vh",
+        }}
+        className="container"
+      >
+        <h3 style={{ padding: 5, display: "block", margin: "auto" }}>
+          Dot Rate Problem
+        </h3>
+        <div style={{ padding: 5, display: "block", margin: "auto" }}>
+          <div style={{ display: "flex", flexDirection: "row" }}>{links}</div>
+        </div>
+        <div style={{ flexGrow: 1 }}>
+          {" "}
+          <h4>Introduction</h4>
+          <div style={{ borderRadius: 10, padding: 5 }}>
+            <p className="flow-text">
+              In this activity students will gain experience working with rates
+              of change and making predictions based on analysis of animations.
+            </p>
+          </div>
+        </div>
+        <div style={{ flex: 1 }}>
+          {" "}
+          <h4> Quick Start</h4>
+          <div style={{ borderRadius: 10, padding: 5 }}>{steps}</div>
+        </div>
+        <div style={{ flex: 1 }}>
+          {" "}
+          <h4> Synthesis</h4>
+          <div style={{ borderRadius: 10, padding: 5 }}>
+            <p className="flow-text">
+              {" "}
+             {myActivity.synthesis}
+            </p>
+          </div>
+        </div>
+        <div style={{ flex: 1 }}>
+          {" "}
+          <h4> Discussion</h4>
+          <div style={{ borderRadius: 10, padding: 5 }}>
+            <p className="flow-text">
+              {" "}
+              
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}

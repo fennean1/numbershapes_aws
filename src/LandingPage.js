@@ -8,15 +8,15 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import QuickImages from "./QuickImages";
 import Interactives from "./Interactives";
+import Tasks from "./Tasks";
+import Apps from "./Apps";
 import CardGames from "./CardGames";
 import Printables from "./Printables";
-import Apps from "./Apps";
-import BottomNavigation from '@material-ui/core/BottomNavigation';
-import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
-import RestoreIcon from '@material-ui/icons/Restore';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import LocationOnIcon from '@material-ui/icons/LocationOn';
-
+import BottomNavigation from "@material-ui/core/BottomNavigation";
+import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
+import RestoreIcon from "@material-ui/icons/Restore";
+import FavoriteIcon from "@material-ui/icons/Favorite";
+import LocationOnIcon from "@material-ui/icons/LocationOn";
 
 function TabContainer({ children, dir }) {
   return (
@@ -41,25 +41,20 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ConceptsCarousel(props) {
   const theme = useTheme();
-  const classes = useStyles()
+  const classes = useStyles();
   const [value, setValue] = React.useState(0);
   const [bottomTabValue, setBottomTabValue] = React.useState(0);
   const { path } = props.match;
-  
-  
-  
 
   function handleChange(event, newValue) {
     if (newValue == 0) {
-      props.history.push("/content/games");
+      props.history.push("/content/tasks");
     } else if (newValue == 1) {
-      props.history.push("/content/apps");
-    } else if (newValue == 2) {
-      props.history.push("/content/activities");
-    } else if (newValue == 3) {
-      props.history.push("/content/printables");
-    } else if (newValue == 4) {
       props.history.push("/content/images");
+    } else if (newValue == 2) {
+      props.history.push("/content/interactives");
+    } else if (newValue == 3) {
+      props.history.push("/content/apps");
     }
     setValue(newValue);
   }
@@ -67,34 +62,31 @@ export default function ConceptsCarousel(props) {
   function handleChangeIndex(index) {
     let newValue = index;
     if (newValue == 0) {
-      props.history.push("/content/games");
+      props.history.push("/content/tasks");
     } else if (newValue == 1) {
-      props.history.push("/content/apps");
-    } else if (newValue == 2) {
-      props.history.push("/content/activities");
-    } else if (newValue == 3) {
-      props.history.push("/content/printables");
-    } else if (newValue == 4) {
       props.history.push("/content/images");
+    } else if (newValue == 2) {
+      props.history.push("/content/interactives");
+    } else if (newValue == 3) {
+      props.history.push("/content/apps");
     }
     setValue(index);
   }
 
   const routes = () => (
     <Switch>
-      <Route exact path={"/"} component={CardGames} />
-      <Route exact path={"/content/activities"} component={Interactives} />
-      <Route exact path={"/content/games"} component={CardGames} />
+      <Route exact path={"/"} component={Tasks} />
+      <Route exact path={"/content/interactives"} component={Interactives} />
       <Route exact path={"/content/images"} component={QuickImages} />
-      <Route exact path={"/content/printables"} component={Printables} />
       <Route exact path={"/content/apps"} component={Apps} />
+      <Route exact path={"/content/tasks"} component={Tasks} />
     </Switch>
   );
 
   return (
     <div
       className="clouds"
-      style={{ display: "flex", flexDirection: "column"}}
+      style={{ display: "flex", flexDirection: "column" }}
     >
       <div className="container" style={{ marginTop: 50 }}>
         <Tabs
@@ -103,32 +95,52 @@ export default function ConceptsCarousel(props) {
           indicatorColor="primary"
           variant="scrollable"
           scrollButtons="on"
-          style={{ color: "#000000" }}
+          className="clear"
+          style={{ display: "flex", flexDirection: "row" }}
         >
           <Tab
-            style={{ fontSize: "2vw", fontFamily: "Chalkboard SE" }}
+            style={{
+              flex: 1,
+              margin: 5,
+              fontSize: "2vw",
+              fontFamily: "Chalkboard SE",
+              borderRadius: 8,
+            }}
             className="white"
-            label="Games"
+            label="Tasks"
           />
           <Tab
-            style={{ fontSize: "2vw", fontFamily: "Chalkboard SE" }}
+            style={{
+              flex: 1,
+              margin: 5,
+              fontSize: "2vw",
+              fontFamily: "Chalkboard SE",
+              borderRadius: 8,
+            }}
             className="white"
-            label="Apps"
+            label="Images"
           />
           <Tab
-            style={{ fontSize: "2vw", fontFamily: "Chalkboard SE" }}
+            style={{
+              flex: 1,
+              margin: 5,
+              fontSize: "2vw",
+              fontFamily: "Chalkboard SE",
+              borderRadius: 8,
+            }}
             className="white"
             label="Interactives"
           />
           <Tab
-            style={{ fontSize: "2vw", fontFamily: "Chalkboard SE" }}
+            style={{
+              flex: 1,
+              margin: 5,
+              fontSize: "2vw",
+              fontFamily: "Chalkboard SE",
+              borderRadius: 8,
+            }}
             className="white"
-            label="PDFs"
-          />
-          <Tab
-            style={{ fontSize: "2vw", fontFamily: "Chalkboard SE" }}
-            className="white"
-            label="Quick Images"
+            label="Apps"
           />
         </Tabs>
 
@@ -148,9 +160,6 @@ export default function ConceptsCarousel(props) {
           </TabContainer>
           <TabContainer dir={theme.direction}>
             {value == 3 && routes()}
-          </TabContainer>
-          <TabContainer dir={theme.direction}>
-            {value == 4 && routes()}
           </TabContainer>
         </SwipeableViews>
       </div>
