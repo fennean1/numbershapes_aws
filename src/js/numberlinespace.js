@@ -429,31 +429,6 @@ function groundPointerUp(e) {
 
 
 
-  function scaleNumberLineBy(K) {
-    let newMax = dragger.initialNumberlineLength * K;
-    let newDS =
-      K > 1
-        ? dragger.ds + NUMBER_LINE_WIDTH * K
-        : dragger.ds - (NUMBER_LINE_WIDTH * 1) / K;
-
-    const onUpdate = () => {
-      numberline.draw(numberline.min, numberline.max);
-    };
-
-    const onUpdate2 = () => {
-      emitters.forEach((e) => {
-        e.update((1 / 8) * dragger.ds);
-      });
-
-      emitters2.forEach((e) => {
-        e.update((1 / 6) * dragger.ds);
-      });
-    };
-
-    TweenMax.to(numberline, 2, { max: newMax, onUpdate: onUpdate });
-    TweenMax.to(dragger, 2, { ds: newDS, onUpdate: onUpdate2 });
-  }
-
   // Helllooo
 
   class Jumps extends PIXI.Container {
@@ -729,6 +704,20 @@ function groundPointerUp(e) {
       return (pos * this.minorStep) / this.minorDX + this.minFloat;
     }
 
+    getNumberLineMaxFromAnchor(anchor,position) {
+
+      let center = this.getNumberLineFloatValueFromPosition(this._width/2)
+      console.lg
+      let max = center + (anchor - center)/position*this._width
+      return max
+    }
+
+    getNumberLineMaxMinFromAnchor(anchor,position){
+      let Pc = this._width
+      let Vc = this.getNumberLineFloatValueFromPosition(Pc)
+
+    }
+    
     getNumberLineMaxFromAnchor(anchor,position) {
       let max = this.minFloat + (anchor - this.minFloat)/position*this._width
       return max

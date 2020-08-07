@@ -1625,9 +1625,9 @@ export class UltimateNumberLine extends PIXI.Container {
     this._width = width;
     this.lineThickness = width / 300;
 
-    this.upperLimit = 1000000
-    this.lowerLimit = -1000000
-    this.upperRange = 1000000
+    this.upperLimit = 100000
+    this.lowerLimit = -100000
+    this.upperRange = 200000
     this.lowerRange  = 0.0005
 
     this.setLayoutParams(min, max);
@@ -1751,7 +1751,7 @@ export class UltimateNumberLine extends PIXI.Container {
   }
 
 
-  // Only responsible for setting labels to the rightful location.
+  // Pasted from somewhere else - arguments not necessary, should access class variables.
   placeLabels(labels, values, dx, digitHeight) {
     labels.forEach((l) => {
       let currentValue = l.value;
@@ -1763,7 +1763,7 @@ export class UltimateNumberLine extends PIXI.Container {
       if (needsToBeSet) {
         l.text = l.value;
         l.x = (l.value - this.min) * dx;
-        l.style.fontSize = digitHeight;
+        l.style.fontSize = this.digitHeight;
         l.alpha = 1;
 
         // If it's active, but not part of the new active labels, remove it and set value null.
@@ -1918,12 +1918,21 @@ export class UltimateNumberLine extends PIXI.Container {
 
   // NLD_DRAW
   draw(min, max) {
+
+
+    let range = max - min
+
+
+    if (max < this.upperLimit && min > this.lowerLimit && range > this.lowerRange && range < this.upperRange ) {
+
+
     this.min = min;
     this.max = max;
     this.minFloat = min;
     this.maxFloat = max;
 
     this.setLayoutParams(min, max);
+
 
     let numbersNeededForLabels = getNumbersNeeded(max, min, this.majorStep);
     let numbersNeededForTicks = getNumbersNeeded(max, min, this.minorStep);
@@ -1944,6 +1953,8 @@ export class UltimateNumberLine extends PIXI.Container {
     );
 
   }
+
+}
 
   init() {
     for (let i = 0; i <= 100; i++) {
