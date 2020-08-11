@@ -60,9 +60,6 @@ export const init = (app, setup) => {
     if (this.touching){
       this.moved = true
   
-      let centerZero = numberline.centerZero()
-      let x0 = centerZero.x 
-      let y0 = centerZero.y
       let x1 = e.data.global.x
       let y1 = e.data.global.y
       
@@ -74,18 +71,8 @@ export const init = (app, setup) => {
       } else if (this.ID == 2){
         launchVector.y = y1 
       }
-      
-      let dX = launchVector.x - x0
-      let dY = launchVector.y - y0
-  
-      let magV = Math.sqrt(dX*dX + dY*dY)
-  
-      let theta = Math.acos(dX/magV)
 
       drawVectors()
-
-        this.magV = magV
-        this.theta = theta
   
     }
   }
@@ -118,10 +105,9 @@ export const init = (app, setup) => {
     let dY = y1 - y0
 
     let magV = Math.sqrt(dX*dX + dY*dY)
-
     let theta = Math.acos(dX/magV)
 
-    if (y1 < y0) {
+    if (y1 <= y0) {
       V.clear()
       V.moveTo(x0,y0)
       V.lineStyle(3,0x000000)
