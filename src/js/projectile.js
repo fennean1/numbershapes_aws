@@ -47,14 +47,92 @@ export const init = (app, setup) => {
   let Vy = new PIXI.Graphics()
   let Vx = new PIXI.Graphics()
 
-  function drawVectors(e){
+
+  function vectorPointerDown(){
+    this.touching = true
+  }
+
+  function vectorPointerMove(e){
+    if (this.touching){
+      this.moved = true
+      app.stage.addChild(V)
+      app.stage.addChild(Vx)
+      app.stage.addChild(Vy)
+  
+      let centerZero = numberline.centerZero()
+      let x0 = centerZero.x 
+      let y0 = centerZero.y
+      let x1 = e.data.global.x
+      let y1 =  e.data.global.y
+      let dX = x1 - x0
+      let dY = y1 - y0
+  
+      let magV = Math.sqrt(dX*dX + dY*dY)
+  
+      let theta = Math.acos(dX/magV)
+  
+      if (y1 < y0) {
+        V.clear()
+        V.moveTo(x0,y0)
+        V.lineStyle(3,0x000000)
+        V.lineTo(x1,y1)
+        V.beginFill(0x000000)
+        V.lineTo(x1+5*Math.sin(theta),y1+5*Math.cos(theta))
+        V.lineTo(x1+10*Math.cos(theta),y1-10*Math.sin(theta))
+        V.lineTo(x1-5*Math.sin(theta),y1-5*Math.cos(theta))
+        V.lineTo(x1,y1)
+        V.hitArea = new PIXI.Circle(x1,y1,50)
+      
+  
+        Vx.clear()
+        Vx.moveTo(x0,y0)
+        Vx.lineStyle(3,0xff3d9b)
+        Vx.lineTo(x1,y0)
+        Vx.beginFill(0xff3d9b)
+        Vx.lineTo(x1,y0-5)
+        Math.cos(theta) > 0 ? Vx.lineTo(x1+10,y0) : Vx.lineTo(x1-10,y0) 
+        Vx.lineTo(x1,y0+5)
+        Vx.lineTo(x1,y0)
+  
+        Vy.clear()
+        Vy.moveTo(x0,y0)
+        Vy.lineStyle(3,0xf3ff4f)
+        Vy.lineTo(x0,y1)
+        Vy.beginFill(0xf3ff4f)
+        Vy.lineTo(x0+5,y1)
+        Vy.lineTo(x0,y1-10)
+        Vy.lineTo(x0-5,y1)
+        Vy.lineTo(x0,y1)
+
+        this.magV = magV
+        this.theta = theta
+  
+      }
+    }
+  }
+
+  function vectorPointerUp(){
+    this.touching = false
+    if (!this.moved){
+      fire(this.magV,this.theta)
+    }
+    this.moved = false
+  }
+
+
+  function drawVectors(x,y){
+    app.stage.addChild(V)
+    app.stage.addChild(Vx)
+    app.stage.addChild(Vy)
+
     let centerZero = numberline.centerZero()
     let x0 = centerZero.x 
     let y0 = centerZero.y
-    let x1 = e.data.global.x
-    let y1 =  e.data.global.y
+    let x1 = x
+    let y1 = y
     let dX = x1 - x0
     let dY = y1 - y0
+
     let magV = Math.sqrt(dX*dX + dY*dY)
 
     let theta = Math.acos(dX/magV)
@@ -63,22 +141,45 @@ export const init = (app, setup) => {
       V.clear()
       V.moveTo(x0,y0)
       V.lineStyle(3,0x000000)
-      V.lineTo(e.data.global.x,e.data.global.y)
+      V.lineTo(x1,y1)
+      V.beginFill(0x000000)
+      V.lineTo(x1+5*Math.sin(theta),y1+5*Math.cos(theta))
+      V.lineTo(x1+10*Math.cos(theta),y1-10*Math.sin(theta))
+      V.lineTo(x1-5*Math.sin(theta),y1-5*Math.cos(theta))
+      V.lineTo(x1,y1)
+      V.hitArea = new PIXI.Circle(x1,y1,20)
+    
 
       Vx.clear()
       Vx.moveTo(x0,y0)
-      V.lineStyle(3,0x000000)
-      V.lineTo(e.data.global.x,e.data.global.y)
+      Vx.lineStyle(3,0xff3d9b)
+      Vx.lineTo(x1,y0)
+      Vx.beginFill(0xff3d9b)
+      Vx.lineTo(x1,y0-5)
+      Math.cos(theta) > 0 ? Vx.lineTo(x1+10,y0) : Vx.lineTo(x1-10,y0) 
+      Vx.lineTo(x1,y0+5)
+      Vx.lineTo(x1,y0)
 
       Vy.clear()
       Vy.moveTo(x0,y0)
-      V.lineStyle(3,0x000000)
-      V.lineTo(e.data.global.x,e.data.global.y)
+      Vy.lineStyle(3,0xf3ff4f)
+      Vy.lineTo(x0,y1)
+      Vy.beginFill(0xf3ff4f)
+      Vy.lineTo(x0+5,y1)
+      Vy.lineTo(x0,y1-10)
+      Vy.lineTo(x0-5,y1)
+      Vy.lineTo(x0,y1)
 
       fire(magV,theta)
     }
   }
 
+
+  V.on('pointermove',vectorPointerMove)
+  V.on('pointerdown',vectorPointerDown)
+  V.on('pointerup',vectorPointerUp)
+  V.on('pointerupoutside',vectorPointerUp)
+  V.interactive = true
 
   function fire(v,theta){
     let newSnowball = new PIXI.Sprite.from(Snowball)
@@ -118,16 +219,15 @@ export const init = (app, setup) => {
  
  
   function load() {
+
+    // NOTE: Sometimes is pass features to a interactive to customize it for particular activity.
     if (setup.props.features) {
       features = setup.props.features;
     }
 
-
     backGround = new PIXI.Sprite.from(Mountains);
     backGround.width = WINDOW_WIDTH
     backGround.height = WINDOW_HEIGHT
-    backGround.interactive = true
-    backGround.on('pointerdown',drawVectors)
     app.stage.addChild(backGround);
 
 
@@ -153,7 +253,6 @@ export const init = (app, setup) => {
       backGround.y = WINDOW_HEIGHT - backGround.height
 
     }  
-    numberline.draw(-30,30)
     app.stage.addChild(numberline)
 
 
@@ -184,6 +283,8 @@ export const init = (app, setup) => {
     snowman.width = 75
     snowman.x = WINDOW_WIDTH/2 + (-1 + 2*Math.random())*WINDOW_WIDTH/2
     snowman.y = CANNON_ANCHOR.y - snowman.height
+
+    drawVectors(200,200)
 
 
   }

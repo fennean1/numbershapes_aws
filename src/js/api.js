@@ -1989,7 +1989,6 @@ export class UltimateNumberLine extends PIXI.Container {
   getNumberLineMinFromAnchor(anchor,position) {
 
     let min = this.maxFloat - (this.maxFloat - anchor)/(1-position/this._width)
-
     return min
   }
 
@@ -2007,30 +2006,6 @@ export class UltimateNumberLine extends PIXI.Container {
     }
   }
 
-  drawDescriptors() {
-    let value = this.getNumberLineFloatValueFromPosition(this.pin.x);
-
-    let jumpRadius =
-      ((this.minorDX / this.minorStep) * this.compressionOne) / 2;
-    let k = value % this.compressionOne;
-    let to = Math.sqrt(1 - ((k - 50) * (k - 50)) / 2500) * jumpRadius;
-
-    let jumpRadius2 =
-      ((this.minorDX / this.minorStep) * this.compressionTwo) / 2;
-    let k2 = value % this.compressionTwo;
-    let to2 = Math.sqrt(1 - ((k2 - 5) * (k2 - 5)) / 25) * jumpRadius2;
-
-    this.dot.x = this.pin.x;
-    this.dot.y = -to;
-    this.dot2.x = this.pin.x;
-    this.dot2.y = -to2;
-
-    this.lineUp.clear();
-    this.lineUp.lineStyle(2, 0x000000);
-    this.lineUp.lineTo(0, -to);
-
-    this.lineUp.x = this.pin.x;
-  }
 
   setLayoutParams(min, max) {
     this.params = this.numberLineParameters(min, max, this._width);
