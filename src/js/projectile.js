@@ -70,7 +70,7 @@ export const init = (app, setup) => {
         launchVector.x = x1 
         launchVector.y = y1
       } else if (this.ID == 1){
-        launchVector.x = x1 
+        launchVector.x = x1
       } else if (this.ID == 2){
         launchVector.y = y1 
       }
@@ -93,7 +93,15 @@ export const init = (app, setup) => {
   function vectorPointerUp(){
     this.touching = false
     if (!this.moved){
-      fire(this.magV,this.theta)
+
+      let centerZero = numberline.centerZero()
+      let dX = launchVector.x - centerZero.x
+      let dY = launchVector.y - centerZero.y
+  
+      let magV = Math.sqrt(dX*dX + dY*dY)
+      let theta = Math.acos(dX/magV)
+
+      fire(magV,theta)
     }
     this.moved = false
   }
