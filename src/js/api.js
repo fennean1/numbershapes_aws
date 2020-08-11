@@ -4,6 +4,7 @@ import { TweenMax, TimelineLite, Power2, Elastic, CSSPlugin, TweenLite, Timeline
 import {NUMBERS} from "../AssetManager.js"
 import * as CONST from "./const.js";
 import { timers } from "jquery";
+import { Rect } from "react-konva";
 
 
 export class Row extends PIXI.Container{
@@ -12,6 +13,107 @@ export class Row extends PIXI.Container{
   }
 }
 
+
+export class Vector extends PIXI.Sprite {
+  constructor(){
+    super()
+
+  }
+
+  draw(){
+
+  }
+}
+
+
+export class Cannon extends PIXI.Container {
+  constructor(length){
+    super()
+
+    this._defaultLength = length
+
+    this.tip = new PIXI.Graphics()
+    this.tip.beginFill(0x000000)
+    this.tip.lineTo(5,10)
+    this.tip.lineTo(-5,10)
+    this.tip.lineTo(0,0)
+    this.tip.endFill()
+    //this.tip.hitArea = new PIXI.Rectangle(0,0,1,1)
+    this.addChild(this.tip)
+
+    this.arrow = new PIXI.Graphics()
+    this.arrow.lineStyle(2,0x000000)
+    this.arrow.lineTo(0,length)
+    this.addChild(this.arrow)
+
+    this.on('pointerdown',this.pointerDown)
+    this.on('pointerup',this.pointerUp)
+    this.on('pointerupoutside',this.pointerUp)
+    this.on('pointermove',this.pointerMove)
+    this.interactive = true
+
+
+    this._width = this.width
+    this._height = this.height
+    this.pivot.x = this._width/2 
+    this.pivot.y = this._height
+    this.hitArea = new PIXI.Rectangle(0,0,3*this._width,this._height)
+
+    this.angle = 45
+  }
+
+
+  reset() {
+    this.draw(this._defaultLength)
+    this.angle = 45
+    this.x = this.cannonAnchor.x
+    this.y = this.cannonAnchor.y
+  }
+
+  draw(length){
+
+    this.tip.clear()
+    this.tip.beginFill(0x000000)
+    this.tip.lineTo(5,10)
+    this.tip.lineTo(-5,10)
+    this.tip.lineTo(0,0)
+    this.tip.endFill()
+    this.addChild(this.tip)
+
+    this.arrow.clear()
+    this.arrow.lineStyle(2,0x000000)
+    this.arrow.lineTo(0,length)
+    this.addChild(this.arrow)
+
+    this.pivot.x = this._width/2 
+    this.pivot.y = this._height
+    this._width = this.width
+    this._height = this.height
+
+  }
+
+  pointerDown(e){
+    this.touching = true
+  }
+
+  pointerUp(e){
+    this.touching = false
+    this.hitArea = new PIXI.Rectangle(-1.5*this._width,0,3*this._width,this._height)
+  }
+
+  pointerMove(e){
+    let deltaX = e.data.global.x - this.cannonAnchor.x
+    let deltaY = e.data.global.y - this.cannonAnchor.y
+    this.velocity = Math.sqrt(deltaX*deltaX+deltaY*deltaY)
+
+    let length = Math.sqrt(deltaX*deltaX+deltaY*deltaY)
+    let angle = Math.atan(deltaY/deltaX)
+    if (this.touching){
+      this.draw(length)
+      this.angle = angle*180/Math.PI + 90
+    }
+  }
+}
 
 export class Timer extends PIXI.Container{
   constructor(totalTime,width,height,app) {
@@ -382,7 +484,6 @@ export class FractionFrame extends PIXI.Container {
       if (this.touching){
         this.y = this.lockY ? this.y : event.data.global.y + this.deltaTouch.y
         this.x = event.data.global.x + this.deltaTouch.x
-        console.log("diff",Math.abs(this.x - this.dragStartX-this.deltaTouch.x))
         if (Math.abs(this.x - this.dragStartX-this.deltaTouch.x) > 100){
            this.dragged = true
         }
@@ -1433,9 +1534,7 @@ export function getIntersectionPoints(lineEndPoints,polyPoints){
   })
 
   let filtered = intersectionPoints.filter(e=> e != false)
-  console.log("intersecting points",filtered.length)
   let deduped = removeDuplicatePoints(filtered,5)
-  console.log("deduped count",deduped.length)
   
   return deduped
 }
@@ -1624,11 +1723,12 @@ export class UltimateNumberLine extends PIXI.Container {
     this.maxFloat = max;
     this._width = width;
     this.lineThickness = width / 300;
+    this.interactive = true
 
-    this.upperLimit = 100000
-    this.lowerLimit = -100000
-    this.upperRange = 200000
-    this.lowerRange  = 0.0005
+    this.upperLimit = 50
+    this.lowerLimit = -50
+    this.upperRange = 100
+    this.lowerRange  = 5
 
     this.setLayoutParams(min, max);
 
@@ -1648,10 +1748,20 @@ export class UltimateNumberLine extends PIXI.Container {
     this.line.y = this.line.y + this.lineThickness/2
     this.addChild(this.line);
 
+    this.on('pointerdown',this.pointerDown)
+    this.on('pointerup',this.pointerUp)
+    this.on('pointerupoutside',this.pointerUp)
+    this.on('pointermove',this.pointerMove)
+
     this.init();
+  
+    this.hitArea = new PIXI.Rectangle(0,0,this.width,this.height)
+
   }
 
-
+  centerZero(){
+    return {x: this.x + this.getNumberLinePositionFromFloatValue(0),y: this.y}
+  }
 
   numberLineParameters(min, max, width) {
     let majorSteps = [
@@ -1791,7 +1901,7 @@ export class UltimateNumberLine extends PIXI.Container {
 
   placeTicks(ticks, values, dx, textures, majorStep) {
 
-    ticks.forEach((l, i) => {
+    this.ticks.forEach((l, i) => {
       let currentValue = l.value;
       let activeLabel = currentValue != null;
    
@@ -1830,6 +1940,28 @@ export class UltimateNumberLine extends PIXI.Container {
         newActiveTick.alpha = 1;
       }
     });
+  }
+
+  pointerUp(){
+    this.touching = false
+  }
+
+  pointerDown(e){
+    this.touching = true
+    let pA = e.data.getLocalPosition(this).x
+    this.vA = this.getNumberLineFloatValueFromPosition(pA)
+  }
+
+  pointerMove(e){
+    if(this.touching){
+      let pM = this.width 
+      let pC = this.width/2
+      let pA = e.data.getLocalPosition(this).x
+      let vC = this.getNumberLineFloatValueFromPosition(pC)
+      let vA = this.vA
+      let vM = vC + (pM-pC)/(pA-pC)*(vA-vC)
+      this.draw(-vM,vM)
+    }
   }
 
 
@@ -1954,6 +2086,7 @@ export class UltimateNumberLine extends PIXI.Container {
 
   }
 
+  this.onUpdate && this.onUpdate()
 }
 
   init() {

@@ -7,7 +7,7 @@ import * as subitizer from "./js/subitizer.js"
 import * as matchgame from "./js/numbershapesmatch.js"
 import * as dotrateproblem from "./js/dotrateproblem.js"
 import * as numberlinespace from "./js/numberlinespace.js"
-import * as numberline from "./js/numberline.js"
+import * as numberline from "./js/projectile.js"
 import * as buildandcut from "./js/buildandcut.js"
 import * as multiplication from "./js/multiplication.js"
 import * as dotsgame from "./js/dotsgame.js"
@@ -31,7 +31,7 @@ const Main = () => (
     <Route exact path="/spaceships" render={()=><Arena fullscreen = {true} features = {{spaceShips: true}}  script = {numberlinespace.init}/>} />
     <Route exact path="/buildandcut" render={()=><Arena fullscreen = {true} features = {{spaceShips: true}}  script = {buildandcut.init}/>} />
     <Route exact path="/dotrateproblem" render={()=><Arena fullscreen = {true} script = {dotrateproblem.init}/>} />
-    <Route exact path="/numberline" render={()=><Arena fullscreen = {true} script = {numberline.init}/>} />
+    <Route exact path="/projectile" render={()=><Arena fullscreen = {true} script = {numberline.init}/>} />
     <Route exact path="/addition" render={()=><Arena fullscreen = {true} type = {2} script = {subitizer.init}/>} />
     <Route exact path="/subtraction" render={()=><Arena fullscreen = {true} type = {3} script = {subitizer.init}/>} />
     <Route exact path="/games/matchgame" render={()=><Arena fullscreen = {true} features = {{type: "ADVANCED_MATCHING"}} type = {1} script = {matchgame.init}/>} />
