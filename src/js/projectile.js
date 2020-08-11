@@ -29,13 +29,11 @@ export const init = (app, setup) => {
   const WINDOW_WIDTH = setup.width
   const WINDOW_HEIGHT = setup.height
   const CANNON_ANCHOR = {x:0.05*WINDOW_WIDTH,y: 0.90*WINDOW_HEIGHT }
-  const VELOCITY_MULTIPLIER = 1
 
 
 
   let backGround;
   let features;
-  let cannon;
   let snowballs = []
   let snowman;
   let numberline;
@@ -43,6 +41,8 @@ export const init = (app, setup) => {
   let ballSize;
   
   
+
+  // NOTE: Vectors - in progress, allows students to adjust x and y magnitudes individually.
   let V = new PIXI.Graphics()
   let Vy = new PIXI.Graphics()
   let Vx = new PIXI.Graphics()
@@ -79,22 +79,8 @@ export const init = (app, setup) => {
     }
   }
 
-  class Arc extends PIXI.Container {
-    constructor(){
-      super()
-      this.dot = new PIXI.Graphics()
-
-    }
-  }
-
-
-  // Function vector
-
 
   function fire(v,theta){
-
-    console.log("firing")
-
     let newSnowball = new PIXI.Sprite.from(Snowball)
     app.stage.addChild(newSnowball)
     snowballs.push(newSnowball)
@@ -102,7 +88,6 @@ export const init = (app, setup) => {
     newSnowball.landed = false
     newSnowball.x = WINDOW_WIDTH/2
     newSnowball.y = CANNON_ANCHOR.y
-    console.log("ballsize",ballSize)
     newSnowball.width = ballSize
     newSnowball.height = ballSize
 
@@ -151,6 +136,8 @@ export const init = (app, setup) => {
     ballSize = numberline.width/range
     numberline.interactive = true
     numberline.y = CANNON_ANCHOR.y
+
+    // NOTE: Numberlines onUpdate is called inside "draw"
     numberline.onUpdate = ()=> {
       snowballs.forEach(s=>{
         let range = numberline.maxFloat - numberline.minFloat
@@ -169,12 +156,16 @@ export const init = (app, setup) => {
     numberline.draw(-30,30)
     app.stage.addChild(numberline)
 
+
+    // NOTE: Gravity in pixels per second.
     gravity = WINDOW_WIDTH/(numberline.maxFloat - numberline.minFloat)*9.8
 
     app.stage.addChild(V)
     app.stage.addChild(Vy)
     app.stage.addChild(Vx)
 
+
+    // Initial Snowball
     let snowball = new PIXI.Sprite.from(Snowball)
     app.stage.addChild(snowball)
     snowballs.push(snowball)
@@ -185,6 +176,8 @@ export const init = (app, setup) => {
     snowball.width = ballSize
     snowball.height = ballSize
   
+
+    // Deprecated Snowman
     snowman = new PIXI.Sprite.from(Snowman)
     //app.stage.addChild(snowman)
     snowman.height = 100

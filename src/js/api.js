@@ -1725,9 +1725,11 @@ export class UltimateNumberLine extends PIXI.Container {
     this.lineThickness = width / 300;
     this.interactive = true
 
+
+    // Default values. Dictate how much you can zoom in and out.
     this.upperLimit = 50
     this.lowerLimit = -50
-    this.upperRange = 100
+    this.upperRange = this.upperLimit - this.lowerLimit
     this.lowerRange  = 5
 
     this.setLayoutParams(min, max);
@@ -1756,6 +1758,8 @@ export class UltimateNumberLine extends PIXI.Container {
     this.init();
   
     this.hitArea = new PIXI.Rectangle(0,0,this.width,this.height)
+
+    this.draw(this.minFloat,this.maxFloat)
 
   }
 
