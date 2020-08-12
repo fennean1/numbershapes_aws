@@ -43,16 +43,14 @@ export default function ConceptsCarousel(props) {
   const theme = useTheme();
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
-  const [bottomTabValue, setBottomTabValue] = React.useState(0);
-  const { path } = props.match;
 
   function handleChange(event, newValue) {
     if (newValue == 0) {
-      props.history.push("/content/tasks");
+      props.history.push("/content/interactives");
     } else if (newValue == 1) {
       props.history.push("/content/images");
     } else if (newValue == 2) {
-      props.history.push("/content/interactives");
+      props.history.push("/content/tasks");
     } else if (newValue == 3) {
       props.history.push("/content/apps");
     }
@@ -62,11 +60,11 @@ export default function ConceptsCarousel(props) {
   function handleChangeIndex(index) {
     let newValue = index;
     if (newValue == 0) {
-      props.history.push("/content/tasks");
+      props.history.push("/content/interactives");
     } else if (newValue == 1) {
       props.history.push("/content/images");
     } else if (newValue == 2) {
-      props.history.push("/content/interactives");
+      props.history.push("/content/tasks");
     } else if (newValue == 3) {
       props.history.push("/content/apps");
     }
@@ -75,7 +73,7 @@ export default function ConceptsCarousel(props) {
 
   const routes = () => (
     <Switch>
-      <Route exact path={"/"} component={Tasks} />
+      <Route exact path={"/"} component={Interactives} />
       <Route exact path={"/content/interactives"} component={Interactives} />
       <Route exact path={"/content/images"} component={QuickImages} />
       <Route exact path={"/content/apps"} component={Apps} />
@@ -107,7 +105,7 @@ export default function ConceptsCarousel(props) {
               borderRadius: 8,
             }}
             className="white"
-            label="Tasks"
+            label="Interactives"
           />
           <Tab
             style={{
@@ -129,7 +127,7 @@ export default function ConceptsCarousel(props) {
               borderRadius: 8,
             }}
             className="white"
-            label="Interactives"
+            label="Tasks"
           />
           <Tab
             style={{

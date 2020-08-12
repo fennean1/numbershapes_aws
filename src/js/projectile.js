@@ -28,7 +28,10 @@ export const init = (app, setup) => {
   // Constants 
   const WINDOW_WIDTH = setup.width
   const WINDOW_HEIGHT = setup.height
+  // Vector was originally a "Cannon" sprite.
   const CANNON_ANCHOR = {x:0.05*WINDOW_WIDTH,y: 0.90*WINDOW_HEIGHT }
+  const DX = WINDOW_WIDTH/15
+  const STROKE_WIDTH = WINDOW_WIDTH/20
 
 
 
@@ -194,13 +197,12 @@ export const init = (app, setup) => {
       let t = time.t
       newSnowball.y = CANNON_ANCHOR.y + 1/2*gravity*t*t - v0Y*t
       newSnowball.x = WINDOW_WIDTH/2 + v0X*t
+      // Keep numberline disabled when balls are in the air.
       numberline.interactive = false
     }
 
     const onComplete = ()=> {
       newSnowball.value = numberline.getNumberLineFloatValueFromPosition(newSnowball.x)
-      newSnowball.landed = true
-      let allLanded = true
       numberline.interactive = true
     }
 
