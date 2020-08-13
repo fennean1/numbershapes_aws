@@ -9,6 +9,7 @@ import * as dotrateproblem from "./js/dotrateproblem.js"
 import * as numberlinespace from "./js/numberlinespace.js"
 import * as numberline from "./js/projectile.js"
 import * as buildandcut from "./js/buildandcut.js"
+import * as plainjane from "./js/plainjane.js"
 import * as multiplication from "./js/multiplication.js"
 import * as dotsgame from "./js/dotsgame.js"
 import * as Subitization from "./activities/Subitization.json";
@@ -29,6 +30,7 @@ const Main = () => (
     <Route exact path="/multiplication" render={()=><Arena fullscreen = {true} lesson = {Addition} type = {1} script = {multiplication.init}/>} />
     <Route exact path="/spacebubbles" render={()=><Arena fullscreen = {true} features = {{spaceBubbles: true}} script = {numberlinespace.init}/>} />
     <Route exact path="/spaceships" render={()=><Arena fullscreen = {true} features = {{spaceShips: true}}  script = {numberlinespace.init}/>} />
+    <Route exact path="/numberline" render={()=><Arena fullscreen = {true} features = {{spaceShips: true}}  script = {plainjane.init}/>} />
     <Route exact path="/buildandcut" render={()=><Arena fullscreen = {true} features = {{spaceShips: true}}  script = {buildandcut.init}/>} />
     <Route exact path="/dotrateproblem" render={()=><Arena fullscreen = {true} script = {dotrateproblem.init}/>} />
     <Route exact path="/projectile" render={()=><Arena fullscreen = {true} script = {numberline.init}/>} />

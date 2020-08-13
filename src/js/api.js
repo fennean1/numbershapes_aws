@@ -1725,6 +1725,8 @@ export class UltimateNumberLine extends PIXI.Container {
     this.lineThickness = width / 300;
     this.interactive = true
 
+    this.flexPoint = 0
+
 
     // Default values. Dictate how much you can zoom in and out.
     this.upperLimit = 50
@@ -1761,6 +1763,19 @@ export class UltimateNumberLine extends PIXI.Container {
 
     this.draw(this.minFloat,this.maxFloat)
 
+  }
+
+  roundValueToNearestTick(xPos){
+    let val = this.getNumberLineFloatValueFromPosition(xPos)
+    let roundedVal = Math.round(val/this.minorStep)*this.minorStep
+    return this.getNumberLinePositionFromFloatValue(roundedVal)
+  }
+
+  setBoundaries(lowerLimit,upperLimit,lowerRange){
+    this.lowerLimit = lowerLimit
+    this.upperLimit = upperLimit
+    this.upperRange = this.upperLimit - this.lowerLimit
+    this.lowerRange = lowerRange
   }
 
   centerZero(){
@@ -1958,16 +1973,17 @@ export class UltimateNumberLine extends PIXI.Container {
 
   pointerMove(e){
     if(this.touching){
-      let pM = this.width 
-      let pC = this.width/2
+      let pM = this._width 
+      let pm = 0
+      let pC = this.getNumberLinePositionFromFloatValue(this.flexPoint)
       let pA = e.data.getLocalPosition(this).x
-      let vC = this.getNumberLineFloatValueFromPosition(pC)
+      let vC = this.flexPoint
       let vA = this.vA
       let vM = vC + (pM-pC)/(pA-pC)*(vA-vC)
-      this.draw(-vM,vM)
+      let vMin = vM - (pM-pm)/(pM-pC)*(vM-vC) 
+      this.draw(vMin,vM)
     }
   }
-
 
   zoomTo(min,max,duration,onComplete,onUpdate){
     const update = ()=>{
@@ -2033,7 +2049,6 @@ export class UltimateNumberLine extends PIXI.Container {
 
     let range = max - min
 
-
     if (max < this.upperLimit && min > this.lowerLimit && range > this.lowerRange && range < this.upperRange ) {
 
 
@@ -2065,6 +2080,7 @@ export class UltimateNumberLine extends PIXI.Container {
 
   }
 
+  // Execute callback if it's available.
   this.onUpdate && this.onUpdate()
 }
 
@@ -2312,7 +2328,6 @@ export class NumberLine extends PIXI.Container {
           e.x = this._width
           e.alpha = 0
        } else {
-          console.log("settting x")
            e.x = _x
            e.alpha = 1
        }
