@@ -75,7 +75,6 @@ export const init = (app, setup) => {
       }
 
       drawVectors()
-  
     }
   }
 
@@ -87,25 +86,15 @@ export const init = (app, setup) => {
     let magV = Math.sqrt(dX*dX + dY*dY)
     let theta = Math.acos(dX/magV)
 
-    if (magV <= 4*ballSize) {
-      console.log("hello 2")
-      launchVector.x = centerZero.x + Math.cos(theta)*ballSize*3
-      launchVector.y = centerZero.y - Math.sin(theta)*ballSize*3
-      console.log('launchVector',launchVector)
-      drawVectors()
-    }
-
     if (!this.moved){
-
       fire(magV,theta)
     }
+
     this.moved = false
   }
 
 
   function drawVectors(){
-
-    console.log('draginvectors')
 
     let strokeThickness = numberline.lineThickness
     let centerZero = numberline.centerZero()
@@ -180,9 +169,6 @@ export const init = (app, setup) => {
   V.on('pointerupoutside',vectorPointerUp)
   V.ID = 0
   V.interactive = true
-
-
-
 
   function fire(v,theta){
     let newSnowball = new PIXI.Sprite.from(Snowball)
