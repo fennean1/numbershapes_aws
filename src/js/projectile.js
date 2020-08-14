@@ -81,14 +81,21 @@ export const init = (app, setup) => {
 
   function vectorPointerUp(){
     this.touching = false
-    if (!this.moved){
+    let centerZero = numberline.centerZero()
+    let dX = launchVector.x - centerZero.x
+    let dY = launchVector.y - centerZero.y
+    let magV = Math.sqrt(dX*dX + dY*dY)
+    let theta = Math.acos(dX/magV)
 
-      let centerZero = numberline.centerZero()
-      let dX = launchVector.x - centerZero.x
-      let dY = launchVector.y - centerZero.y
-  
-      let magV = Math.sqrt(dX*dX + dY*dY)
-      let theta = Math.acos(dX/magV)
+    if (magV <= 4*ballSize) {
+      console.log("hello 2")
+      launchVector.x = centerZero.x + Math.cos(theta)*ballSize*3
+      launchVector.y = centerZero.y - Math.sin(theta)*ballSize*3
+      console.log('launchVector',launchVector)
+      drawVectors()
+    }
+
+    if (!this.moved){
 
       fire(magV,theta)
     }
@@ -97,6 +104,8 @@ export const init = (app, setup) => {
 
 
   function drawVectors(){
+
+    console.log('draginvectors')
 
     let strokeThickness = numberline.lineThickness
     let centerZero = numberline.centerZero()
@@ -151,14 +160,6 @@ export const init = (app, setup) => {
     }
   }
 
-
-  V.on('pointermove',vectorPointerMove)
-  V.on('pointerdown',vectorPointerDown)
-  V.on('pointerup',vectorPointerUp)
-  V.on('pointerupoutside',vectorPointerUp)
-  V.ID = 0
-  V.interactive = true
-
   Vx.on('pointermove',vectorPointerMove)
   Vx.on('pointerdown',vectorPointerDown)
   Vx.on('pointerup',vectorPointerUp)
@@ -172,6 +173,14 @@ export const init = (app, setup) => {
   Vy.on('pointerupoutside',vectorPointerUp)
   Vy.ID = 2
   Vy.interactive = true
+
+  V.on('pointermove',vectorPointerMove)
+  V.on('pointerdown',vectorPointerDown)
+  V.on('pointerup',vectorPointerUp)
+  V.on('pointerupoutside',vectorPointerUp)
+  V.ID = 0
+  V.interactive = true
+
 
 
 
@@ -257,9 +266,9 @@ export const init = (app, setup) => {
     // NOTE: Gravity in pixels per second.
     gravity = WINDOW_WIDTH/(numberline.maxFloat - numberline.minFloat)*9.8
 
-    app.stage.addChild(V)
     app.stage.addChild(Vy)
     app.stage.addChild(Vx)
+    app.stage.addChild(V)
 
 
     // Initial Snowball
