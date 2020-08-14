@@ -922,6 +922,7 @@ export const init = (app, setup) => {
     ultimateNumberLine.x = 0
     ultimateNumberLine.y = NUMBER_LINE_Y
     app.stage.addChild(ultimateNumberLine)
+    ultimateNumberLine.hitArea = new PIXI.Rectangle(0,0,WINDOW_WIDTH,WINDOW_HEIGHT-NUMBER_LINE_Y)
 
     numberline = new NumberLine(-10, 155, NUMBER_LINE_WIDTH);
 

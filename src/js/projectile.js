@@ -2,6 +2,8 @@ import * as PIXI from "pixi.js";
 import blueGradient from "../assets/Clouds.png";
 import spaceGround from "../assets/SpaceGround.png";
 import Mountains from "../assets/Mountains.png";
+import mountainAndSky from "../assets/MountainsAndSky.png";
+import ground from "../assets/SnowGround.png";
 import spaceShipWindow from "../assets/SpaceShipWindow.png";
 import nightBackground from "../assets/NightBackground.png";
 import SnowCannon from "../assets/SnowCannon.png";
@@ -29,13 +31,10 @@ export const init = (app, setup) => {
   const WINDOW_WIDTH = setup.width
   const WINDOW_HEIGHT = setup.height
   // Vector was originally a "Cannon" sprite.
-  const CANNON_ANCHOR = {x:0.05*WINDOW_WIDTH,y: 0.90*WINDOW_HEIGHT }
-  const DX = WINDOW_WIDTH/15
-  const STROKE_WIDTH = WINDOW_WIDTH/20
-
-
+  const CANNON_ANCHOR = {x:0.05*WINDOW_WIDTH,y: 8/10*WINDOW_HEIGHT }
 
   let backGround;
+  let snowGround;
   let features;
   let snowballs = []
   let snowman;
@@ -99,9 +98,10 @@ export const init = (app, setup) => {
 
   function drawVectors(){
 
+    let strokeThickness = numberline.lineThickness
     let centerZero = numberline.centerZero()
     let x0 = centerZero.x 
-    let y0 = centerZero.y
+    let y0 = centerZero.y + strokeThickness/2
     let x1 = launchVector.x
     let y1 = launchVector.y
     let dX = x1 - x0
@@ -113,7 +113,7 @@ export const init = (app, setup) => {
     if (y1 <= y0) {
       V.clear()
       V.moveTo(x0,y0)
-      V.lineStyle(3,0x000000)
+      V.lineStyle(strokeThickness,0x000000)
       V.lineTo(x1,y1)
       V.beginFill(0x000000)
       V.lineTo(x1+5*Math.sin(theta),y1+5*Math.cos(theta))
@@ -126,7 +126,7 @@ export const init = (app, setup) => {
 
       Vx.clear()
       Vx.moveTo(x0,y0)
-      Vx.lineStyle(3,0xff3d9b)
+      Vx.lineStyle(strokeThickness,0xff3d9b)
       Vx.lineTo(x1,y0)
       Vx.beginFill(0xff3d9b)
       Vx.lineTo(x1,y0-5)
@@ -138,7 +138,7 @@ export const init = (app, setup) => {
 
       Vy.clear()
       Vy.moveTo(x0,y0)
-      Vy.lineStyle(3,0xf3ff4f)
+      Vy.lineStyle(strokeThickness,0xf3ff4f)
       Vy.lineTo(x0,y1)
       Vy.beginFill(0xf3ff4f)
       Vy.lineTo(x0+5,y1)
@@ -205,8 +205,6 @@ export const init = (app, setup) => {
       newSnowball.value = numberline.getNumberLineFloatValueFromPosition(newSnowball.x)
       numberline.interactive = true
     }
-
-
     TweenLite.to(time,{duration: totalTime,t: totalTime,onUpdate: onUpdate,ease: Linear.easeNone,onComplete: onComplete})
   }
  
@@ -218,18 +216,24 @@ export const init = (app, setup) => {
       features = setup.props.features;
     }
 
-    backGround = new PIXI.Sprite.from(Mountains);
+    backGround = new PIXI.Sprite.from(mountainAndSky);
     backGround.width = WINDOW_WIDTH
     backGround.height = WINDOW_HEIGHT
+    backGround.y = CANNON_ANCHOR.y - backGround.height
     app.stage.addChild(backGround);
 
+    snowGround = new PIXI.Sprite.from(ground);
+    snowGround.width = WINDOW_WIDTH
+    snowGround.height = WINDOW_HEIGHT/5
+    snowGround.y = WINDOW_HEIGHT - snowGround.height
+    app.stage.addChild(snowGround);
 
     numberline = new UltimateNumberLine(-30,30,WINDOW_WIDTH,app)
     let range = numberline.maxFloat - numberline.minFloat
     ballSize = numberline.width/range
     numberline.interactive = true
     numberline.y = CANNON_ANCHOR.y
-
+    numberline.hitArea = new PIXI.Rectangle(0,0,WINDOW_WIDTH,WINDOW_HEIGHT-CANNON_ANCHOR.y)
     // NOTE: Numberlines onUpdate is called inside "draw"
     numberline.onUpdate = ()=> {
       snowballs.forEach(s=>{
@@ -243,9 +247,10 @@ export const init = (app, setup) => {
       backGround.x = numberline.getNumberLinePositionFromFloatValue(-50)
       backGround.width = numberline.getNumberLinePositionFromFloatValue(50) - backGround.x
       backGround.height = WINDOW_HEIGHT/WINDOW_WIDTH*backGround.width
-      backGround.y = WINDOW_HEIGHT - backGround.height
+      backGround.y = CANNON_ANCHOR.y - backGround.height
 
     }  
+    app.stage.addChild(snowGround)
     app.stage.addChild(numberline)
 
 

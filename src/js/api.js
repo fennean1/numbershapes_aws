@@ -1759,7 +1759,7 @@ export class UltimateNumberLine extends PIXI.Container {
 
     this.init();
   
-    this.hitArea = new PIXI.Rectangle(0,0,this.width,this.height)
+    //this.hitArea = new PIXI.Rectangle(0,0,this.width,this.height)
 
     this.draw(this.minFloat,this.maxFloat)
 
