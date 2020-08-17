@@ -53,6 +53,8 @@ export default function ConceptsCarousel(props) {
       props.history.push("/content/tasks");
     } else if (newValue == 3) {
       props.history.push("/content/apps");
+    } else if (newValue == 4) {
+      props.history.push("/content/printables");
     }
     setValue(newValue);
   }
@@ -67,6 +69,8 @@ export default function ConceptsCarousel(props) {
       props.history.push("/content/tasks");
     } else if (newValue == 3) {
       props.history.push("/content/apps");
+    }else if (newValue == 4) {
+      props.history.push("/content/printables");
     }
     setValue(index);
   }
@@ -78,6 +82,7 @@ export default function ConceptsCarousel(props) {
       <Route exact path={"/content/images"} component={QuickImages} />
       <Route exact path={"/content/apps"} component={Apps} />
       <Route exact path={"/content/tasks"} component={Tasks} />
+      <Route exact path={"/content/printables"} component={Printables} />
     </Switch>
   );
 
@@ -99,8 +104,8 @@ export default function ConceptsCarousel(props) {
           <Tab
             style={{
               flex: 1,
-              margin: 5,
-              fontSize: "2vw",
+              margin: 2,
+              fontSize: "1.5vw",
               fontFamily: "Chalkboard SE",
               borderRadius: 8,
             }}
@@ -110,8 +115,8 @@ export default function ConceptsCarousel(props) {
           <Tab
             style={{
               flex: 1,
-              margin: 5,
-              fontSize: "2vw",
+              margin: 2,
+              fontSize: "1.5vw",
               fontFamily: "Chalkboard SE",
               borderRadius: 8,
             }}
@@ -121,8 +126,8 @@ export default function ConceptsCarousel(props) {
           <Tab
             style={{
               flex: 1,
-              margin: 5,
-              fontSize: "2vw",
+              margin: 2,
+              fontSize: "1.5vw",
               fontFamily: "Chalkboard SE",
               borderRadius: 8,
             }}
@@ -132,13 +137,24 @@ export default function ConceptsCarousel(props) {
           <Tab
             style={{
               flex: 1,
-              margin: 5,
-              fontSize: "2vw",
+              margin: 2,
+              fontSize: "1.5vw",
               fontFamily: "Chalkboard SE",
               borderRadius: 8,
             }}
             className="white"
             label="Apps"
+          />
+                    <Tab
+            style={{
+              flex: 1,
+              margin: 2,
+              fontSize: "1.5vw",
+              fontFamily: "Chalkboard SE",
+              borderRadius: 8,
+            }}
+            className="white"
+            label="Printables"
           />
         </Tabs>
 
@@ -158,6 +174,9 @@ export default function ConceptsCarousel(props) {
           </TabContainer>
           <TabContainer dir={theme.direction}>
             {value == 3 && routes()}
+          </TabContainer>
+          <TabContainer dir={theme.direction}>
+            {value == 4 && routes()}
           </TabContainer>
         </SwipeableViews>
       </div>

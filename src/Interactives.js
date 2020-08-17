@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import Grid from "@material-ui/core/Grid";
-import LessonCard from "./LessonCard";
+import InteractiveCard from "./InteractiveCard";
 import * as ACTIVITIES from "./Activities.js";
 
 export default class Interactives extends Component {
@@ -22,11 +22,11 @@ export default class Interactives extends Component {
             <div style={{ flexDirection: "column", display: "flex", flex: 1 }}>
             <div style={{ margin: 5, flex: 1 }}>
                 {" "}
-                <LessonCard data={ACTIVITIES.SPACE_BUBBLES} />
+                <InteractiveCard data={ACTIVITIES.SPACE_BUBBLES} />
               </div>
               <div style={{ margin: 5, flex: 1 }}>
                 {" "}
-                <LessonCard data={ACTIVITIES.FACTOR_WALL} />
+                <InteractiveCard  data={ACTIVITIES.FACTOR_WALL} />
               </div>
             </div>
             </Grid>
@@ -34,11 +34,11 @@ export default class Interactives extends Component {
             <div style={{ flexDirection: "column", display: "flex", flex: 1 }}>
             <div style={{ margin: 5, flex: 1 }}>
                 {" "}
-                <LessonCard data={ACTIVITIES.SPACE_SHIPS} />
+                <InteractiveCard data={ACTIVITIES.SPACE_SHIPS} />
               </div>
             <div style={{ margin: 5, flex: 1 }}>
                 {" "}
-                <LessonCard data={ACTIVITIES.ACTIVITY_TWO} />
+                <InteractiveCard  data={ACTIVITIES.ACTIVITY_TWO} />
               </div>
             </div>
             </Grid>
@@ -46,7 +46,11 @@ export default class Interactives extends Component {
             <div style={{ flexDirection: "column", display: "flex", flex: 1 }}>
             <div style={{ margin: 5, flex: 1 }}>
                 {" "}
-                <LessonCard data={ACTIVITIES.ACTIVITY_FOUR} />
+                <InteractiveCard  data={ACTIVITIES.ACTIVITY_FOUR} />
+              </div>
+              <div style={{ margin: 5, flex: 1 }}>
+                {" "}
+                <InteractiveCard  data={ACTIVITIES.NUMBER_LINE} />
               </div>
             </div>
             </Grid>

@@ -1,7 +1,7 @@
 export const dot_rate_problem = {
   id: "dot_rate_problem",
   title: "Jumping Dots",
-  shortText: "Study rates of change with rich problem solving.",
+  introduction: "In this activity students will gain experience working with rates of change and making predictions based on analysis of animations.",
   quickStart: [
     "Students watch the animation using the interactive or YouTube link",
     "Students write down what they notice about the problem",
@@ -68,6 +68,8 @@ export const ACTIVITY_FOUR = {
     "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
 };
 
+// Number Lines
+
 export const SPACE_BUBBLES = {
   shortText: "Fully Scalable and Interactive Number Line",
   title: "Space Bubbles",
@@ -82,6 +84,16 @@ export const SPACE_SHIPS = {
   title: "Space Ships",
   previewImg: "SpaceShips.png",
   tool: "/spaceships",
+  coreSkillDescription:
+    "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
+};
+
+
+export const NUMBER_LINE = {
+  shortText: "Plain & Simple Number Line.",
+  title: "Number Line",
+  previewImg: "NumberLine.png",
+  tool: "/numberline",
   coreSkillDescription:
     "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
 };

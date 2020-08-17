@@ -88,8 +88,7 @@ export default class ActivityPage extends Component {
           <h4>Introduction</h4>
           <div style={{ borderRadius: 10, padding: 5 }}>
             <p className="flow-text">
-              In this activity students will gain experience working with rates
-              of change and making predictions based on analysis of animations.
+              {myActivity.introduction}
             </p>
           </div>
         </div>
@@ -105,16 +104,6 @@ export default class ActivityPage extends Component {
             <p className="flow-text">
               {" "}
              {myActivity.synthesis}
-            </p>
-          </div>
-        </div>
-        <div style={{ flex: 1 }}>
-          {" "}
-          <h4> Discussion</h4>
-          <div style={{ borderRadius: 10, padding: 5 }}>
-            <p className="flow-text">
-              {" "}
-              
             </p>
           </div>
         </div>
