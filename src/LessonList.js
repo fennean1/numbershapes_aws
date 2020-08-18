@@ -5,7 +5,6 @@ import * as Subitization from "./activities/Subitization.json";
 import * as Addition from "./activities/Addition.json";
 import * as Subtraction from "./activities/Subtraction.json";
 
-
 class LessonList extends Component {
   constructor(props) {
     super(props);
@@ -17,8 +16,8 @@ class LessonList extends Component {
 
   render() {
     return (
-      <div className = "container">
-        <h2 className = "center"> Lessons </h2>   
+      <div className="container">
+        <h2 className="center"> Lessons </h2>
         <div className="row">
           <div className="col s6">
             <LessonCard data={Subitization} />
@@ -26,12 +25,12 @@ class LessonList extends Component {
           <div className="col s6">
             <LessonCard data={Subtraction} />
           </div>
-          </div>
-          <div className="row">
+        </div>
+        <div className="row">
           <div className="col s6">
             <LessonCard data={Addition} />
           </div>
-         </div> 
+        </div>
       </div>
     );
   }

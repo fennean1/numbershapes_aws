@@ -83,7 +83,7 @@ export default class ActivityPage extends Component {
         <div style={{ padding: 5, display: "block", margin: "auto" }}>
           <div style={{ display: "flex", flexDirection: "row" }}>{links}</div>
         </div>
-        <img style = {{width: "50vw",margin: 'auto'}} src = {require('./assets/'+myActivity.title)}/>
+        <img style = {{width: "50vw",margin: 'auto'}} src = {require('./assets/'+myActivity.previewImg)}/>
         <div style={{ flexGrow: 1 }}>
           {" "}
           <h4>Introduction</h4>
