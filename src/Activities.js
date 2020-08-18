@@ -1,7 +1,7 @@
 export const dot_rate_problem = {
   id: "dot_rate_problem",
   title: "Jumping Dots",
-  introduction: "In this activity students will gain experience working with rates of change and making predictions based on analysis of animations.",
+  introduction: "In this activity students will watch a brief animation and make a prediction about what will happen.",
   quickStart: [
     "Students watch the animation using the interactive or YouTube link",
     "Students write down what they notice about the problem",

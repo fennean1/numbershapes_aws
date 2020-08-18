@@ -4,6 +4,7 @@ import spaceGround from "../assets/SpaceGround.png";
 import spaceShipWindow from "../assets/SpaceShipWindow.png";
 import nightBackground from "../assets/NightBackground.png";
 import pinkPin from "../assets/PinkPin.png";
+import greyPin from "../assets/Pin.png";
 import {BLUE,RED,GREEN,ORANGE,PURPLE,PINK,NUMERAL,BALLS,BUTTONS} from "../AssetManager.js"
 import * as CONST from "./const.js";
 import { Fraction, Draggable, distance, FractionFrame, UltimateNumberLine } from "./api.js";
@@ -33,6 +34,7 @@ export const init = (app, setup) => {
   let jumps;
   let MAX_STAR_SIZE = 5;
   let numberlineVal = 100;
+  let pins = []
 
   const NL_COLOR = 0x000000;
   const MOVER_DOT = new PIXI.Texture.from(CONST.ASSETS.MOVER_DOT);
@@ -41,6 +43,7 @@ export const init = (app, setup) => {
   const PIN_TEXTURE = new PIXI.Texture.from(pinkPin);
   const BLUE_CIRCLE = new PIXI.Texture.from(CONST.ASSETS.STAR);
   const SHARP_PIN_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.SHARP_PIN);
+  const GREY_PIN_TEXTURE = new PIXI.Texture.from(greyPin)
 
   // Layout Parameters
   let WINDOW_WIDTH = setup.width;
@@ -166,6 +169,39 @@ export const init = (app, setup) => {
   backGround.sprite.on("pointerupoutside", draggerCenterPointerUp);
 
 
+  function dropPin(x){
+    let newPin = new Draggable(GREY_PIN_TEXTURE)
+    newPin.on('pointerup',pinPointerUp)
+    newPin.on('pointerupoutside',pinPointerUp)
+    newPin.anchor.x = 0.5
+    newPin.width = WINDOW_WIDTH/20
+    newPin.height = newPin.width*3.2
+    let roundedX = ultimateNumberLine.roundValueToNearestTick(x)
+    newPin.value = ultimateNumberLine.getNumberLineFloatValueFromPosition(roundedX)
+    newPin.x = roundedX
+    let targetY = ultimateNumberLine.y - newPin.height
+    newPin.originalY = targetY 
+    pins.push(newPin)
+
+    TweenLite.to(newPin,{duration: 1,y: targetY,ease: 'bounce'})
+    app.stage.addChild(newPin)
+  }
+
+
+  function pinPointerUp(){
+    if (this.y <= 0.20*ultimateNumberLine.y){
+      const onComplete = ()=> {
+        app.stage.removeChild(this)
+      }
+      TweenLite.to(this,{y: -this.height,onComplete:onComplete})
+    } else {
+      let _x = ultimateNumberLine.roundValueToNearestTick(this.x)
+      this.value = ultimateNumberLine.getNumberLineFloatValueFromPosition(_x)
+      TweenLite.to(this,{duration: 1,x: _x, y: this.originalY,ease: 'bounce'})
+    }
+  }
+
+
   function zoomToShips(){
     let minCompression = Math.min(numberline.compressionOne,numberline.compressionTwo)
     let maxCompression = Math.max(numberline.compressionOne,numberline.compressionTwo)
@@ -187,6 +223,9 @@ export const init = (app, setup) => {
       let _max = this.initialNumberlineMax + delta
       ultimateNumberLine.draw(_min,_max)
       dragger.x = ultimateNumberLine.getNumberLinePositionFromFloatValue(dragger.val)
+      pins.forEach(p=>{
+        p.x = ultimateNumberLine.getNumberLinePositionFromFloatValue(p.value)
+      })
     }
   }
 
@@ -909,6 +948,31 @@ export const init = (app, setup) => {
     ARENA_HEIGHT = LANDSCAPE ? frame.height : (3 / 4) * frame.width;
   }
 
+  function numberlinePointerDown(e){
+    this.moved = false
+    this.touching = true 
+  }
+
+
+  function numberlinePointerMove(e){
+    if (this.touching){
+      this.moved = true
+      pins.forEach(p=>{
+        p.x = ultimateNumberLine.getNumberLinePositionFromFloatValue(p.value)
+      })
+    }
+  }
+
+
+
+  function numberlinePointerUp(e){
+    let x = e.data.getLocalPosition(this).x
+    if (!this.moved){
+      dropPin(x)
+    }    
+  }
+
+
   // Loading Script
   function load() {
     if (setup.props.features) {
@@ -923,6 +987,9 @@ export const init = (app, setup) => {
     ultimateNumberLine.y = NUMBER_LINE_Y
     app.stage.addChild(ultimateNumberLine)
     ultimateNumberLine.hitArea = new PIXI.Rectangle(0,0,WINDOW_WIDTH,WINDOW_HEIGHT-NUMBER_LINE_Y)
+    ultimateNumberLine.on('pointerdown',numberlinePointerDown)
+    ultimateNumberLine.on('pointermove',numberlinePointerMove)
+    ultimateNumberLine.on('pointerup',numberlinePointerUp)
 
     numberline = new NumberLine(-10, 155, NUMBER_LINE_WIDTH);
 
@@ -936,14 +1003,6 @@ export const init = (app, setup) => {
     sprite.x = 0;
     sprite.y = 0;
     //app.stage.addChild(sprite)
-
-    let sprite2 = new PIXI.Sprite.from(blueGradient);
-    sprite2.anchor.set(1, 0);
-    sprite2.width = 0.9 * numberline.x;
-    sprite2.height = WINDOW_HEIGHT;
-    sprite2.x = WINDOW_WIDTH;
-    sprite2.y = 0;
-    //app.stage.addChild(sprite2)
 
     focalPoint.x = numberline.x;
     focalPoint.y = numberline.y;
