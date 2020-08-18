@@ -69,7 +69,7 @@ export default function ConceptsCarousel(props) {
       props.history.push("/content/tasks");
     } else if (newValue == 3) {
       props.history.push("/content/apps");
-    }else if (newValue == 4) {
+    } else if (newValue == 4) {
       props.history.push("/content/printables");
     }
     setValue(index);
@@ -91,6 +91,17 @@ export default function ConceptsCarousel(props) {
       className="clouds"
       style={{ display: "flex", flexDirection: "column" }}
     >
+      <div id="287325669">
+        {" "}
+        <script type="text/javascript">
+          {" "}
+          try{" "}
+          {window._mNHandle.queue.push(function () {
+            window._mNDetails.loadTag("287325669", "728x90", "287325669");
+          })}{" "}
+          catch (error) {}
+        </script>
+      </div>
       <div className="container" style={{ marginTop: 50 }}>
         <Tabs
           value={value}
@@ -145,7 +156,7 @@ export default function ConceptsCarousel(props) {
             className="white"
             label="Apps"
           />
-                    <Tab
+          <Tab
             style={{
               flex: 1,
               margin: 2,
