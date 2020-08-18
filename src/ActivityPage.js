@@ -21,7 +21,7 @@ export default class ActivityPage extends Component {
           return (
             <div style={{ padding: 10 }}>
               <a href = {myActivity.links[e]}>
-                <Button>YouTube</Button>
+                <Button variant = "outlined" >YouTube</Button>
               </a>
             </div>
           );
@@ -30,7 +30,7 @@ export default class ActivityPage extends Component {
           return (
             <div style={{ padding: 10 }}>
               <a href = {myActivity.links[e]}>
-                <Button>Medium Article</Button>
+                <Button variant = "outlined" >Medium Article</Button>
               </a>
             </div>
           );
@@ -39,7 +39,7 @@ export default class ActivityPage extends Component {
           return (
             <div style={{ padding: 10 }}>
               <Link to={"/"+myActivity.links[e]}>
-                <Button>Interactive</Button>
+                <Button variant = 'outlined'>Interactive</Button>
               </Link>
             </div>
           );
@@ -48,7 +48,7 @@ export default class ActivityPage extends Component {
           return (
             <div style={{ padding: 10 }}>
               <a href = {myActivity.links[e]}>
-                <Button>Google Slides</Button>
+                <Button variant = "outlined" >Google Slides</Button>
               </a>
             </div>
           );
@@ -78,11 +78,12 @@ export default class ActivityPage extends Component {
         className="container"
       >
         <h3 style={{ padding: 5, display: "block", margin: "auto" }}>
-          Dot Rate Problem
+          {myActivity.title}
         </h3>
         <div style={{ padding: 5, display: "block", margin: "auto" }}>
           <div style={{ display: "flex", flexDirection: "row" }}>{links}</div>
         </div>
+        <img style = {{width: "50vw",margin: 'auto'}} src = {require('./assets/DotRateProblem.png')}/>
         <div style={{ flexGrow: 1 }}>
           {" "}
           <h4>Introduction</h4>
