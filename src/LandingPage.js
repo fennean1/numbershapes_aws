@@ -91,17 +91,6 @@ export default function ConceptsCarousel(props) {
       className="clouds"
       style={{ display: "flex", flexDirection: "column" }}
     >
-      <div id="287325669">
-        {" "}
-        <script type="text/javascript">
-          {" "}
-          try{" "}
-          {window._mNHandle.queue.push(function () {
-            window._mNDetails.loadTag("287325669", "728x90", "287325669");
-          })}{" "}
-          catch (error) {}
-        </script>
-      </div>
       <div className="container" style={{ marginTop: 50 }}>
         <Tabs
           value={value}
