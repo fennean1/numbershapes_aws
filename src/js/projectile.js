@@ -66,12 +66,12 @@ export const init = (app, setup) => {
       let y1 = e.data.global.y
       
       if (this.ID == 0){
-        launchVector.x = x1 
-        launchVector.y = y1
+        launchVector.x = x1 + 10
+        launchVector.y = y1 + 10
       } else if (this.ID == 1){
-        launchVector.x = x1
+        launchVector.x = x1 + 10
       } else if (this.ID == 2){
-        launchVector.y = y1 
+        launchVector.y = y1 + 10
       }
 
       drawVectors()
@@ -133,6 +133,7 @@ export const init = (app, setup) => {
       Vx.lineTo(x1,y0)
       Vx.hitArea.x = x1 
       Vx.hitArea.y = y0
+      console.log("v.x",Vx.width)
 
       Vy.clear()
       Vy.moveTo(x0,y0)
@@ -186,6 +187,7 @@ export const init = (app, setup) => {
     let v0Y = v*Math.sin(theta)
     let v0X = v*Math.cos(theta)
 
+    console.log("theta",theta)
     let totalTime = 2*v0Y/gravity
 
     const onUpdate = ()=> {
