@@ -166,7 +166,11 @@ export const init = (app, setup) => {
       const onUpdate = ()=> {
         lineDown.clear()
         lineDown.lineStyle(ultimateNumberLine.lineThickness,0x000000)
-        lineDown.moveTo(this.x,this.y+this.height/2)
+        if (this.y > ultimateNumberLine.y){
+          lineDown.moveTo(this.x,this.y-this.height/2)
+        } else {
+          lineDown.moveTo(this.x,this.y+this.height/2)
+        }
         lineDown.lineTo(this.x,ultimateNumberLine.y)
       }
       const onComplete = ()=> {
@@ -177,7 +181,7 @@ export const init = (app, setup) => {
         lineDown.clear()
         let ratio = this.width/this.height
         let newHeight = ultimateNumberLine.digitHeight*1.2
-        TweenLite.to(this,{onComplete: onComplete,onUpdate: onUpdate,duration: 1,y: ultimateNumberLine.y-this.height,x: roundedX,height: newHeight,width: newHeight*ratio})
+        TweenLite.to(this,{onComplete: onComplete,onUpdate: onUpdate,duration: 1.5,y: ultimateNumberLine.y+4*this.height,x: roundedX,height: newHeight,width: newHeight*ratio,ease: "elastic"})
       }
   }
 
@@ -279,7 +283,7 @@ export const init = (app, setup) => {
     textBoxes.forEach((t,i)=>{
       t.x = x
       x = x + maxWidth*1.5
-      TweenLite.to(t,{y: 1/4*WINDOW_HEIGHT})
+      TweenLite.to(t,{duration: 1,y: 1/4*WINDOW_HEIGHT,ease: 'bounce'})
     })
   }
 
