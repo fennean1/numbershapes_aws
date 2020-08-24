@@ -36,8 +36,6 @@ export const init = (app, setup) => {
   let fadeAnimation = new TimelineLite({paused: true})
  
 
-
-
   // State Objects
   let stencil;
   let Nodes = []

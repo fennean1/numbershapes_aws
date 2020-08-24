@@ -25,9 +25,7 @@ export const ACTIVITY_ONE = {
   title: "Gold Rush",
   previewImg: "GoldRush.png",
   tool: "/goldrush",
-  coreSkillDescription:
-    "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
-};
+}
 
 export const NUMBERSHAPES_CRUSH = {
   shortText:

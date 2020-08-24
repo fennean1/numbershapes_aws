@@ -176,7 +176,7 @@ export const init = (app, setup) => {
     newPin.anchor.x = 0.5
     newPin.width = WINDOW_WIDTH/20
     newPin.height = newPin.width*3.2
-    let roundedX = ultimateNumberLine.roundValueToNearestTick(x)
+    let roundedX = ultimateNumberLine.roundPositionToNearestTick(x)
     newPin.value = ultimateNumberLine.getNumberLineFloatValueFromPosition(roundedX)
     newPin.x = roundedX
     let targetY = ultimateNumberLine.y - newPin.height
@@ -195,7 +195,7 @@ export const init = (app, setup) => {
       }
       TweenLite.to(this,{y: -this.height,onComplete:onComplete})
     } else {
-      let _x = ultimateNumberLine.roundValueToNearestTick(this.x)
+      let _x = ultimateNumberLine.roundPositionToNearestTick(this.x)
       this.value = ultimateNumberLine.getNumberLineFloatValueFromPosition(_x)
       TweenLite.to(this,{duration: 1,x: _x, y: this.originalY,ease: 'bounce'})
     }
@@ -251,7 +251,7 @@ export const init = (app, setup) => {
   }
 
   function draggerPointerUp(e) {
-    let roundedX =ultimateNumberLine.roundValueToNearestTick(this.x)
+    let roundedX =ultimateNumberLine.roundPositionToNearestTick(this.x)
     ultimateNumberLine.flexPoint = ultimateNumberLine.getNumberLineFloatValueFromPosition(roundedX)
     this.val = ultimateNumberLine.getNumberLineFloatValueFromPosition(roundedX)
     this.x = roundedX
@@ -1084,8 +1084,5 @@ export const init = (app, setup) => {
   // Not sure where else to put this.
   app.resize = (frame) => resize(frame);
   // app.resizable = true
-
-
-
 
 };

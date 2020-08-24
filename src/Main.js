@@ -5,6 +5,7 @@ import { Switch, Route, Link } from "react-router-dom";
 import Arena from "./Arena"
 import * as subitizer from "./js/subitizer.js"
 import * as matchgame from "./js/numbershapesmatch.js"
+import * as clothesline from "./js/clothesline.js"
 import * as dotrateproblem from "./js/dotrateproblem.js"
 import * as numberlinespace from "./js/numberlinespace.js"
 import * as numberline from "./js/projectile.js"
@@ -31,6 +32,7 @@ const Main = () => (
     <Route exact path="/spacebubbles" render={()=><Arena fullscreen = {true} features = {{spaceBubbles: true}} script = {numberlinespace.init}/>} />
     <Route exact path="/spaceships" render={()=><Arena fullscreen = {true} features = {{spaceShips: true}}  script = {numberlinespace.init}/>} />
     <Route exact path="/numberline" render={()=><Arena fullscreen = {true} features = {{spaceShips: true}}  script = {plainjane.init}/>} />
+    <Route exact path="/clothesline" render={()=><Arena fullscreen = {true} features = {{spaceBubbles: true}} script = {clothesline.init}/>} />
     <Route exact path="/buildandcut" render={()=><Arena fullscreen = {true} features = {{spaceShips: true}}  script = {buildandcut.init}/>} />
     <Route exact path="/dotrateproblem" render={()=><Arena fullscreen = {true} script = {dotrateproblem.init}/>} />
     <Route exact path="/projectile" render={()=><Arena fullscreen = {true} script = {numberline.init}/>} />

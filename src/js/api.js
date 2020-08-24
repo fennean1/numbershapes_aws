@@ -1765,10 +1765,30 @@ export class UltimateNumberLine extends PIXI.Container {
 
   }
 
-  roundValueToNearestTick(xPos){
+
+  getRandomValueFromRange() {
+    let rand = Math.round(Math.random()/0.01)*0.01
+    let delta = rand*(this.maxFloat-this.minFloat)
+    let randValue = this.minFloat+delta
+    let randValueRounded = this.roundValueToNearestTick(randValue)
+
+    if (this.minorStep < 1){
+      let minStepDigitCount = digitCount(this.minorStep) -1
+      randValueRounded = randValueRounded.toFixed(minStepDigitCount)
+    }
+
+    return randValueRounded
+  }
+
+  roundPositionToNearestTick(xPos){
     let val = this.getNumberLineFloatValueFromPosition(xPos)
     let roundedVal = Math.round(val/this.minorStep)*this.minorStep
     return this.getNumberLinePositionFromFloatValue(roundedVal)
+  }
+
+  roundValueToNearestTick(xVal){
+    let roundedVal = Math.round(xVal/this.minorStep)*this.minorStep
+    return roundedVal
   }
 
   setBoundaries(lowerLimit,upperLimit,lowerRange){
