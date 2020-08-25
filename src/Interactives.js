@@ -22,6 +22,10 @@ export default class Interactives extends Component {
             <div style={{ flexDirection: "column", display: "flex", flex: 1 }}>
             <div style={{ margin: 5, flex: 1 }}>
                 {" "}
+                <InteractiveCard  data={ACTIVITIES.CLOTHES_LINE} />
+              </div>
+            <div style={{ margin: 5, flex: 1 }}>
+                {" "}
                 <InteractiveCard data={ACTIVITIES.SPACE_BUBBLES} />
               </div>
               <div style={{ margin: 5, flex: 1 }}>
@@ -34,11 +38,15 @@ export default class Interactives extends Component {
             <div style={{ flexDirection: "column", display: "flex", flex: 1 }}>
             <div style={{ margin: 5, flex: 1 }}>
                 {" "}
-                <InteractiveCard data={ACTIVITIES.SPACE_SHIPS} />
+                <InteractiveCard  data={ACTIVITIES.NUMBER_LINE} />
               </div>
             <div style={{ margin: 5, flex: 1 }}>
                 {" "}
-                <InteractiveCard  data={ACTIVITIES.ACTIVITY_TWO} />
+                <InteractiveCard data={ACTIVITIES.SPACE_SHIPS} />
+              </div>
+              <div style={{ margin: 5, flex: 1 }}>
+                {" "}
+                <InteractiveCard  data={ACTIVITIES.CLOVERS} />
               </div>
             </div>
             </Grid>
@@ -46,11 +54,11 @@ export default class Interactives extends Component {
             <div style={{ flexDirection: "column", display: "flex", flex: 1 }}>
             <div style={{ margin: 5, flex: 1 }}>
                 {" "}
-                <InteractiveCard  data={ACTIVITIES.ACTIVITY_FOUR} />
+                <InteractiveCard data={ACTIVITIES.PROJECTILE} />
               </div>
               <div style={{ margin: 5, flex: 1 }}>
                 {" "}
-                <InteractiveCard  data={ACTIVITIES.NUMBER_LINE} />
+                <InteractiveCard  data={ACTIVITIES.ACTIVITY_TWO} />
               </div>
             </div>
             </Grid>

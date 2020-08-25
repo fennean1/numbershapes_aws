@@ -65,9 +65,6 @@ export const init = (app, setup) => {
   backGround = new makeBackground();
   ground = new makeGround();
 
-  let numberline;
-  let emitters = [];
-  let emitters2 = [];
 
   // Called on resize
   function resize(newFrame, flex) {
@@ -104,15 +101,15 @@ export const init = (app, setup) => {
   draggerMin.y = DRAGGER_Y - dragger.height/2
   //app.stage.addChild(draggerMin);
 
-  let draggerCenter = new Draggable(SHARP_PIN_TEXTURE);
-  draggerCenter.interactive = true;
-  draggerCenter.lockY = true;
-  draggerCenter.anchor.set(0.5,0);
-  draggerCenter.height = ground.sprite.height/2
-  draggerCenter.width = ground.sprite.height/2
-  draggerCenter.x = WINDOW_WIDTH/2
-  draggerCenter.anchorPoint = draggerCenter.x
-  draggerCenter.y = 1.10*NUMBER_LINE_Y
+  let panRegion = new Draggable(SHARP_PIN_TEXTURE);
+  panRegion.interactive = true;
+  panRegion.lockY = true;
+  panRegion.anchor.set(0.5,0);
+  panRegion.height = ground.sprite.height/2
+  panRegion.width = ground.sprite.height/2
+  panRegion.x = WINDOW_WIDTH/2
+  panRegion.anchorPoint = panRegion.x
+  panRegion.y = 1.10*NUMBER_LINE_Y
   //app.stage.addChild(draggerMin);
 
 
@@ -121,27 +118,62 @@ export const init = (app, setup) => {
   dragger.on("pointerup", draggerPointerUp);
   dragger.on("pointerupoutside", draggerPointerUp);
 
-  backGround.sprite.on("pointermove", draggerCenterPointerMove);
-  backGround.sprite.on("pointerdown", draggerCenterPointerDown);
-  backGround.sprite.on("pointerup", draggerCenterPointerUp);
-  backGround.sprite.on("pointerupoutside", draggerCenterPointerUp);
+  backGround.sprite.on("pointermove", panRegionPointerMove);
+  backGround.sprite.on("pointerdown", panRegionPointerDown);
+  backGround.sprite.on("pointerup", panRegionPointerUp);
+  backGround.sprite.on("pointerupoutside", panRegionPointerUp);
 
 
 
-  function draggerCenterPointerMove(e){
-    if (this.touching){
-      let x = e.data.global.x
-      let x1 = ultimateNumberLine.getNumberLineFloatValueFromPosition(x)
-      let x2 = ultimateNumberLine.getNumberLineFloatValueFromPosition(this.anchorPoint)
-      let delta = x2-x1
-      let _min = this.initialNumberlineMin + delta
-      let _max = this.initialNumberlineMax + delta
-      ultimateNumberLine.draw(_min,_max)
+  function panRegionPointerDown(e) {
+    this.touching = true;
+    this.anchorPoint = e.data.global.x;
+    this.initialNumberlineMin = ultimateNumberLine.minFloat;
+    this.initialNumberlineMax = ultimateNumberLine.maxFloat;
+  }
+
+  function panRegionPointerMove(e) {
+    if (this.touching) {
+      let x = e.data.global.x;
+      let x1 = ultimateNumberLine.getNumberLineFloatValueFromPosition(x);
+      let x2 = ultimateNumberLine.getNumberLineFloatValueFromPosition(
+        this.anchorPoint
+      );
+      let delta = x2 - x1;
+      let _min = this.initialNumberlineMin + delta;
+      let _max = this.initialNumberlineMax + delta;
+      ultimateNumberLine.draw(_min, _max);
+
+      pins.forEach((p) => {
+        p.x = ultimateNumberLine.getNumberLinePositionFromFloatValue(p.value);
+      });
+
       dragger.x = ultimateNumberLine.getNumberLinePositionFromFloatValue(dragger.val)
-      pins.forEach(p=>{
-        p.x = ultimateNumberLine.getNumberLinePositionFromFloatValue(p.value)
-      })
+
+      if (dragger.x < 0) {
+        dragger.x = 0
+        dragger.val = ultimateNumberLine.getNumberLineFloatValueFromPosition(0)
+      } else if (dragger.x > WINDOW_WIDTH) {
+        dragger.x = WINDOW_WIDTH
+        dragger.val = ultimateNumberLine.getNumberLineFloatValueFromPosition(WINDOW_WIDTH)
+      }
     }
+  }
+
+  function panRegionPointerUp(e) {
+    this.touching = false;
+
+    if (dragger.x <= 0) {
+      dragger.x = ultimateNumberLine.roundPositionUpToNearestTick(0)
+      dragger.val = ultimateNumberLine.getNumberLineFloatValueFromPosition(dragger.x)
+    } else if (dragger.x >= WINDOW_WIDTH) {
+      dragger.x = ultimateNumberLine.roundPositionDownToNearestTick(WINDOW_WIDTH)
+      dragger.val = ultimateNumberLine.getNumberLineFloatValueFromPosition(dragger.x)
+    } else {
+      dragger.x = ultimateNumberLine.getNumberLinePositionFromFloatValue(dragger.val)
+    }
+  
+    ultimateNumberLine.flexPoint = dragger.val
   }
 
   function drawLine(){
@@ -185,20 +217,16 @@ export const init = (app, setup) => {
       }
   }
 
-  function draggerCenterPointerDown(e){
-    this.touching = true
-    this.anchorPoint = e.data.global.x
-    this.initialNumberlineMin = ultimateNumberLine.minFloat
-    this.initialNumberlineMax = ultimateNumberLine.maxFloat
-  }
-
-  function draggerCenterPointerUp(e){
-    this.touching = false
-  }
 
   // D_POINTER_MOVE
-  function draggerPointerMove() {
+  function draggerPointerUp(e) {
+    let roundedX = ultimateNumberLine.roundPositionToNearestTick(this.x)
+    ultimateNumberLine.flexPoint = ultimateNumberLine.getNumberLineFloatValueFromPosition(roundedX)
+    this.val = ultimateNumberLine.getNumberLineFloatValueFromPosition(roundedX)
+    this.x = roundedX
+  }
 
+  function draggerPointerMove() {
 
   }
 
@@ -206,12 +234,6 @@ export const init = (app, setup) => {
 
   }
 
-  function draggerPointerUp(e) {
-    let roundedX =ultimateNumberLine.roundPositionToNearestTick(this.x)
-    ultimateNumberLine.flexPoint = ultimateNumberLine.getNumberLineFloatValueFromPosition(roundedX)
-    this.val = ultimateNumberLine.getNumberLineFloatValueFromPosition(roundedX)
-    this.x = roundedX
-  }
 
   class DraggableText extends PIXI.Text {
     constructor(){
@@ -263,10 +285,15 @@ export const init = (app, setup) => {
   function createTextBoxes(n){
     let width = 0
     let maxWidth = 0
+    let numbers = {}
     for (let i=0;i<n;i++){
       let d = new DraggableText()
-      d.style.height = 20
-      d.text = ultimateNumberLine.getRandomValueFromRange()
+      let n = ultimateNumberLine.getRandomValueFromRange()
+      while (numbers[n]){
+        n = ultimateNumberLine.getRandomValueFromRange() 
+      }
+      numbers[n] = true
+      d.text = n
       d.interactive = true 
       width = width + 1.5*d.width
       d.y = -d.height

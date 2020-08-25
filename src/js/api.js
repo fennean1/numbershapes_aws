@@ -1786,8 +1786,32 @@ export class UltimateNumberLine extends PIXI.Container {
     return this.getNumberLinePositionFromFloatValue(roundedVal)
   }
 
+  roundPositionDownToNearestTick(xPos){
+    let val = this.getNumberLineFloatValueFromPosition(xPos)
+    let roundedVal = Math.floor(val/this.minorStep)*this.minorStep
+    return this.getNumberLinePositionFromFloatValue(roundedVal)
+  }
+
+
+  roundPositionUpToNearestTick(xPos){
+    let val = this.getNumberLineFloatValueFromPosition(xPos)
+    let roundedVal = Math.ceil(val/this.minorStep)*this.minorStep
+    return this.getNumberLinePositionFromFloatValue(roundedVal)
+  }
+
+
   roundValueToNearestTick(xVal){
     let roundedVal = Math.round(xVal/this.minorStep)*this.minorStep
+    return roundedVal
+  }
+
+  roundValueDownToNearestTick(xVal){
+    let roundedVal = Math.floor(xVal/this.minorStep)*this.minorStep
+    return roundedVal
+  }
+
+  roundValueUpToNearestTick(xVal){
+    let roundedVal = Math.ceil(xVal/this.minorStep)*this.minorStep
     return roundedVal
   }
 

@@ -57,7 +57,7 @@ export const NUMBERSHAPES_MULTIPLICATION = {
     "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
 };
 
-export const ACTIVITY_FOUR = {
+export const CLOVERS = {
   shortText: "Create Subtraction Sentences from Pictures.",
   title: "Subtraction",
   previewImg: "CloverSubtraction.png",
@@ -73,6 +73,24 @@ export const SPACE_BUBBLES = {
   title: "Space Bubbles",
   previewImg: "SpaceBubbles.png",
   tool: "/spacebubbles",
+  coreSkillDescription:
+    "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
+};
+
+export const CLOTHES_LINE = {
+  shortText: "Interactive Number Line in the Style of a Clothes Line",
+  title: "Clothes Line",
+  previewImg: "Clothesline.png",
+  tool: "/clothesline",
+  coreSkillDescription:
+    "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
+};
+
+export const PROJECTILE = {
+  shortText: "Vector Based Projectile Simulation",
+  title: "Projectile",
+  previewImg: "Projectile.png",
+  tool: "/projectile",
   coreSkillDescription:
     "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
 };
