@@ -23,6 +23,7 @@ import {
   distance,
   FractionFrame,
   UltimateNumberLine,
+  NumberLine,
 } from "./api.js";
 import {
   TweenMax,
@@ -34,14 +35,18 @@ import {
   TimelineMax,
   Power4,
 } from "gsap";
+import { snap } from "gsap/gsap-core";
+import Apps from "../Apps";
 
 export const init = (app, setup) => {
-  let features;
+  let features = {}
   let viewPort = new PIXI.Container();
+  let snapIndicator = new PIXI.Graphics()
   let backGround;
   let homeButton;
   let ground;
-  let ultimateNumberLine;
+  let numberlineA;
+  let numberlineB;
   let pins = [];
 
   const NL_COLOR = 0x000000;
@@ -63,8 +68,6 @@ export const init = (app, setup) => {
   let DRAGGER_Y = NUMBER_LINE_Y;
 
   let focalPoint = { x: 0, y: 0 };
-
-  console.log("application",app)
 
   backGround = new makeBackground();
   ground = new makeGround();
@@ -105,8 +108,6 @@ export const init = (app, setup) => {
   panRegionDown.y = 1.1 * NUMBER_LINE_Y;
   //app.stage.addChild(draggerMin);
 
-
-
   dragger.on("pointermove", draggerPointerMove);
   dragger.on("pointerdown", draggerPointerDown);
   dragger.on("pointerup", draggerPointerUp);
@@ -116,6 +117,7 @@ export const init = (app, setup) => {
   backGround.sprite.on("pointerdown", panRegionDownPointerDown);
   backGround.sprite.on("pointerup", panRegionDownPointerUp);
   backGround.sprite.on("pointerupoutside", panRegionDownPointerUp);
+     
 
   function dropPin(x) {
     let newPin = new Draggable(GREY_PIN_TEXTURE);
@@ -124,12 +126,12 @@ export const init = (app, setup) => {
     newPin.anchor.x = 0.5;
     newPin.width = WINDOW_WIDTH / 20;
     newPin.height = newPin.width * 3.2;
-    let roundedX = ultimateNumberLine.roundPositionToNearestTick(x);
-    newPin.value = ultimateNumberLine.getNumberLineFloatValueFromPosition(
+    let roundedX = numberlineA.roundPositionToNearestTick(x);
+    newPin.value = numberlineA.getNumberLineFloatValueFromPosition(
       roundedX
     );
     newPin.x = roundedX;
-    let targetY = ultimateNumberLine.y - newPin.height;
+    let targetY = numberlineA.y - newPin.height;
     newPin.originalY = targetY;
     pins.push(newPin);
 
@@ -138,14 +140,14 @@ export const init = (app, setup) => {
   }
 
   function pinPointerUp() {
-    if (this.y <= 0.2 * ultimateNumberLine.y) {
+    if (this.y <= 0.2 * numberlineA.y) {
       const onComplete = () => {
         app.stage.removeChild(this);
       };
       TweenLite.to(this, { y: -this.height, onComplete: onComplete });
     } else {
-      let _x = ultimateNumberLine.roundPositionToNearestTick(this.x);
-      this.value = ultimateNumberLine.getNumberLineFloatValueFromPosition(_x);
+      let _x = numberlineA.roundPositionToNearestTick(this.x);
+      this.value = numberlineA.getNumberLineFloatValueFromPosition(_x);
       TweenLite.to(this, {
         duration: 1,
         x: _x,
@@ -158,34 +160,48 @@ export const init = (app, setup) => {
   function panRegionDownPointerDown(e) {
     this.touching = true;
     this.anchorPoint = e.data.global.x;
-    this.initialNumberlineMin = ultimateNumberLine.minFloat;
-    this.initialNumberlineMax = ultimateNumberLine.maxFloat;
+    this.initialNumberlineMin = numberlineA.minFloat;
+    this.initialNumberlineMax = numberlineA.maxFloat;
+
+    numberlineB.initialNumberlineMin = numberlineB.minFloat;
+    numberlineB.initialNumberlineMax = numberlineB.maxFloat;
   }
 
   function panRegionDownPointerMove(e) {
     if (this.touching) {
       let x = e.data.global.x;
-      let x1 = ultimateNumberLine.getNumberLineFloatValueFromPosition(x);
-      let x2 = ultimateNumberLine.getNumberLineFloatValueFromPosition(
+      let x1 = numberlineA.getNumberLineFloatValueFromPosition(x);
+      let x2 = numberlineA.getNumberLineFloatValueFromPosition(
         this.anchorPoint
       );
       let delta = x2 - x1;
       let _min = this.initialNumberlineMin + delta;
       let _max = this.initialNumberlineMax + delta;
-      ultimateNumberLine.draw(_min, _max);
+
+      let x1B = numberlineB.getNumberLineFloatValueFromPosition(x);
+      let x2B = numberlineB.getNumberLineFloatValueFromPosition(
+        this.anchorPoint
+      );
+      let deltaB = x2B - x1B;
+      let _minB = numberlineB.initialNumberlineMin + deltaB;
+      let _maxB = numberlineB.initialNumberlineMax + deltaB;
+      
+      numberlineA.draw(_min, _max);
+      numberlineB.draw(_minB, _maxB);
+
 
       pins.forEach((p) => {
-        p.x = ultimateNumberLine.getNumberLinePositionFromFloatValue(p.value);
+        p.x = numberlineA.getNumberLinePositionFromFloatValue(p.value);
       });
 
-      dragger.x = ultimateNumberLine.getNumberLinePositionFromFloatValue(dragger.val)
+      dragger.x = numberlineA.getNumberLinePositionFromFloatValue(dragger.val)
 
       if (dragger.x < 0) {
         dragger.x = 0
-        dragger.val = ultimateNumberLine.getNumberLineFloatValueFromPosition(0)
+        dragger.val = numberlineA.getNumberLineFloatValueFromPosition(0)
       } else if (dragger.x > WINDOW_WIDTH) {
         dragger.x = WINDOW_WIDTH
-        dragger.val = ultimateNumberLine.getNumberLineFloatValueFromPosition(WINDOW_WIDTH)
+        dragger.val = numberlineA.getNumberLineFloatValueFromPosition(WINDOW_WIDTH)
       }
     }
   }
@@ -194,16 +210,16 @@ export const init = (app, setup) => {
     this.touching = false;
 
     if (dragger.x <= 0) {
-      dragger.x = ultimateNumberLine.roundPositionUpToNearestTick(0)
-      dragger.val = ultimateNumberLine.getNumberLineFloatValueFromPosition(dragger.x)
+      dragger.x = numberlineA.roundPositionUpToNearestTick(0)
+      dragger.val = numberlineA.getNumberLineFloatValueFromPosition(dragger.x)
     } else if (dragger.x >= WINDOW_WIDTH) {
-      dragger.x = ultimateNumberLine.roundPositionDownToNearestTick(WINDOW_WIDTH)
-      dragger.val = ultimateNumberLine.getNumberLineFloatValueFromPosition(dragger.x)
+      dragger.x = numberlineA.roundPositionDownToNearestTick(WINDOW_WIDTH)
+      dragger.val = numberlineA.getNumberLineFloatValueFromPosition(dragger.x)
     } else {
-      dragger.x = ultimateNumberLine.getNumberLinePositionFromFloatValue(dragger.val)
+      dragger.x = numberlineA.getNumberLinePositionFromFloatValue(dragger.val)
     }
   
-    ultimateNumberLine.flexPoint = dragger.val
+    //numberlineA.numberlineAPoi = dragger.val
   }
 
   // D_POINTER_MOVE
@@ -212,11 +228,8 @@ export const init = (app, setup) => {
   function draggerPointerDown() {}
 
   function draggerPointerUp(e) {
-    let roundedX = ultimateNumberLine.roundPositionToNearestTick(this.x);
-    ultimateNumberLine.flexPoint = ultimateNumberLine.getNumberLineFloatValueFromPosition(
-      roundedX
-    );
-    this.val = ultimateNumberLine.getNumberLineFloatValueFromPosition(roundedX);
+    let roundedX = numberlineA.roundPositionToNearestTick(this.x);
+    this.val = numberlineA.getNumberLineFloatValueFromPosition(roundedX);
     this.x = roundedX;
   }
 
@@ -268,22 +281,24 @@ export const init = (app, setup) => {
     }
   }
 
-
-  // Numberline A
   function numberlinePointerDown(e) {
     this.moved = false;
     this.touching = true;
+    let x = e.data.getLocalPosition(this).x
+    numberlineB.pointerVal = numberlineB.getNumberLineFloatValueFromPosition(x)
   }
 
   function numberlinePointerMove(e) {
     if (this.touching) {
       this.moved = true;
-      /*
       pins.forEach((p) => {
-        p.x = ultimateNumberLine.getNumberLinePositionFromFloatValue(p.value);
+        p.x = numberlineA.getNumberLinePositionFromFloatValue(p.value);
       });
-      */
+      let x = e.data.getLocalPosition(this).x
+      let bounds = numberlineB.getBoundsFrom(x,numberlineB.pointerVal)
+      numberlineB.draw(bounds.min,bounds.max)
     }
+
   }
 
   function numberlinePointerUp(e) {
@@ -291,8 +306,34 @@ export const init = (app, setup) => {
     if (!this.moved) {
       dropPin(x);
     }
+
+     //this.synchLines(numberlineB,x)
   }
 
+
+  // Numberline B
+  function numberlineBPointerDown(e) {
+
+  }
+
+  function numberlineBPointerMove(e) {
+    if (this.touching) {
+      this.moved = true;
+      let x = e.data.getLocalPosition(this).x;
+      snapIndicator.x = this.roundPositionToNearestTick(x)
+    }
+  }
+
+  function numberlineBPointerUp(e) {
+    let x = e.data.getLocalPosition(this).x;
+    if (!this.moved) {
+      // A click only logic here.
+    }
+
+    this.synchLines(numberlineA,x)
+    let roundedX = this.roundPositionToNearestTick(x)
+    snapIndicator.x = roundedX
+  }
 
   // Loading Script
   function load() {
@@ -302,25 +343,43 @@ export const init = (app, setup) => {
 
     app.stage.interactive = true;
 
-    ultimateNumberLine = new UltimateNumberLine(
-      -22,
-      22,
+
+    // NUMBERLINE A
+    numberlineA = new UltimateNumberLine(
+      -1,
+      25,
       NUMBER_LINE_WIDTH,
       app
     );
-    ultimateNumberLine.setBoundaries(-100000, 100000, 0.005);
-    ultimateNumberLine.x = 0;
-    ultimateNumberLine.y = NUMBER_LINE_Y;
-    app.stage.addChild(ultimateNumberLine);
-    ultimateNumberLine.hitArea = new PIXI.Rectangle(
+    numberlineA.setBoundaries(-100000, 100000, 0.005);
+    numberlineA.x = 0;
+    numberlineA.y = NUMBER_LINE_Y;
+    app.stage.addChild(numberlineA);
+    numberlineA.hitArea = new PIXI.Rectangle(
       0,
       0,
       WINDOW_WIDTH,
       WINDOW_HEIGHT - NUMBER_LINE_Y
     );
-    ultimateNumberLine.on("pointerdown", numberlinePointerDown);
-    ultimateNumberLine.on("pointermove", numberlinePointerMove);
-    ultimateNumberLine.on("pointerup", numberlinePointerUp);
+
+
+    // NUMBERLINE B
+    numberlineB = new UltimateNumberLine(
+      -1,
+      25,
+      NUMBER_LINE_WIDTH,
+      app
+    );
+    numberlineB.setBoundaries(-100000, 100000, 0.005);
+    numberlineB.x = 0;
+    numberlineB.y = 1/2*NUMBER_LINE_Y;
+    app.stage.addChild(numberlineB);
+    numberlineB.hitArea = new PIXI.Rectangle(
+      0,
+      0,
+      WINDOW_WIDTH,
+      WINDOW_HEIGHT - NUMBER_LINE_Y
+    );
 
     homeButton = new PIXI.Sprite.from(BUTTONS.HOME);
     homeButton.width = HOME_BUTTON_WIDTH;
@@ -331,7 +390,7 @@ export const init = (app, setup) => {
     homeButton.on("pointerdown", () => app.goHome());
     app.stage.addChild(homeButton);
 
-    app.stage.addChild(ultimateNumberLine);
+    app.stage.addChild(numberlineA);
 
     // FEATURES
     if (features.spaceShips) {
@@ -349,10 +408,28 @@ export const init = (app, setup) => {
 
     //app.stage.addChild(panRegionDown)
 
-    dragger.height = WINDOW_HEIGHT - NUMBER_LINE_Y - ultimateNumberLine.height;
+    dragger.height = WINDOW_HEIGHT - NUMBER_LINE_Y - numberlineA.height;
     dragger.width = dragger.height * 0.31;
-    dragger.y = NUMBER_LINE_Y + ultimateNumberLine.height;
+    dragger.y = NUMBER_LINE_Y + numberlineA.height;
     dragger.x = WINDOW_WIDTH / 2;
+
+
+      // Pointer Events
+      numberlineA.on("pointerdown", numberlinePointerDown);
+      numberlineA.on("pointermove", numberlinePointerMove);
+      numberlineA.on("pointerup", numberlinePointerUp);
+    
+      // Pointer Events
+      numberlineB.on("pointerdown", numberlineBPointerDown);
+      numberlineB.on("pointermove", numberlineBPointerMove);
+      numberlineB.on("pointerup", numberlineBPointerUp);
+        
+      snapIndicator.lineStyle(2,0x000000)
+      let zeroPoint = numberlineB.getNumberLinePositionFromFloatValue(0)
+      snapIndicator.lineTo(0,numberlineA.y-numberlineB.y)
+      snapIndicator.x = zeroPoint
+      snapIndicator.y = numberlineB.y
+      app.stage.addChild(snapIndicator)
   }
 
   // Call load script

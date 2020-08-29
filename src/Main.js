@@ -10,6 +10,8 @@ import * as dotrateproblem from "./js/dotrateproblem.js"
 import * as numberlinespace from "./js/numberlinespace.js"
 import * as numberline from "./js/projectile.js"
 import * as buildandcut from "./js/buildandcut.js"
+import * as dualnumberline from "./js/dualnumberline.js"
+import * as fractionmultiplication from "./js/fractionmultiplication.js"
 import * as plainjane from "./js/plainjane.js"
 import * as multiplication from "./js/multiplication.js"
 import * as dotsgame from "./js/dotsgame.js"
@@ -29,6 +31,8 @@ const Main = () => (
   <Switch>
     <Route exact path="/goldrush"  render ={()=><Arena fullscreen = {true} type = {1} script = {subitizer.init}/>} />
     <Route exact path="/multiplication" render={()=><Arena fullscreen = {true} lesson = {Addition} type = {1} script = {multiplication.init}/>} />
+    <Route exact path="/dualnumberline" render={()=><Arena fullscreen = {true} lesson = {Addition} type = {1} script = {dualnumberline.init}/>} />
+    <Route exact path="/fractionmultiplication" render={()=><Arena fullscreen type = {1} script = {fractionmultiplication.init}/>} />
     <Route exact path="/spacebubbles" render={()=><Arena fullscreen = {true} features = {{spaceBubbles: true}} script = {numberlinespace.init}/>} />
     <Route exact path="/spaceships" render={()=><Arena fullscreen = {true} features = {{spaceShips: true}}  script = {numberlinespace.init}/>} />
     <Route exact path="/numberline" render={()=><Arena fullscreen = {true} features = {{spaceShips: true}}  script = {plainjane.init}/>} />

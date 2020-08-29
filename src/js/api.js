@@ -1765,6 +1765,13 @@ export class UltimateNumberLine extends PIXI.Container {
 
   }
 
+  synchLines(line,pointerX){
+    let roundedPositionForThis = this.roundPositionToNearestTick(pointerX)
+    let valForThisFromRoundedPosition = this.getNumberLineFloatValueFromPosition(roundedPositionForThis)
+    let roundedPositionFromThisForLine = line.roundPositionToNearestTick(roundedPositionForThis)
+    let bounds = this.getBoundsFrom(roundedPositionFromThisForLine,valForThisFromRoundedPosition)
+    this.draw(bounds.min,bounds.max)
+  }
 
   getRandomValueFromRange() {
     let rand = Math.round(Math.random()/0.01)*0.01
@@ -1785,6 +1792,7 @@ export class UltimateNumberLine extends PIXI.Container {
     let roundedVal = Math.round(val/this.minorStep)*this.minorStep
     return this.getNumberLinePositionFromFloatValue(roundedVal)
   }
+
 
   roundPositionDownToNearestTick(xPos){
     let val = this.getNumberLineFloatValueFromPosition(xPos)
@@ -2015,6 +2023,19 @@ export class UltimateNumberLine extends PIXI.Container {
     this.vA = this.getNumberLineFloatValueFromPosition(pA)
   }
 
+  getBoundsFrom(x,value){
+    let pM = this._width 
+    let pm = 0
+    let pC = this.getNumberLinePositionFromFloatValue(this.flexPoint)
+    let vC = this.flexPoint
+    let pA = x
+    let vA = value
+    let vM = vC + (pM-pC)/(pA-pC)*(vA-vC)
+    let vMin = vM - (pM-pm)/(pM-pC)*(vM-vC) 
+
+    return {min: vMin,max: vM}
+  }
+
   pointerMove(e){
     if(this.touching){
       let pM = this._width 
@@ -2025,7 +2046,10 @@ export class UltimateNumberLine extends PIXI.Container {
       let vA = this.vA
       let vM = vC + (pM-pC)/(pA-pC)*(vA-vC)
       let vMin = vM - (pM-pm)/(pM-pC)*(vM-vC) 
-      this.draw(vMin,vM)
+
+      let bounds = this.getBoundsFrom(pA,this.vA)
+
+      this.draw(bounds.min,bounds.max)
     }
   }
 
