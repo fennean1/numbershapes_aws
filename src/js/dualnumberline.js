@@ -4,6 +4,8 @@ import spaceGround from "../assets/SpaceGround.png";
 import spaceShipWindow from "../assets/SpaceShipWindow.png";
 import nightBackground from "../assets/NightBackground.png";
 import pinkPin from "../assets/PinkPin.png";
+import openLock from "../assets/UnlockedLock.png";
+import closedLock from "../assets/LockedLock.png";
 import greyPin from "../assets/Pin.png";
 import {
   BLUE,
@@ -48,6 +50,7 @@ export const init = (app, setup) => {
   let numberlineA;
   let numberlineB;
   let pins = [];
+  let lockButton;
 
   const NL_COLOR = 0x000000;
   const MOVER_DOT = new PIXI.Texture.from(CONST.ASSETS.MOVER_DOT);
@@ -57,6 +60,8 @@ export const init = (app, setup) => {
   const BLUE_CIRCLE = new PIXI.Texture.from(CONST.ASSETS.STAR);
   const SHARP_PIN_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.SHARP_PIN);
   const GREY_PIN_TEXTURE = new PIXI.Texture.from(greyPin);
+  const OPEN_LOCK_TEXTURE = new PIXI.Texture.from(openLock);
+  const CLOSED_LOCK_TEXTURE = new PIXI.Texture.from(closedLock);
 
   // Layout Parameters
   let WINDOW_WIDTH = setup.width;
@@ -118,6 +123,35 @@ export const init = (app, setup) => {
   backGround.sprite.on("pointerup", panRegionDownPointerUp);
   backGround.sprite.on("pointerupoutside", panRegionDownPointerUp);
      
+
+
+
+  class LockButton extends PIXI.Sprite {
+    constructor(locked,unlockTexture,lockTexture){
+      super()
+      this.locked = locked
+      this.lockTexture = lockTexture
+      this.unlockTexture = unlockTexture
+      this.texture = this.locked ? this.lockTexture : this.unlockTexture
+      this.interactive = true
+      this.on('pointerdown',this.onPointerDown)
+    }
+
+    setState(lockedState){
+      this.locked = lockedState
+    }
+
+    toggleLock(){
+      this.locked = !this.locked
+      this.texture = this.locked ? this.lockTexture : this.unlockTexture
+    }
+
+    onPointerDown(){
+      console.log("toggling")
+      this.toggleLock()
+    }
+  }
+
 
   function dropPin(x) {
     let newPin = new Draggable(GREY_PIN_TEXTURE);
@@ -285,18 +319,22 @@ export const init = (app, setup) => {
     this.moved = false;
     this.touching = true;
     let x = e.data.getLocalPosition(this).x
-    numberlineB.pointerVal = numberlineB.getNumberLineFloatValueFromPosition(x)
+    numberlineB.pointerDownValue = numberlineB.getNumberLineFloatValueFromPosition(x)
+    let roundedX = this.roundPositionToNearestTick(x)
+    snapIndicator.x = roundedX
   }
 
   function numberlinePointerMove(e) {
     if (this.touching) {
       this.moved = true;
-      pins.forEach((p) => {
-        p.x = numberlineA.getNumberLinePositionFromFloatValue(p.value);
-      });
       let x = e.data.getLocalPosition(this).x
-      let bounds = numberlineB.getBoundsFrom(x,numberlineB.pointerVal)
-      numberlineB.draw(bounds.min,bounds.max)
+      if (lockButton.locked){
+        let bounds = numberlineB.getBoundsFrom(x,numberlineB.pointerDownValue)
+        numberlineB.draw(bounds.min,bounds.max)
+      } else {
+        let roundedX = this.roundPositionToNearestTick(x)
+        snapIndicator.x = roundedX
+      }
     }
 
   }
@@ -304,23 +342,36 @@ export const init = (app, setup) => {
   function numberlinePointerUp(e) {
     let x = e.data.getLocalPosition(this).x;
     if (!this.moved) {
-      dropPin(x);
+      // Click only logic goes here.  
     }
 
-     //this.synchLines(numberlineB,x)
+    if (!lockButton.locked){
+      let roundedX = this.roundPositionToNearestTick(x)
+      numberlineB.synchWith(this,roundedX)
+      snapIndicator.x = roundedX
+    }
   }
 
 
   // Numberline B
   function numberlineBPointerDown(e) {
-
+    let x = e.data.getLocalPosition(this).x
+    let roundedX = this.roundPositionToNearestTick(x)
+    snapIndicator.x = roundedX
+    numberlineA.pointerDownValue = numberlineA.getNumberLineFloatValueFromPosition(x)
   }
 
   function numberlineBPointerMove(e) {
     if (this.touching) {
       this.moved = true;
-      let x = e.data.getLocalPosition(this).x;
-      snapIndicator.x = this.roundPositionToNearestTick(x)
+      let x = e.data.getLocalPosition(this).x
+      if (lockButton.locked){
+        let bounds = numberlineA.getBoundsFrom(x,numberlineA.pointerDownValue)
+        numberlineA.draw(bounds.min,bounds.max)
+      } else {
+        let roundedX = this.roundPositionToNearestTick(x)
+        snapIndicator.x = roundedX
+      }
     }
   }
 
@@ -329,10 +380,11 @@ export const init = (app, setup) => {
     if (!this.moved) {
       // A click only logic here.
     }
-
-    this.synchLines(numberlineA,x)
-    let roundedX = this.roundPositionToNearestTick(x)
-    snapIndicator.x = roundedX
+    if (!lockButton.locked){
+      let roundedX = this.roundPositionToNearestTick(x)
+      numberlineA.synchWith(this,roundedX)
+      snapIndicator.x = roundedX
+    }
   }
 
   // Loading Script
@@ -392,44 +444,36 @@ export const init = (app, setup) => {
 
     app.stage.addChild(numberlineA);
 
-    // FEATURES
-    if (features.spaceShips) {
-      app.stage.addChild(dragger);
-      //app.stage.addChild(draggerMin)
-      //app.stage.addChild(windowButton)
-    }
-
-    // FEATURES
-    if (features.spaceBubbles) {
-      numberline.nestMe = true;
-      // Not multicolored
-      numberline.setColorState(false);
-    }
 
     //app.stage.addChild(panRegionDown)
-
     dragger.height = WINDOW_HEIGHT - NUMBER_LINE_Y - numberlineA.height;
     dragger.width = dragger.height * 0.31;
     dragger.y = NUMBER_LINE_Y + numberlineA.height;
     dragger.x = WINDOW_WIDTH / 2;
 
-
       // Pointer Events
-      numberlineA.on("pointerdown", numberlinePointerDown);
-      numberlineA.on("pointermove", numberlinePointerMove);
-      numberlineA.on("pointerup", numberlinePointerUp);
+    numberlineA.on("pointerdown", numberlinePointerDown);
+    numberlineA.on("pointermove", numberlinePointerMove);
+    numberlineA.on("pointerup", numberlinePointerUp);
     
       // Pointer Events
-      numberlineB.on("pointerdown", numberlineBPointerDown);
-      numberlineB.on("pointermove", numberlineBPointerMove);
-      numberlineB.on("pointerup", numberlineBPointerUp);
+    numberlineB.on("pointerdown", numberlineBPointerDown);
+    numberlineB.on("pointermove", numberlineBPointerMove);
+    numberlineB.on("pointerup", numberlineBPointerUp);
         
-      snapIndicator.lineStyle(2,0x000000)
-      let zeroPoint = numberlineB.getNumberLinePositionFromFloatValue(0)
-      snapIndicator.lineTo(0,numberlineA.y-numberlineB.y)
-      snapIndicator.x = zeroPoint
-      snapIndicator.y = numberlineB.y
-      app.stage.addChild(snapIndicator)
+    snapIndicator.lineStyle(2,0x000000)
+    let zeroPoint = numberlineB.getNumberLinePositionFromFloatValue(0)
+    snapIndicator.lineTo(0,numberlineA.y-numberlineB.y)
+    snapIndicator.x = zeroPoint
+    snapIndicator.y = numberlineB.y
+    app.stage.addChild(snapIndicator)
+
+    lockButton = new LockButton(true,OPEN_LOCK_TEXTURE,CLOSED_LOCK_TEXTURE)
+    lockButton.width = homeButton.width
+    lockButton.height = lockButton.width
+    lockButton.x = WINDOW_WIDTH - lockButton.width
+    lockButton.y = 0
+    app.stage.addChild(lockButton)
   }
 
   // Call load script

@@ -1765,11 +1765,10 @@ export class UltimateNumberLine extends PIXI.Container {
 
   }
 
-  synchLines(line,pointerX){
+  synchWith(line,pointerX){
     let roundedPositionForThis = this.roundPositionToNearestTick(pointerX)
     let valForThisFromRoundedPosition = this.getNumberLineFloatValueFromPosition(roundedPositionForThis)
-    let roundedPositionFromThisForLine = line.roundPositionToNearestTick(roundedPositionForThis)
-    let bounds = this.getBoundsFrom(roundedPositionFromThisForLine,valForThisFromRoundedPosition)
+    let bounds = this.getBoundsFrom(pointerX,valForThisFromRoundedPosition)
     this.draw(bounds.min,bounds.max)
   }
 
