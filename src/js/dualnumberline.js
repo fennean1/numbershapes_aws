@@ -411,7 +411,7 @@ export const init = (app, setup) => {
       0,
       0,
       WINDOW_WIDTH,
-      WINDOW_HEIGHT - NUMBER_LINE_Y
+      1/4*(WINDOW_HEIGHT - NUMBER_LINE_Y)
     );
 
 

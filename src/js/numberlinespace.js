@@ -493,6 +493,35 @@ function groundPointerUp(e) {
     }
   }
 
+  function panRegionPointerDown(e) {
+    this.touching = true;
+    this.anchorPoint = e.data.global.x;
+    this.initialNumberlineMin = numberline.minFloat;
+    this.initialNumberlineMax = numberline.maxFloat;
+  }
+
+  function panRegionPointerMove(e) {
+    if (this.touching) {
+      let x = e.data.global.x;
+      let x1 = numberline.getNumberLineFloatValueFromPosition(x);
+      let x2 = numberline.getNumberLineFloatValueFromPosition(
+        this.anchorPoint
+      );
+      let delta = x2 - x1;
+      let _min = this.initialNumberlineMin + delta;
+      let _max = this.initialNumberlineMax + delta;
+      numberline.draw(_min, _max);
+      let minCompression = Math.min(numberline.compressionOne,numberline.compressionTwo)
+      let maxCompression = Math.max(numberline.compressionOne,numberline.compressionTwo)
+      dragger.x = numberline.getNumberLinePositionFromFloatValue(minCompression)
+      draggerMin.x = numberline.getNumberLinePositionFromFloatValue(maxCompression)
+    }
+  }
+
+  function panRegionPointerUp(e) {
+    this.touching = false;
+  }
+
   // Classes
 
   class NumberLine extends PIXI.Container {
@@ -581,7 +610,18 @@ function groundPointerUp(e) {
       this.compressionOne = 10;
       this.compressionTwo = this.compressionOne * this.multiplier;
 
+      this.on('pointerdown',this.pointerDown)
+      this.on('pointerup',this.pointerUp)
+      this.on('pointerupoutside',this.pointerUp)
+      this.on('pointermove',this.pointerMove)
+
+      this.flexPoint = 0
+
       this.init();
+
+      this.hitArea = new PIXI.Rectangle(0,0,this.width,3*this.digitHeight)
+
+
     }
 
     setColorState(multicolored){
@@ -591,6 +631,41 @@ function groundPointerUp(e) {
           this.hundredsJumps.colorTwo = this.hundredsJumps.colorOne
           this.tensJumps.colorTwo = this.hundredsJumps.colorOne
         }
+    }
+
+    pointerUp(){
+      this.touching = false
+    }
+  
+    pointerDown(e){
+      this.touching = true
+      let pA = e.data.getLocalPosition(this).x
+      this.vA = this.getNumberLineFloatValueFromPosition(pA)
+    }
+  
+    pointerMove(e){
+      if(this.touching){
+        let pA = e.data.getLocalPosition(this).x
+        let bounds = this.getBoundsFrom(pA,this.vA)
+        this.draw(bounds.min,bounds.max)
+        let minCompression = Math.min(numberline.compressionOne,numberline.compressionTwo)
+        let maxCompression = Math.max(numberline.compressionOne,numberline.compressionTwo)
+        dragger.x = numberline.getNumberLinePositionFromFloatValue(minCompression)
+        draggerMin.x = numberline.getNumberLinePositionFromFloatValue(maxCompression)
+      }
+    }
+
+    getBoundsFrom(x,value){
+      let pM = this._width 
+      let pm = 0
+      let pC = this.getNumberLinePositionFromFloatValue(this.flexPoint)
+      let vC = this.flexPoint
+      let pA = x
+      let vA = value
+      let vM = vC + (pM-pC)/(pA-pC)*(vA-vC)
+      let vMin = vM - (pM-pm)/(pM-pC)*(vM-vC) 
+  
+      return {min: vMin,max: vM}
     }
 
 
@@ -712,11 +787,6 @@ function groundPointerUp(e) {
       return max
     }
 
-    getNumberLineMaxMinFromAnchor(anchor,position){
-      let Pc = this._width
-      let Vc = this.getNumberLineFloatValueFromPosition(Pc)
-
-    }
     
     getNumberLineMaxFromAnchor(anchor,position) {
       let max = this.minFloat + (anchor - this.minFloat)/position*this._width
@@ -725,16 +795,9 @@ function groundPointerUp(e) {
 
     getNumberLineMinFromAnchor(anchor,position) {
 
-      /*
-      let position = this._width*(1-(this.maxFloat - anchor)/(this.maxFloat-this.minFloat))
-
-      position/this._width - 1  = (this.maxFloat - anchor)/(this.maxFloat-this.minFloat)
-
-      */
 
       let min = this.maxFloat - (this.maxFloat - anchor)/(1-position/this._width)
 
-      console.log("min",min)
       return min
     }
 
@@ -1226,10 +1289,10 @@ function groundPointerUp(e) {
     //app.stage.addChild(windowButton)
 
 
-    ground.sprite.on('pointerdown',groundPointerDown)
-    ground.sprite.on('pointerup',groundPointerUp)
-    ground.sprite.on('pointerupoutside',groundPointerUp)
-    ground.sprite.on('pointermove',groundPointerMove)
+    ground.sprite.on('pointerdown',panRegionPointerDown)
+    ground.sprite.on('pointerup',panRegionPointerUp)
+    ground.sprite.on('pointerupoutside',panRegionPointerUp)
+    ground.sprite.on('pointermove',panRegionPointerMove)
 
 
     // FRACTION FRAME TEST
@@ -1249,10 +1312,12 @@ function groundPointerUp(e) {
       numberline.setColorState(false)
     }
 
-    app.stage.addChild(draggerCenter)
+    // START HERE BY ADDING LOGIC FROM THE DRAGGER CENTER FUNCTIONS TO SYNCH WITH PAN REGION POINTER MOVEMENTS
+    //app.stage.addChild(draggerCenter)
     
 
     numberline.draw(numberline.min,numberline.max)
+    numberline.interactive = true
 
     let minCompression = Math.min(numberline.compressionOne,numberline.compressionTwo)
     let maxCompression = Math.max(numberline.compressionOne,numberline.compressionTwo)

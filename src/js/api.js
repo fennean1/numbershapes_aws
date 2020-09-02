@@ -1710,8 +1710,6 @@ function digitCount(n) {
 }
 
 // Number Line
-
-
 export class UltimateNumberLine extends PIXI.Container {
   constructor(min, max, width,app) {
     super();
@@ -2037,17 +2035,8 @@ export class UltimateNumberLine extends PIXI.Container {
 
   pointerMove(e){
     if(this.touching){
-      let pM = this._width 
-      let pm = 0
-      let pC = this.getNumberLinePositionFromFloatValue(this.flexPoint)
       let pA = e.data.getLocalPosition(this).x
-      let vC = this.flexPoint
-      let vA = this.vA
-      let vM = vC + (pM-pC)/(pA-pC)*(vA-vC)
-      let vMin = vM - (pM-pm)/(pM-pC)*(vM-vC) 
-
       let bounds = this.getBoundsFrom(pA,this.vA)
-
       this.draw(bounds.min,bounds.max)
     }
   }
