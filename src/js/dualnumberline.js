@@ -7,6 +7,8 @@ import pinkPin from "../assets/PinkPin.png";
 import openLock from "../assets/UnlockedLock.png";
 import closedLock from "../assets/LockedLock.png";
 import greyPin from "../assets/Pin.png";
+import blueCircle from "../assets/BlueCircle.png";
+import redSquare from "../assets/RedSquare.png";
 import {
   BLUE,
   RED,
@@ -85,6 +87,8 @@ export const init = (app, setup) => {
     updateLayoutParams(newFrame);
     app.renderer.resize(WINDOW_WIDTH, WINDOW_HEIGHT);
   }
+
+
 
   let sliderLine = new PIXI.Graphics();
   sliderLine.lineStyle(NUMBER_LINE_WIDTH / 300, 0xdbdbdb);
@@ -474,6 +478,23 @@ export const init = (app, setup) => {
     lockButton.x = WINDOW_WIDTH - lockButton.width
     lockButton.y = 0
     app.stage.addChild(lockButton)
+
+
+    let labelDim = WINDOW_WIDTH/40 
+    let square = new PIXI.Sprite.from(redSquare)
+    square.width = labelDim
+    square.height = labelDim
+    square.x = WINDOW_WIDTH - 3*labelDim/2
+    square.y = numberlineA.y - 1.5*labelDim
+    app.stage.addChild(square)
+    let circle = new PIXI.Sprite.from(blueCircle)
+    circle.width = labelDim
+    circle.height = labelDim
+    circle.y = numberlineB.y - 1.5*labelDim
+    circle.x = square.x
+    app.stage.addChild(circle)
+
+
   }
 
   // Call load script
