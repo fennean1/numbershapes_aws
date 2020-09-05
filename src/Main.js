@@ -11,9 +11,11 @@ import * as numberlinespace from "./js/numberlinespace.js"
 import * as numberline from "./js/projectile.js"
 import * as buildandcut from "./js/buildandcut.js"
 import * as dualnumberline from "./js/dualnumberline.js"
+import * as twodimensionalnumberline from "./js/twodimensionalnumberline.js"
 import * as fractionmultiplication from "./js/fractionmultiplication.js"
 import * as plainjane from "./js/plainjane.js"
 import * as multiplication from "./js/multiplication.js"
+import * as khtestenv from "./js/khtestenv.js"
 import * as dotsgame from "./js/dotsgame.js"
 import * as Subitization from "./activities/Subitization.json";
 import * as Addition from "./activities/Addition.json";
@@ -26,12 +28,13 @@ import LandingPage from "./LandingPage"
 import FractionList from "./FractionList";
 import ActivityPage from "./ActivityPage";
 
-
 const Main = () => (
   <Switch>
     <Route exact path="/goldrush"  render ={()=><Arena fullscreen = {true} type = {1} script = {subitizer.init}/>} />
     <Route exact path="/multiplication" render={()=><Arena fullscreen = {true} lesson = {Addition} type = {1} script = {multiplication.init}/>} />
+    <Route exact path="/khtestenv" render={()=><Arena fullscreen = {true} script = {khtestenv.init}/>} />
     <Route exact path="/dualnumberline" render={()=><Arena fullscreen = {true} lesson = {Addition} type = {1} script = {dualnumberline.init}/>} />
+    <Route exact path="/twodimensionalnumberline" render={()=><Arena fullscreen = {true} lesson = {Addition} type = {1} script = {twodimensionalnumberline.init}/>} />
     <Route exact path="/fractionmultiplication" render={()=><Arena fullscreen type = {1} script = {fractionmultiplication.init}/>} />
     <Route exact path="/spacebubbles" render={()=><Arena fullscreen = {true} features = {{spaceBubbles: true}} script = {numberlinespace.init}/>} />
     <Route exact path="/spaceships" render={()=><Arena fullscreen = {true} features = {{spaceShips: true}}  script = {numberlinespace.init}/>} />

@@ -47,6 +47,10 @@ import star from "../assets/Cloud.png"
 import space_gradient from "../assets/space-gradient.png"
 import pink_space_ship from "../assets/PinkSpaceShip.png"
 import blue_space_ship from "../assets/BlueSpaceShip.png"
+import pink_square_pin from "../assets/PinkSquarePin.png"
+import blue_diamond_pin from "../assets/BlueDiamondPin.png"
+import green_circle_pin from "../assets/GreenCirclePin.png"
+import orange_triangle_pin from "../assets/OrangeTrianglePin.png"
 
 export const ASSETS = {
     BLUE_GRADIENT: blue_gradient,
@@ -98,7 +102,10 @@ export const ASSETS = {
     SPACE_GRADIENT: space_gradient,
     BLUE_SPACE_SHIP: blue_space_ship,
     PINK_SPACE_SHIP: pink_space_ship,
-
+    PINK_SQUARE_PIN: pink_square_pin,
+    BLUE_DIAMOND_PIN: blue_diamond_pin,
+    GREEN_CIRCLE_PIN: green_circle_pin,
+    ORANGE_TRIANGLE_PIN: orange_triangle_pin,
 }
 
 export const CUISENAIRE_COLORS = {

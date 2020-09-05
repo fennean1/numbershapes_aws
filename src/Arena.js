@@ -66,7 +66,7 @@ class Arena extends Component {
     let styleType = this.props.fullscreen ? { height: "100vh" } : null;
     return (
       <div>
-        <Feedback email = {true} projectId="5f183e5515d6510004b665ea" />
+        <Feedback style = {{height: 1000}}email = {true} projectId="5f183e5515d6510004b665ea" />
         <div
           style={styleType}
           ref={(me) => {
