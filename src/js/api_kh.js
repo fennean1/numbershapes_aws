@@ -8,6 +8,19 @@ import { Easings } from "konva";
 
 // CLASSES
 
+// Math Fact Prompt:
+export class MathFactPrompt extends PIXI.Text {
+  constructor(facts){
+    super()
+    this.factIndex = 0
+  }
+
+  nextFact(){
+    let currentFact = this.facts[this.factIndex]
+  }
+}
+
+
 // Draggable
 export class Draggable extends PIXI.Sprite {
     constructor(texture){
@@ -522,7 +535,7 @@ export class HorizontalNumberLine extends PIXI.Container {
       constructor(width,min,max,partitions,target,tolerance,app){
         super()
 
-        // Constant 
+        // Constants 
         this.BLUE = 0x4287f5
 
         this.app = app
@@ -558,6 +571,7 @@ export class HorizontalNumberLine extends PIXI.Container {
       playFeedback(){
 
         // Timelines
+        this.feedbackDuration = 0.25
         let timeline = new TimelineLite({paused: true})
         let sliderTimeline = new TimelineLite({paused: true})
 
@@ -566,17 +580,23 @@ export class HorizontalNumberLine extends PIXI.Container {
         let range = 0.10*(this.target-this.min)/this.range*this._width
         let targetX = (this.target-this.min)/this.range*this._width
         let delta = this.stripGraphic.width - targetX
+        let nudge = 0
 
         if (Math.abs(delta) < range ){
+
+            const onComplete = ()=>{
+              this.nextQuestion()
+            }
+
             timeline.to(this.stripGraphic,{width: targetX})
             sliderTimeline.to(this.slider,{x: targetX})
                           .to(this.slider,{duration: 1,y: -this.parent.height,ease: 'power2'})
         } else if (delta > 0) {
-            timeline.to(this.stripGraphic,{width: targetX-range})
-                    .to(this.stripGraphic,{width: originalLocation,ease:'bounce'})
+            timeline.to(this.stripGraphic,{duration: this.feedbackDuration,width: originalLocation-range})
+                    .to(this.stripGraphic,{duration: this.feedbackDuration,width: originalLocation,ease:'bounce'})
         } else if (delta < 0) {
-            timeline.to(this.stripGraphic,{width: targetX+range})
-                     .to(this.stripGraphic,{width: originalLocation,ease:'bounce'})
+            timeline.to(this.stripGraphic,{duration: this.feedbackDuration,width: originalLocation+range})
+                     .to(this.stripGraphic,{duration: this.feedbackDuration,width: originalLocation,ease:'bounce'})
         }
         timeline.play()
         sliderTimeline.play()
@@ -632,7 +652,7 @@ export class HorizontalNumberLine extends PIXI.Container {
 
           // Strip 
           this.stripGraphic.beginFill(this.BLUE)
-          this.stripGraphic.drawRoundedRect(0,0,this._width/2,this.stripHeight,this.strokeWidth)
+          this.stripGraphic.drawRoundedRect(0,0,0,this.stripHeight,this.strokeWidth)
           this.stripGraphic.y = -this.stripHeight
 
           // Tick

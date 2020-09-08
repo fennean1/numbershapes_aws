@@ -25,7 +25,7 @@ import {
   UltimateNumberLine,
   NumberLine,
 } from "./api.js";
-import { HorizontalNumberLine,NumberLineEstimator } from "./api_kh.js";
+import { HorizontalNumberLine, NumberLineEstimator } from "./api_kh.js";
 import {
   TweenMax,
   TimelineLite,
@@ -64,14 +64,13 @@ export const init = (app, setup) => {
   let NUMBER_LINE_Y = (5 / 8) * WINDOW_HEIGHT;
   let DRAGGER_Y = NUMBER_LINE_Y;
 
-  let focalPoint = { x: 0, y: 0 };
-
-  console.log("application", app);
-
   backGround = new makeBackground();
   ground = new makeGround();
 
   let numberline;
+
+
+
 
   // Called on resize
   function resize(newFrame, flex) {
@@ -79,6 +78,8 @@ export const init = (app, setup) => {
     updateLayoutParams(newFrame);
     app.renderer.resize(WINDOW_WIDTH, WINDOW_HEIGHT);
   }
+
+  
 
   let sliderLine = new PIXI.Graphics();
   sliderLine.lineStyle(NUMBER_LINE_WIDTH / 300, 0xdbdbdb);
