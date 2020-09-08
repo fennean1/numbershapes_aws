@@ -78,6 +78,7 @@ export const init = (app, setup) => {
   let DRAGGER_Y = NUMBER_LINE_Y;
 
   backGround = new makeBackground();
+  app.stage.addChild(backGround.sprite)
   ground = new makeGround();
 
 
@@ -255,7 +256,7 @@ export const init = (app, setup) => {
     let backGroundGraphics = new PIXI.Graphics();
     backGroundGraphics.beginFill(0xffffff);
     backGroundGraphics.drawRoundedRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-    this.sprite = backGroundGraphics;
+    this.sprite = new PIXI.Sprite.from(blueGradient)
     this.sprite.width = WINDOW_WIDTH;
     this.sprite.height = WINDOW_HEIGHT;
     this.sprite.x = 0;
@@ -366,14 +367,10 @@ export const init = (app, setup) => {
     homeButton.on("pointerdown", () => app.goHome());
     app.stage.addChild(homeButton);
 
-    let firstProblem = problemSet[1]
-    console.log("firstproblem",firstProblem)
-
-    numberlineEstimator = new NumberLineEstimator(0.8*WINDOW_WIDTH,firstProblem.MIN,firstProblem.MAX,firstProblem.PARTITIONS,firstProblem.TARGET,1,app)
+    numberlineEstimator = new NumberLineEstimator(0.8*WINDOW_WIDTH,currentProblem.MIN,currentProblem.MAX,currentProblem.PARTITIONS,currentProblem.TARGET,1,app)
     app.stage.addChild(numberlineEstimator)
-    numberlineEstimator.y = WINDOW_HEIGHT/2
+    numberlineEstimator.y = 2/3*WINDOW_HEIGHT
     numberlineEstimator.x = WINDOW_WIDTH/2  - numberlineEstimator._width/2
-    numberlineEstimator.currentProblem = firstProblem
     numberlineEstimator.onComplete = nextProblem
 
     prompt = new MathFactPrompt(problemSet)

@@ -81,7 +81,7 @@ export const CLOTHES_LINE = {
   shortText: "Manipulative for Inputting Estimated Answers",
   title: "Estimation",
   previewImg: "Estimate.png",
-  tool: "/khtestenv",
+  tool: "/estimationinput",
   coreSkillDescription:
     "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
 };

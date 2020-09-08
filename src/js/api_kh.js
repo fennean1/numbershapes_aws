@@ -553,6 +553,8 @@ export class HorizontalNumberLine extends PIXI.Container {
 
         this.app = app
 
+        this.digitHeight = width/40
+
         // Set object parameters based on configuration.
         this.updateLayoutParams(width,min,max,partitions,target,tolerance)
 
@@ -603,10 +605,10 @@ export class HorizontalNumberLine extends PIXI.Container {
             sliderTimeline.to(this.slider,{x: targetX})
                           .to(this.slider,{duration: 1,y: -this.parent.height,ease: 'power2',onComplete: this.onComplete})
         } else if (delta > 0) {
-            timeline.to(this.stripGraphic,{duration: this.feedbackDuration,width: originalLocation-range})
+            timeline.to(this.stripGraphic,{duration: this.feedbackDuration,width: originalLocation-2*range})
                     .to(this.stripGraphic,{duration: this.feedbackDuration,width: originalLocation,ease:'bounce'})
         } else if (delta < 0) {
-            timeline.to(this.stripGraphic,{duration: this.feedbackDuration,width: originalLocation+range})
+            timeline.to(this.stripGraphic,{duration: this.feedbackDuration,width: originalLocation+2*range})
                      .to(this.stripGraphic,{duration: this.feedbackDuration,width: originalLocation,ease:'bounce'})
         }
         timeline.play()
@@ -614,10 +616,9 @@ export class HorizontalNumberLine extends PIXI.Container {
       }
 
       drawStrip(width){
-        console.log("strip width",width)
         this.stripGraphic.clear()
         this.stripGraphic.beginFill(this.BLUE)
-        this.stripGraphic.drawRoundedRect(0,0,width,this.stripHeight,0)
+        this.stripGraphic.drawRoundedRect(0,0,width,this.stripHeight,this.strokeWidth)
         this.stripGraphic.width = width
       }
 
@@ -649,7 +650,7 @@ export class HorizontalNumberLine extends PIXI.Container {
         this.ticks.forEach((t,i)=>{
           t.texture = this.tickTexture
           t.x = i > this.partitions+1 ?  0 : this._width/this.partitions*i
-          t.alpha = i > this.partitions+1 ?  0 : 1
+          t.alpha = i >= this.partitions+1 ?  0 : 1
           t.y = 0
         })
       }
@@ -686,11 +687,6 @@ export class HorizontalNumberLine extends PIXI.Container {
         })
       }
 
-      loadNewSetup(){
-
-      }
-
-
 
       onSliderDown(){
         let x = this.x
@@ -717,11 +713,11 @@ export class HorizontalNumberLine extends PIXI.Container {
       init(){
           // Line
           this.lineGraphic.lineStyle(this.strokeWidth,0x000000)
-          this.lineGraphic.lineTo(this._width,0)
+          this.lineGraphic.lineTo(this._width+this.strokeWidth,0)
 
           // Strip 
           this.stripGraphic.beginFill(this.BLUE)
-          this.stripGraphic.drawRoundedRect(0,0,0,this.stripHeight,this.strokeWidth)
+          this.stripGraphic.drawRoundedRect(0,0,this._width/2,this.stripHeight,this.strokeWidth)
           this.stripGraphic.y = -this.stripHeight
 
           // Tick
@@ -733,13 +729,16 @@ export class HorizontalNumberLine extends PIXI.Container {
           this.slider.width = 100 
           this.slider.height = 100
           this.slider.y = 3*this.tickHeight+this.slider.height/2 
+          this.slider.x = this._width/2
           this.addChild(this.slider)
 
           // Ticks Array Inititalization
           for (let i = 0;i<=12;i++){
              let tick = new PIXI.Sprite()
              tick.texture = this.tickTexture
-             tick.x = i > this.partitions+1 ?  0 : this._width/this.partitions*i
+             tick.x = i > this.partitions+1  ?  0 : (this._width)/this.partitions*i 
+             tick.alpha = i >= this.partitions+1 ?  0 : 1
+             
              tick.y = 0
              this.ticks.push(tick)
              this.addChild(tick)
@@ -747,7 +746,7 @@ export class HorizontalNumberLine extends PIXI.Container {
 
           for (let i = 0;i<=12;i++){
               let label = new PIXI.Text()
-
+              label.style.fontSize = this.digitHeight
               label.text = (this.min + i*this.step).toFixed(0)
               label.y = this.tickHeight
               label.alpha = 0
