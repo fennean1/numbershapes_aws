@@ -38,7 +38,7 @@ class Arena extends Component {
   }
 
   goHome() {
-    window.location.assign("http://www.numbershapes.com");
+    window.location.assign("http://khtestenv.herokuapp.com");
   }
 
   componentDidMount() {

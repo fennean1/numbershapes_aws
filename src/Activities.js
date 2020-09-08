@@ -78,10 +78,10 @@ export const SPACE_BUBBLES = {
 };
 
 export const CLOTHES_LINE = {
-  shortText: "Interactive Number Line in the Style of a Clothes Line",
-  title: "Clothes Line",
-  previewImg: "Clothesline.png",
-  tool: "/clothesline",
+  shortText: "Manipulative for Inputting Estimated Answers",
+  title: "Estimation",
+  previewImg: "Estimate.png",
+  tool: "/khtestenv",
   coreSkillDescription:
     "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
 };

@@ -24,42 +24,16 @@ export default class Interactives extends Component {
                 {" "}
                 <InteractiveCard  data={ACTIVITIES.CLOTHES_LINE} />
               </div>
-            <div style={{ margin: 5, flex: 1 }}>
-                {" "}
-                <InteractiveCard data={ACTIVITIES.SPACE_BUBBLES} />
-              </div>
-              <div style={{ margin: 5, flex: 1 }}>
-                {" "}
-                <InteractiveCard  data={ACTIVITIES.FACTOR_WALL} />
-              </div>
             </div>
             </Grid>
             <Grid xs = {12} item = {true}  sm = {4} >
             <div style={{ flexDirection: "column", display: "flex", flex: 1 }}>
-            <div style={{ margin: 5, flex: 1 }}>
-                {" "}
-                <InteractiveCard  data={ACTIVITIES.NUMBER_LINE} />
-              </div>
-            <div style={{ margin: 5, flex: 1 }}>
-                {" "}
-                <InteractiveCard data={ACTIVITIES.SPACE_SHIPS} />
-              </div>
-              <div style={{ margin: 5, flex: 1 }}>
-                {" "}
-                <InteractiveCard  data={ACTIVITIES.CLOVERS} />
-              </div>
+
             </div>
             </Grid>
             <Grid xs = {12} item = {true} sm = {4} >
             <div style={{ flexDirection: "column", display: "flex", flex: 1 }}>
-            <div style={{ margin: 5, flex: 1 }}>
-                {" "}
-                <InteractiveCard data={ACTIVITIES.PROJECTILE} />
-              </div>
-              <div style={{ margin: 5, flex: 1 }}>
-                {" "}
-                <InteractiveCard  data={ACTIVITIES.ACTIVITY_TWO} />
-              </div>
+
             </div>
             </Grid>
           </Grid>

@@ -83,9 +83,9 @@ export default function ConceptsCarousel(props) {
     <Switch>
       <Route exact path={"/"} component={Interactives} />
       <Route exact path={"/content/interactives"} component={Interactives} />
-      <Route exact path={"/content/images"} component={QuickImages} />
-      <Route exact path={"/content/apps"} component={Apps} />
-      <Route exact path={"/content/tasks"} component={Tasks} />
+      <Route exact path={"/content/images"} component={Interactives} />
+      <Route exact path={"/content/apps"} component={Interactives} />
+      <Route exact path={"/content/tasks"} component={Interactives} />
       <Route exact path={"/content/printables"} component={Printables} />
       <Route exact path={"/content/cardgames"} component={CardGames} />
     </Switch>
@@ -93,15 +93,14 @@ export default function ConceptsCarousel(props) {
 
   return (
     <div
-      className="clouds"
-      style={{ display: "flex", flexDirection: "column" }}
+      style={{ display: "flex", flexDirection: "column",backgroundColor:  "#1FABDB",height: "100vh" }}
     >
       <div className="container" style={{ marginTop: 50 }}>
         <Tabs
           value={value}
           onChange={handleChange}
           indicatorColor="primary"
-          variant="scrollable"
+          centered
           scrollButtons="on"
           className="clear"
           style={{ display: "flex", flexDirection: "row" }}
@@ -115,7 +114,7 @@ export default function ConceptsCarousel(props) {
               borderRadius: 8,
             }}
             className="white"
-            label="Interactives"
+            label="Inputs"
           />
           <Tab
             style={{
@@ -126,7 +125,7 @@ export default function ConceptsCarousel(props) {
               borderRadius: 8,
             }}
             className="white"
-            label="Images"
+            label="Games"
           />
           <Tab
             style={{
@@ -137,40 +136,7 @@ export default function ConceptsCarousel(props) {
               borderRadius: 8,
             }}
             className="white"
-            label="Tasks"
-          />
-          <Tab
-            style={{
-              flex: 1,
-              margin: 2,
-              fontSize: "1.5vw",
-              fontFamily: "Chalkboard SE",
-              borderRadius: 8,
-            }}
-            className="white"
-            label="Apps"
-          />
-          <Tab
-            style={{
-              flex: 1,
-              margin: 2,
-              fontSize: "1.5vw",
-              fontFamily: "Chalkboard SE",
-              borderRadius: 8,
-            }}
-            className="white"
-            label="Printables"
-          />
-          <Tab
-            style={{
-              flex: 1,
-              margin: 2,
-              fontSize: "1.5vw",
-              fontFamily: "Chalkboard SE",
-              borderRadius: 8,
-            }}
-            className="white"
-            label="Card Games"
+            label="Simulations"
           />
         </Tabs>
 
