@@ -9,7 +9,7 @@ import CardGameCard from "./CardGameCard";
 
 
 
-class QuickImages extends Component {
+class CardGames extends Component {
   constructor(props) {
     super(props);
   }
@@ -54,4 +54,4 @@ class QuickImages extends Component {
   }
 }
 
-export default QuickImages;
+export default CardGames;

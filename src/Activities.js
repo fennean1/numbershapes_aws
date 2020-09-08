@@ -192,7 +192,7 @@ export const NUMBER_CARDS = {
 };
 
 export const MATCH_GAME_6_10 = {
-  shortText: "Card Based Match Game in HTML5 with Pixi.js",
+  shortText: "Subitizing Game for Numbers 7 to 10",
   title: "Matching 7 - 10",
   previewImg: "Matching7-10.png",
   game: "matchgame",
@@ -201,7 +201,7 @@ export const MATCH_GAME_6_10 = {
 };
 
 export const MATCH_GAME_1_4 = {
-  shortText: "Card Based Match Game in HTML5 with Pixi.js",
+  shortText: "Subitizing Game for Numbers 2 to 5",
   title: "Matching 2 - 5",
   previewImg: "Matching2-5.png",
   game: "matchgame1-4",
@@ -210,7 +210,7 @@ export const MATCH_GAME_1_4 = {
 };
 
 export const MATCH_GAME_3_7 = {
-  shortText: "Card Based Match Game in HTML5 with Pixi.js",
+  shortText: "Subitizing Game for Number 4 to 7",
   title: "Matching 4 - 7",
   previewImg: "Matching4-7.png",
   game: "matchgame3-7",

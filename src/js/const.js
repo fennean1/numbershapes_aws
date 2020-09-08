@@ -150,6 +150,7 @@ export const COLORS = {
     "11": 0x8b959b,
     "12": 0xff77e8
   };
+  
 export const FRACTION_BAR_COLORS = {
   "1": 0xfff9fc,
   "2": 0xff385c,
