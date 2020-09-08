@@ -26,7 +26,13 @@ export class MathFactPrompt extends PIXI.Text {
     this.style.fontFamily = "Chalkboard SE";
   }
 
+  set Height(height){
+    this.style.fontSize = height
+    this.nextProblem(this.currentProblem)
+  }
+
   nextProblem(currentProblem){
+    this.currentProblem = currentProblem
     let string = " " + currentProblem.FIRST + " " + currentProblem.OPERATION + " " + currentProblem.SECOND +  " =   "
     this.text = string
     this.factIndex++
@@ -44,15 +50,17 @@ export class Draggable extends PIXI.Sprite {
       this.lockX = false 
       this.lockY = false
       this.texture = texture
+      this.minX = null 
+      this.maxX = null 
+      this.minY = null
+      this.maxY = null
       this.on('pointerdown',this.pointerDown)
       this.on('pointermove',this.pointerMove)
       this.on('pointerup',this.pointerUp)
       this.on('pointerupoutside',this.pointerUpOutside)
-      console.log("INITTTTT")
     }
   
     pointerDown(event){
-      console.log("Draggable Pointer Down")
       this.touching = true
       this.dragged = false
       this.deltaTouch = {
@@ -64,11 +72,33 @@ export class Draggable extends PIXI.Sprite {
     
     pointerMove(event){
       if (this.touching){
+
         if (!this.lockX){
           this.x = event.data.global.x + this.deltaTouch.x
+
+          let xMaxOut = this.maxX && this.x > this.maxX
+          let xMinOut = this.minX && this.x < this.minX
+
+          console.log("maxout minout",xMaxOut,xMinOut)
+
+          if (xMaxOut){
+            this.x = this.maxX
+          } else if (xMinOut){
+            this.x = this.minX
+          }
         } 
+
         if (!this.lockY){
           this.y = event.data.global.y + this.deltaTouch.y
+
+          let yMaxOut = this.maxY && this.y > this.yMax
+          let yMinOut = this.minY && this.y < this.yMin
+
+          if (yMaxOut){
+            this.y = this.yMax
+          } else if (yMinOut){
+            this.y = this.yMin
+          }
         }
         this.dragged = true
       }
@@ -569,6 +599,8 @@ export class HorizontalNumberLine extends PIXI.Container {
 
         let sharpPinTexture = new PIXI.Texture.from(CONST.ASSETS.SHARP_PIN)
         this.slider = new Draggable(sharpPinTexture)
+        this.slider.minX = 0.0001
+        this.slider.maxX = this._width
         this.slider.interactive = true
         this.slider.lockY = true
         this.slider.anchor.set(0.5)
@@ -690,20 +722,18 @@ export class HorizontalNumberLine extends PIXI.Container {
 
       onSliderDown(){
         let x = this.x
-        console.log("this.x on down",x)
         this.parent.drawStrip(x)
       }
 
       onSliderMove(e){
         if (this.touching){
             let x = this.x
-            console.log("this.x on move",x)
             this.parent.drawStrip(x)
         }
       }
 
       onSliderUp(){
-        if (this.dragged){
+        if (this.dragged && this.x > 1){
           this.parent.drawStrip(this.x)
           this.parent.playFeedback(this.x)
         }
@@ -738,7 +768,6 @@ export class HorizontalNumberLine extends PIXI.Container {
              tick.texture = this.tickTexture
              tick.x = i > this.partitions+1  ?  0 : (this._width)/this.partitions*i 
              tick.alpha = i >= this.partitions+1 ?  0 : 1
-             
              tick.y = 0
              this.ticks.push(tick)
              this.addChild(tick)
