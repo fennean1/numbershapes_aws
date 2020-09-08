@@ -6,17 +6,30 @@ import { StrictMode } from "react";
 import { Easings } from "konva";
 
 
+
+const FACT = {
+  FIRST: 'val',
+  SECOND: 'val2',
+  OPERATION: "sign",
+  TARGET: "valsignval2" 
+}
+
 // CLASSES
 
 // Math Fact Prompt:
 export class MathFactPrompt extends PIXI.Text {
   constructor(facts){
     super()
-    this.factIndex = 0
+    this.problemIndex = 1
+    this.facts = facts
+    this.nextProblem(this.facts[1])
+    this.style.fontFamily = "Chalkboard SE";
   }
 
-  nextFact(){
-    let currentFact = this.facts[this.factIndex]
+  nextProblem(currentProblem){
+    let string = " " + currentProblem.FIRST + " " + currentProblem.OPERATION + " " + currentProblem.SECOND +  " =   "
+    this.text = string
+    this.factIndex++
   }
 }
 
@@ -545,6 +558,8 @@ export class HorizontalNumberLine extends PIXI.Container {
 
         // Graphics Cache
         this.stripGraphic = new PIXI.Graphics()
+        this.stripSprite = new PIXI.Sprite()
+
         this.lineGraphic = new PIXI.Graphics()
         this.tickGraphic = new PIXI.Graphics()
         this.label = new PIXI.Text()
@@ -577,20 +592,16 @@ export class HorizontalNumberLine extends PIXI.Container {
 
         // Precomputations
         let originalLocation = this.stripGraphic.width
-        let range = 0.10*(this.target-this.min)/this.range*this._width
+        let range = 0.05*this._width
+        
         let targetX = (this.target-this.min)/this.range*this._width
         let delta = this.stripGraphic.width - targetX
-        let nudge = 0
+      
 
         if (Math.abs(delta) < range ){
-
-            const onComplete = ()=>{
-              this.nextQuestion()
-            }
-
             timeline.to(this.stripGraphic,{width: targetX})
             sliderTimeline.to(this.slider,{x: targetX})
-                          .to(this.slider,{duration: 1,y: -this.parent.height,ease: 'power2'})
+                          .to(this.slider,{duration: 1,y: -this.parent.height,ease: 'power2',onComplete: this.onComplete})
         } else if (delta > 0) {
             timeline.to(this.stripGraphic,{duration: this.feedbackDuration,width: originalLocation-range})
                     .to(this.stripGraphic,{duration: this.feedbackDuration,width: originalLocation,ease:'bounce'})
@@ -603,9 +614,11 @@ export class HorizontalNumberLine extends PIXI.Container {
       }
 
       drawStrip(width){
+        console.log("strip width",width)
         this.stripGraphic.clear()
         this.stripGraphic.beginFill(this.BLUE)
-        this.stripGraphic.drawRoundedRect(0,0,width,this.stripHeight,this.strokeWidth)
+        this.stripGraphic.drawRoundedRect(0,0,width,this.stripHeight,0)
+        this.stripGraphic.width = width
       }
 
       updateLayoutParams(width,min,max,partitions,target,tolerance){
@@ -628,20 +641,76 @@ export class HorizontalNumberLine extends PIXI.Container {
       draw(){
         this.stripGraphic.clear()
         this.lineGraphic.clear()
+        this.drawTicks()
+        this.drawLabels()
       }
 
+      drawTicks(){
+        this.ticks.forEach((t,i)=>{
+          t.texture = this.tickTexture
+          t.x = i > this.partitions+1 ?  0 : this._width/this.partitions*i
+          t.alpha = i > this.partitions+1 ?  0 : 1
+          t.y = 0
+        })
+      }
+
+      nextProblem(p){
+        const max = p.MAX 
+        const min = p.MIN 
+        const target = p.TARGET
+        const partitions = p.PARTITIONS
+        const tolerance = 0.05*target
+        const width = this._width
+
+        this.updateLayoutParams(width,min,max,partitions,target,tolerance)
+        this.drawLabels()
+        this.drawTicks()
+        this.drawStrip(this._width/2)
+        this.slider.x = this._width/2
+        this.slider.touching = false
+        this.slider.deltaTouch = {x:0,y:0}
+        this.slider.y = 3*this.tickHeight+this.slider.height/2 
+      }
+
+      drawLabels(){
+        this.labels.forEach((l,i)=>{
+          l.text = (this.min + i*this.step).toFixed(0)
+          l.y = this.tickHeight
+          l.alpha = 0
+          l.style.fontFamily = "Chalkboard SE";
+          l.x = 0
+          if (i == 0 || i == this.partitions){
+            l.x = this._width/this.partitions*i - l.width/2
+            l.alpha = 1
+          }
+        })
+      }
+
+      loadNewSetup(){
+
+      }
+
+
+
       onSliderDown(){
+        let x = this.x
+        console.log("this.x on down",x)
+        this.parent.drawStrip(x)
       }
 
       onSliderMove(e){
         if (this.touching){
             let x = this.x
+            console.log("this.x on move",x)
             this.parent.drawStrip(x)
         }
       }
 
       onSliderUp(){
-        this.parent.playFeedback(this.x)
+        if (this.dragged){
+          this.parent.drawStrip(this.x)
+          this.parent.playFeedback(this.x)
+        }
       }
 
 
@@ -692,6 +761,8 @@ export class HorizontalNumberLine extends PIXI.Container {
               this.addChild(label)
           }
          this.addChild(this.stripGraphic)
+         this.stripSprite.x = 0
+         this.stripSprite.y = 0
          this.addChild(this.lineGraphic)
       }
   }

@@ -25,7 +25,7 @@ import {
   UltimateNumberLine,
   NumberLine,
 } from "./api.js";
-import { HorizontalNumberLine, NumberLineEstimator } from "./api_kh.js";
+import { HorizontalNumberLine, NumberLineEstimator, MathFactPrompt } from "./api_kh.js";
 import {
   TweenMax,
   TimelineLite,
@@ -36,6 +36,7 @@ import {
   TimelineMax,
   Power4,
 } from "gsap";
+import * as PROBLEM_SETS from "./problemSets.js"
 
 export const init = (app, setup) => {
   let features = {}
@@ -46,7 +47,13 @@ export const init = (app, setup) => {
   let ultimateNumberLine;
   let pins = [];
 
+
+  // CONSTANTS
+
+  // Colors
   const NL_COLOR = 0x000000;
+
+  // Textures
   const MOVER_DOT = new PIXI.Texture.from(CONST.ASSETS.MOVER_DOT);
   const SPACE_SHIP_WINDOW = new PIXI.Texture.from(spaceShipWindow);
   const PIN_TEXTURE_2 = new PIXI.Texture.from(CONST.ASSETS.BLUE_SPACE_SHIP);
@@ -54,6 +61,12 @@ export const init = (app, setup) => {
   const BLUE_CIRCLE = new PIXI.Texture.from(CONST.ASSETS.STAR);
   const SHARP_PIN_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.SHARP_PIN);
   const GREY_PIN_TEXTURE = new PIXI.Texture.from(greyPin);
+
+  // Problem Set
+  const problemSet = PROBLEM_SETS.EST_ADDITION_IN_100
+  let problemNumber = 1
+  let currentProblem = problemSet[problemNumber]
+
 
   // Layout Parameters
   let WINDOW_WIDTH = setup.width;
@@ -67,9 +80,13 @@ export const init = (app, setup) => {
   backGround = new makeBackground();
   ground = new makeGround();
 
+
+  // VARS 
+
+  // OBJECTS
   let numberline;
-
-
+  let prompt;
+  let numberlineEstimator;
 
 
   // Called on resize
@@ -79,7 +96,6 @@ export const init = (app, setup) => {
     app.renderer.resize(WINDOW_WIDTH, WINDOW_HEIGHT);
   }
 
-  
 
   let sliderLine = new PIXI.Graphics();
   sliderLine.lineStyle(NUMBER_LINE_WIDTH / 300, 0xdbdbdb);
@@ -298,6 +314,20 @@ export const init = (app, setup) => {
     }
   }
 
+  function nextProblem(){
+    problemNumber++
+    currentProblem = problemSet[problemNumber] ? problemSet[problemNumber] : false 
+    if (currentProblem){
+      numberlineEstimator.nextProblem(currentProblem)
+      prompt.nextProblem(currentProblem)
+    } else {
+      problemNumber = 1
+      currentProblem = problemSet[problemNumber]
+      numberlineEstimator.nextProblem(currentProblem)
+      prompt.nextProblem(currentProblem)
+    }
+  }
+
   function numberlinePointerUp(e) {
     let x = e.data.getLocalPosition(this).x;
     if (!this.moved) {
@@ -336,25 +366,20 @@ export const init = (app, setup) => {
     homeButton.on("pointerdown", () => app.goHome());
     app.stage.addChild(homeButton);
 
+    let firstProblem = problemSet[1]
+    console.log("firstproblem",firstProblem)
 
-    let numberlineEstimator = new NumberLineEstimator(0.8*WINDOW_WIDTH,45,90,9,72,1,app)
+    numberlineEstimator = new NumberLineEstimator(0.8*WINDOW_WIDTH,firstProblem.MIN,firstProblem.MAX,firstProblem.PARTITIONS,firstProblem.TARGET,1,app)
     app.stage.addChild(numberlineEstimator)
     numberlineEstimator.y = WINDOW_HEIGHT/2
     numberlineEstimator.x = WINDOW_WIDTH/2  - numberlineEstimator._width/2
+    numberlineEstimator.currentProblem = firstProblem
+    numberlineEstimator.onComplete = nextProblem
 
-    // FEATURES
-    if (features.spaceShips) {
-      app.stage.addChild(dragger);
-      //app.stage.addChild(draggerMin)
-      //app.stage.addChild(windowButton)
-    }
-
-    // FEATURES
-    if (features.spaceBubbles) {
-      numberline.nestMe = true;
-      // Not multicolored
-      numberline.setColorState(false);
-    }
+    prompt = new MathFactPrompt(problemSet)
+    prompt.x = WINDOW_WIDTH/2 - prompt.width/2
+    prompt.y = 1/4*WINDOW_HEIGHT
+    app.stage.addChild(prompt)
 
     //app.stage.addChild(panRegionDown)
 
@@ -362,6 +387,7 @@ export const init = (app, setup) => {
     dragger.width = dragger.height * 0.31;
     dragger.y = NUMBER_LINE_Y + ultimateNumberLine.height;
     dragger.x = WINDOW_WIDTH / 2;
+
   }
 
   // Call load script
