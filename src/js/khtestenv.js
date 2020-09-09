@@ -374,7 +374,7 @@ export const init = (app, setup) => {
     numberlineEstimator.onComplete = nextProblem
 
     prompt = new MathFactPrompt(problemSet)
-    prompt.Height = 50
+    prompt.Height = Math.min(WINDOW_HEIGHT,WINDOW_WIDTH)/20
     prompt.x = WINDOW_WIDTH/2 - prompt.width/2
     prompt.y = 1/4*WINDOW_HEIGHT
     app.stage.addChild(prompt)

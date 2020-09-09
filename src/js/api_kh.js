@@ -33,7 +33,7 @@ export class MathFactPrompt extends PIXI.Text {
 
   nextProblem(currentProblem){
     this.currentProblem = currentProblem
-    let string = " " + currentProblem.FIRST + " " + currentProblem.OPERATION + " " + currentProblem.SECOND +  " =   "
+    let string = " " + currentProblem.FIRST + " " + currentProblem.OPERATION + " " + currentProblem.SECOND +  " ="
     this.text = string
     this.factIndex++
   }
@@ -583,7 +583,7 @@ export class HorizontalNumberLine extends PIXI.Container {
 
         this.app = app
 
-        this.digitHeight = width/40
+        this.digitHeight = width/30
 
         // Set object parameters based on configuration.
         this.updateLayoutParams(width,min,max,partitions,target,tolerance)
@@ -736,6 +736,8 @@ export class HorizontalNumberLine extends PIXI.Container {
         if (this.dragged && this.x > 1){
           this.parent.drawStrip(this.x)
           this.parent.playFeedback(this.x)
+        } else {
+          this.parent.stripGraphic.width = 0
         }
       }
 
@@ -756,8 +758,8 @@ export class HorizontalNumberLine extends PIXI.Container {
           this.tickTexture = this.app.renderer.generateTexture(this.tickGraphic)
 
           // Slider
-          this.slider.width = 100 
-          this.slider.height = 100
+          this.slider.width = this._width/8
+          this.slider.height = this.slider.width
           this.slider.y = 3*this.tickHeight+this.slider.height/2 
           this.slider.x = this._width/2
           this.addChild(this.slider)
