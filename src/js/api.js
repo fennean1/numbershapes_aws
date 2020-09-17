@@ -3,27 +3,9 @@ import * as PIXI from "pixi.js";
 import { TweenMax, TimelineLite, Power2, Elastic, CSSPlugin, TweenLite, TimelineMax } from "gsap";
 import {NUMBERS} from "../AssetManager.js"
 import * as CONST from "./const.js";
-import { timers } from "jquery";
-import { Rect } from "react-konva";
 
 
-export class Row extends PIXI.Container{
-  constructor(){
-    super()
-  }
-}
 
-
-export class Vector extends PIXI.Sprite {
-  constructor(){
-    super()
-
-  }
-
-  draw(){
-
-  }
-}
 
 
 export class Cannon extends PIXI.Container {
@@ -873,7 +855,6 @@ export class FractionTag extends PIXI.Container{
   }
 
   pointerDown(event){
-    console.log("pointerdown")
     this.touching = true
     this.dragged = false
     this.deltaTouch = {
@@ -1510,10 +1491,8 @@ function lineContains(line,p){
       }
     }
   } else if (appxEq(line.yOf(x),y,t)) {
-      console.log("calculating ranges")
       let inXRange = x > line.xMin && x < line.xMax
       let inYRange = y > line.yMin && y < line.yMax
-      console.log("ranges",inXRange,inYRange)
       if (inXRange && inYRange){
         return true
       }
@@ -1564,7 +1543,6 @@ export function pointsApproximatelyEqual(points,tolerance){
 }
 
 export function removeDuplicatePoints(points,tolerance){
-  console.log("before removal",points.length)
   let removed = []
   points.forEach(p=>{
     let addMe = true
@@ -1577,9 +1555,10 @@ export function removeDuplicatePoints(points,tolerance){
       removed.push(p)
     }
   })
-  console.log("after removal",removed.length)
   return removed
 }
+
+
 
 
 export function splitPolygon(line,poly) {

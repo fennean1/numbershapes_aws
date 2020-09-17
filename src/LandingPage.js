@@ -114,7 +114,7 @@ export default function ConceptsCarousel(props) {
               borderRadius: 8,
             }}
             className="white"
-            label="Inputs"
+            label="Games"
           />
           <Tab
             style={{
@@ -125,7 +125,7 @@ export default function ConceptsCarousel(props) {
               borderRadius: 8,
             }}
             className="white"
-            label="Games"
+            label="Manipulatives"
           />
           <Tab
             style={{

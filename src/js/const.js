@@ -51,6 +51,8 @@ import pink_square_pin from "../assets/PinkSquarePin.png"
 import blue_diamond_pin from "../assets/BlueDiamondPin.png"
 import green_circle_pin from "../assets/GreenCirclePin.png"
 import orange_triangle_pin from "../assets/OrangeTrianglePin.png"
+import pure_glass_bubble from "../assets/PureGlassBubble.png"
+import night_background from "../assets/NightBackground.png"
 
 export const ASSETS = {
     BLUE_GRADIENT: blue_gradient,
@@ -106,6 +108,8 @@ export const ASSETS = {
     BLUE_DIAMOND_PIN: blue_diamond_pin,
     GREEN_CIRCLE_PIN: green_circle_pin,
     ORANGE_TRIANGLE_PIN: orange_triangle_pin,
+    PURE_GLASS_BUBBLE: pure_glass_bubble,
+    NIGHT_BACKGROUND: night_background
 }
 
 export const CUISENAIRE_COLORS = {

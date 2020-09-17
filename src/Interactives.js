@@ -11,9 +11,6 @@ export default class Interactives extends Component {
   }
 
   render() {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-
     return (
       <div >
         <div style = {{display: "flex",flexDirection: 'column'}} >
@@ -22,13 +19,16 @@ export default class Interactives extends Component {
             <div style={{ flexDirection: "column", display: "flex", flex: 1 }}>
             <div style={{ margin: 5, flex: 1 }}>
                 {" "}
-                <InteractiveCard  data={ACTIVITIES.CLOTHES_LINE} />
+                <InteractiveCard  data={ACTIVITIES.STRIP_ESTIMATE} />
               </div>
             </div>
             </Grid>
             <Grid xs = {12} item = {true}  sm = {4} >
             <div style={{ flexDirection: "column", display: "flex", flex: 1 }}>
-
+            <div style={{ margin: 5, flex: 1 }}>
+                {" "}
+                <InteractiveCard  data={ACTIVITIES.BUBBLE_TARGET} />
+              </div>
             </div>
             </Grid>
             <Grid xs = {12} item = {true} sm = {4} >

@@ -25,7 +25,7 @@ import {
   UltimateNumberLine,
   NumberLine,
 } from "./api.js";
-import { HorizontalNumberLine, NumberLineEstimator, MathFactPrompt } from "./api_kh.js";
+import { HorizontalNumberLine, NumberLineEstimator, MathFactPrompt, VPAdditionStrips } from "./api_kh.js";
 import {
   TweenMax,
   TimelineLite,
@@ -35,6 +35,7 @@ import {
   TweenLite,
   TimelineMax,
   Power4,
+
 } from "gsap";
 import * as PROBLEM_SETS from "./problemSets.js"
 
@@ -46,6 +47,7 @@ export const init = (app, setup) => {
   let ground;
   let ultimateNumberLine;
   let pins = [];
+  let additionProof = {}
 
 
   // CONSTANTS
@@ -316,6 +318,7 @@ export const init = (app, setup) => {
   }
 
   function nextProblem(){
+    //additionProof.prepareFeedback(currentProblem.FIRST,currentProblem.SECOND)
     problemNumber++
     currentProblem = problemSet[problemNumber] ? problemSet[problemNumber] : false 
     if (currentProblem){
@@ -327,6 +330,7 @@ export const init = (app, setup) => {
       numberlineEstimator.nextProblem(currentProblem)
       prompt.nextProblem(currentProblem)
     }
+    //additionProof.play()
   }
 
   function numberlinePointerUp(e) {
@@ -341,6 +345,8 @@ export const init = (app, setup) => {
     if (setup.props.features) {
       features = setup.props.features;
     }
+
+    
 
     app.stage.interactive = true;
 
@@ -385,6 +391,19 @@ export const init = (app, setup) => {
     dragger.width = dragger.height * 0.31;
     dragger.y = NUMBER_LINE_Y + ultimateNumberLine.height;
     dragger.x = WINDOW_WIDTH / 2;
+
+
+    const vpConfig = {
+      height: numberlineEstimator.stripHeight,
+      aColor: 0x4287f5,
+      bColor: 0xfc035a,
+      pixelsPerUnit: numberlineEstimator._width/numberlineEstimator.range
+    }
+
+    additionProof = new VPAdditionStrips(30,40,vpConfig)
+    additionProof.x = numberlineEstimator.x
+    additionProof.y = numberlineEstimator.y - vpConfig.height
+    app.stage.addChild(additionProof)
 
   }
 

@@ -5,6 +5,8 @@ import "feeder-react-feedback/dist/feeder-react-feedback.css"; // import stylesh
 
 import * as Pixi from "pixi.js";
 
+
+// <Feedback style = {{height: 1000}}email = {true} projectId="5f183e5515d6510004b665ea" />
 class Arena extends Component {
   constructor() {
     super();
@@ -66,7 +68,6 @@ class Arena extends Component {
     let styleType = this.props.fullscreen ? { height: "100vh" } : null;
     return (
       <div>
-        <Feedback style = {{height: 1000}}email = {true} projectId="5f183e5515d6510004b665ea" />
         <div
           style={styleType}
           ref={(me) => {

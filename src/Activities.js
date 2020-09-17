@@ -66,8 +66,26 @@ export const CLOVERS = {
     "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
 };
 
-// Number Lines
+// KH Prototypes
+export const STRIP_ESTIMATE = {
+  shortText: "Manipulative for Inputting Estimated Answers",
+  title: "Estimation",
+  previewImg: "Estimate.png",
+  tool: "/estimationinput",
+  coreSkillDescription:
+    "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
+};
 
+export const BUBBLE_TARGET= {
+  shortText: "Number Puzzle",
+  title: "Number Puzzle",
+  previewImg: "BubbleTarget.png",
+  tool: "/bubbletarget",
+  coreSkillDescription:
+    "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
+};
+
+// Number Lines
 export const SPACE_BUBBLES = {
   shortText: "Fully Scalable and Interactive Number Line",
   title: "Space Bubbles",
