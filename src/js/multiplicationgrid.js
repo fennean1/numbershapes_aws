@@ -67,8 +67,8 @@ export const init = (app, setup) => {
   let WINDOW_HEIGHT = setup.height;
   let HOME_BUTTON_WIDTH = WINDOW_WIDTH / 15;
   let H_W_RATIO = setup.height / setup.width;
-  let NUMBER_LINE_WIDTH = WINDOW_WIDTH * 0.8;
-  let SLIDER_DIM = NUMBER_LINE_WIDTH / 15;
+  let NUMBER_LINE_WIDTH = Math.max(WINDOW_WIDTH,WINDOW_HEIGHT) * 0.8;
+  let SLIDER_DIM = NUMBER_LINE_WIDTH / 8;
   let SELECTOR_Y = (2 / 3) * WINDOW_HEIGHT;
 
   const SLIDER_START = {
