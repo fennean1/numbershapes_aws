@@ -2,10 +2,7 @@ import * as PIXI from "pixi.js";
 import { TweenMax, TimelineLite, Power2, Elastic, CSSPlugin, TweenLite, TimelineMax } from "gsap";
 import {NUMBERS} from "../AssetManager.js"
 import * as CONST from "./const.js";
-import { StrictMode } from "react";
-import { Easings } from "konva";
-import { ShutterSpeedRounded } from "@material-ui/icons";
-import { Sprite } from "react-konva";
+
 
 
 
