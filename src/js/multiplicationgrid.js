@@ -177,6 +177,7 @@ export const init = (app, setup) => {
     let d = slider.height / 2;
     whiskers.clear();
     whiskers.lineStyle(2, 0x000000);
+    whiskers._fillStyle.alpha = 0.1
     whiskers.moveTo(x - d, y);
     whiskers.lineTo(vnumberline.x, y);
     whiskers.moveTo(x, y + d);
@@ -285,13 +286,22 @@ export const init = (app, setup) => {
 
     //app.stage.addChild(rangeBubbleSelector);
 
-    slider = new Draggable(PURE_GLASS_BUBBLE_TEXTURE);
+    let sliderGraphics = new PIXI.Graphics()
+    sliderGraphics.beginFill(0x000000)
+    sliderGraphics.drawCircle(0,0,SLIDER_DIM)
+    let sliderGraphicsTexture = app.renderer.generateTexture(sliderGraphics)
+
+    slider = new Draggable()
+    slider.texture = sliderGraphicsTexture
     slider.anchor.set(0.5);
+    slider.alpha = 0.5
+    slider.hitArea = new PIXI.Circle(0,0,SLIDER_DIM*4,SLIDER_DIM*4)
+    console.log("sliderhit",slider.hitArea)
     slider.maxX = rangeBubbleSelector.x + rangeBubbleSelector._width;
     slider.minX = rangeBubbleSelector.x;
     slider.interactive = true;
 
-    slider.width = SLIDER_DIM / 2;
+    slider.width = SLIDER_DIM / 4;
     slider.height = slider.width;
     slider.y = rangeBubbleSelector.y + 2 * slider.height;
     slider.x = rangeBubbleSelector.x + rangeBubbleSelector._width / 2;
@@ -335,13 +345,13 @@ export const init = (app, setup) => {
     hnumberline = new HorizontalNumberLine(0, 3.5, width, app);
     hnumberline.draw(0, 3.2);
     hnumberline.x = WINDOW_WIDTH / 2 - width / 2;
-    hnumberline.y = 0.9 * WINDOW_HEIGHT;
+    hnumberline.y = WINDOW_HEIGHT/2 + width/2
     app.stage.addChild(hnumberline);
 
     vnumberline = new VerticalNumberLine(0, 3.5, width, app);
     vnumberline.draw(0, 3.2);
     vnumberline.x = WINDOW_WIDTH / 2 - width / 2;
-    vnumberline.y = 0.9 * WINDOW_HEIGHT;
+    vnumberline.y = WINDOW_HEIGHT/2 + width/2
     app.stage.addChild(vnumberline);
 
     vnumberline.onUpdate = () => {
@@ -394,6 +404,7 @@ export const init = (app, setup) => {
 
     hnumberline.setBoundaries(-1, 5.5, 1);
     vnumberline.setBoundaries(-1, 5.5, 1);
+
   }
 
   // Call load script
