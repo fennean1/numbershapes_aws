@@ -13,9 +13,6 @@ import { red } from "@material-ui/core/colors";
 import Button from "@material-ui/core/Button";
 import Chip from "@material-ui/core/Chip";
 import Popover from "@material-ui/core/Popover";
-import * as ASSETS from "./AssetManager.js"
-
-let BLUE_OBJECTS = ASSETS.BLUE_OBJS() 
 
 const useStyles = makeStyles(theme => ({
   card: {

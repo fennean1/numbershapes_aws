@@ -3,7 +3,6 @@ import "./App.css";
 import Grid from "@material-ui/core/Grid";
 import * as ACTIVITIES from "./Activities.js";
 import QuickImageCard from "./QuickImageCard";
-import AdCard from "./AdCard"
 
 class QuickImages extends Component {
   constructor(props) {

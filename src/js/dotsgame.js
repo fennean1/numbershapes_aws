@@ -14,8 +14,6 @@ import EquationButton from "../assets/EquationButton.png";
 import ShuffleButton from "../assets/ShuffleButton.png";
 import MoreAppsButton from "../assets/MoreAppsButton.png";
 import {Keypad} from "./api.js"
-import {NUMBERS} from "../AssetManager.js"
-
 
 const SUBITIZER_TYPES = {
   NORMAL: 1, 

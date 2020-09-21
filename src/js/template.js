@@ -6,7 +6,6 @@ import nightBackground from "../assets/NightBackground.png";
 import pinkPin from "../assets/PinkPin.png";
 import Dice from "../assets/Dice.png";
 import greyPin from "../assets/Pin.png";
-import {BLUE,RED,GREEN,ORANGE,PURPLE,PINK,NUMERAL,BALLS,BUTTONS} from "../AssetManager.js"
 import * as CONST from "./const.js";
 import { Fraction, Draggable, distance, FractionFrame, UltimateNumberLine } from "./api.js";
 import { fabric } from "fabric";

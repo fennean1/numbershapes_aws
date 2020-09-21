@@ -5,17 +5,6 @@ import spaceShipWindow from "../assets/SpaceShipWindow.png";
 import nightBackground from "../assets/NightBackground.png";
 import pinkPin from "../assets/PinkPin.png";
 import greyPin from "../assets/Pin.png";
-import {
-  BLUE,
-  RED,
-  GREEN,
-  ORANGE,
-  PURPLE,
-  PINK,
-  NUMERAL,
-  BALLS,
-  BUTTONS,
-} from "../AssetManager.js";
 import * as CONST from "./const.js";
 import {
   Fraction,
@@ -364,14 +353,6 @@ export const init = (app, setup) => {
     ultimateNumberLine.on("pointermove", numberlinePointerMove);
     ultimateNumberLine.on("pointerup", numberlinePointerUp);
 
-    homeButton = new PIXI.Sprite.from(BUTTONS.HOME);
-    homeButton.width = HOME_BUTTON_WIDTH;
-    homeButton.height = HOME_BUTTON_WIDTH;
-    homeButton.x = HOME_BUTTON_WIDTH / 4;
-    homeButton.y = HOME_BUTTON_WIDTH / 4;
-    homeButton.interactive = true;
-    homeButton.on("pointerdown", () => app.goHome());
-    app.stage.addChild(homeButton);
 
     numberlineEstimator = new NumberLineEstimator(0.8*WINDOW_WIDTH,currentProblem.MIN,currentProblem.MAX,currentProblem.PARTITIONS,currentProblem.TARGET,1,app)
     app.stage.addChild(numberlineEstimator)

@@ -1,6 +1,5 @@
 import * as PIXI from "pixi.js";
 import { TweenMax, TimelineLite, Power2, Elastic, CSSPlugin, TweenLite, TimelineMax } from "gsap";
-import {NUMBERS} from "../AssetManager.js"
 import * as CONST from "./const.js";
 
 
@@ -59,8 +58,8 @@ export class BrickGrid extends PIXI.Container {
    let partsX = xNumerator%xDenominator
    let partsY = yNumerator%yDenominator
 
-   this.partStroke = Math.max(partX,partY)/10 
-   this.wholeStroke = oneDim/10
+   this.partStroke = Math.min(partY,partX)/15
+   this.wholeStroke = oneDim/15
 
    this.wholeBrick.lineStyle(this.partStroke,0xffffff)
    this.wholeBrick.beginFill(0x0384fc)
@@ -76,8 +75,8 @@ export class BrickGrid extends PIXI.Container {
 
 
    this.partBrick.drawRoundedRect(0,0,partX,partY,this.partStroke)
-   this.verticalTenthBrick.drawRoundedRect(0,0,partX,partY*10,this.partStroke)
-   this.horizontalTenthBrick.drawRoundedRect(0,0,partX*10,partY,this.partStroke)
+   this.verticalTenthBrick.drawRoundedRect(0,0,partX,oneDim,this.partStroke)
+   this.horizontalTenthBrick.drawRoundedRect(0,0,oneDim,partY,this.partStroke)
    this.wholeBrick.drawRoundedRect(0,0,oneDim,oneDim,this.partStroke)
 
    this.partBrickTexture = this.app.renderer.generateTexture(this.partBrick)
@@ -148,6 +147,18 @@ export class MathFactPrompt extends PIXI.Text {
   }
 }
 
+
+// Math Fact Prompt:
+export class Prompt extends PIXI.Text {
+  constructor(text){
+    super()
+    this.style.fontFamily = "Chalkboard SE";
+  }
+
+  set Height(height){
+    this.style.fontSize = height
+  }
+}
 
 // Draggable
 export class Draggable extends PIXI.Sprite {
@@ -485,7 +496,7 @@ export class HorizontalNumberLine extends PIXI.Container {
       });
     }
   
-    placeTicks(ticks, values, dx, textures, majorStep) {
+    placeTicks(values) {
   
       this.ticks.forEach((l, i) => {
         let currentValue = l.value;
@@ -497,14 +508,14 @@ export class HorizontalNumberLine extends PIXI.Container {
         // If the label is active and still a value that needs to be set, reposition it.
         if (needsToBeSet) {
           l.text = l.value;
-          l.x = dx * (l.value - this.min);
+          l.x = this.dx * (l.value - this.min);
           l.y = 0;
           l.alpha = 1;
-          let mod = Math.abs(l.value%majorStep/majorStep)
+          let mod = Math.abs(l.value%this.majorStep/this.majorStep)
           if (mod < 0.01 || mod > 0.99) {
-            l.texture = textures[0];
+            l.texture = this.majorTickTexture;
           } else {
-            l.texture = textures[1];
+            l.texture = this.minorTickTexture;
           }
   
           // If it's active, but not part of the new active labels, remove it and set value null.
@@ -514,7 +525,7 @@ export class HorizontalNumberLine extends PIXI.Container {
         }
       });
   
-      let empties = ticks.filter((l) => l.value == null);
+      let empties = this.ticks.filter((l) => l.value == null);
   
       let valueKeys = Object.keys(values);
   
@@ -522,7 +533,7 @@ export class HorizontalNumberLine extends PIXI.Container {
         if (empties.length != 0) {
           let newActiveTick = empties.pop();
           newActiveTick.value = k;
-          newActiveTick.x = (k - this.min) * dx;
+          newActiveTick.x = (k - this.min) * this.dx;
           newActiveTick.alpha = 1;
         }
       });
@@ -556,8 +567,9 @@ export class HorizontalNumberLine extends PIXI.Container {
       if(this.touching){
         let pA = e.data.getLocalPosition(this).x
         let bounds = this.getBoundsFrom(pA,this.vA)
-            // Execute callback if it's available.
         this.draw(bounds.min,bounds.max)
+        // Execute callback if it's available.
+        console.log("bounds",bounds)
         this.onUpdate && this.onUpdate()
       }
     }
@@ -594,6 +606,17 @@ export class HorizontalNumberLine extends PIXI.Container {
   
     setLayoutParams(min, max) {
       this.params = this.numberLineParameters(min, max, this._width);
+
+      this.min = min 
+      this.max = max 
+      this.minFloat = min 
+      this.maxFloat = max
+
+      if (this.fractionTicks) {
+        this.params.MINOR_STEP = 1/this.denominator
+        this.params.MAJOR_STEP = 1
+      }  
+
       this.majorStep = this.params.MAJOR_STEP;
       this.minorStep = this.params.MINOR_STEP;
       this.digitHeight = this.params.DIGIT_HEIGHT;
@@ -638,27 +661,21 @@ export class HorizontalNumberLine extends PIXI.Container {
   
       if (max < this.upperLimit && min > this.lowerLimit && range > this.lowerRange && range < this.upperRange ) {
   
-      this.min = min;
-      this.max = max;
-      this.minFloat = min;
-      this.maxFloat = max;
   
       this.setLayoutParams(min, max);
   
-  
+
       let numbersNeededForLabels = this.getNumbersNeeded(min, max, this.majorStep);
       let numbersNeededForTicks = this.getNumbersNeeded(min, max, this.minorStep);
+
+
   
       this.placeLabels(
         numbersNeededForLabels,
       );
   
       this.placeTicks(
-        this.ticks,
         numbersNeededForTicks,
-        this.dx,
-        [this.majorTickTexture, this.minorTickTexture],
-        this.majorStep
       );
   
     }
@@ -1067,6 +1084,12 @@ export class VerticalNumberLine extends PIXI.Container {
 
   setLayoutParams(min, max) {
     this.params = this.numberLineParameters(min, max, this._width);
+    
+    if (this.fractionTicks) {
+      this.params.MINOR_STEP = 1/this.denominator
+      this.params.MAJOR_STEP = 1
+    }
+
     this.majorStep = this.params.MAJOR_STEP;
     this.minorStep = this.params.MINOR_STEP;
     this.digitHeight = this.params.DIGIT_HEIGHT;

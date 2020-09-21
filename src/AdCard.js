@@ -23,10 +23,8 @@ import InfoIcon from "@material-ui/icons/Info";
 import Button from "@material-ui/core/Button";
 import Chip from "@material-ui/core/Chip";
 import Popover from "@material-ui/core/Popover";
-import * as ASSETS from "./AssetManager.js";
-import { promises } from "fs";
 
-let BLUE_OBJECTS = ASSETS.BLUE_OBJS();
+import { promises } from "fs";
 
 const useStyles = makeStyles((theme) => ({
   card: {

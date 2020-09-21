@@ -3,6 +3,7 @@ import blueGradient from "../assets/blue-gradient.png";
 import * as CONST from "./const.js";
 import { TweenMax, TimelineLite, Power2, Elastic, CSSPlugin, TweenLite, TimelineMax } from "gsap";
 import {BasicFraction,Fraction, Draggable, distance} from "./api.js"
+import { Prompt } from "./api_kh.js";
 const ASSETS = CONST.ASSETS
 
 
@@ -51,6 +52,10 @@ export const init = (app, setup) => {
   let resetBtn;
   let square;
   let square2;
+  let prompt;
+  let valueLabel = new Prompt()
+  let fractionLabel = new Fraction()
+  let currentTarget = 1 
 
   let fadeAnimation = new TimelineLite({paused: true})
  
@@ -287,6 +292,41 @@ export const init = (app, setup) => {
   }
 
 
+  class IndicatorSquare extends PIXI.Container {
+    constructor(width,height,val){
+      super()
+      this.textLabel = new PIXI.Text()
+      this.squareGraphic = new PIXI.Graphics()
+    
+
+      this.init(width,height,val)
+    }
+
+    update(val){
+      this.textLabel.text = val
+    }
+
+    init(width,height,val){
+
+      this.squareGraphic.lineStyle(width/20,0xffffff)
+      this.squareGraphic.beginFill(0x000000)
+      this.squareGraphic._fillStyle.alpha = 0.3
+      this.squareGraphic.drawRoundedRect(0,0,height,width,1)
+
+      this.textLabel.text = val
+      this.textLabel.style.fontSize = width/2
+      this.textLabel.style.fontFamily = "Chalkboard SE"
+      this.textLabel.anchor.set(0.5)
+      this.textLabel.x = width/2
+      this.textLabel.y = height/2
+
+      this.addChild(this.squareGraphic)
+      this.addChild(this.textLabel)
+    }
+  }
+
+
+
   class Node extends PIXI.Sprite {
     constructor(){
       super()
@@ -305,6 +345,25 @@ export const init = (app, setup) => {
           let newPoly = new DraggablePoly(CurrentPolygon)
           polygons.push(newPoly)
           app.stage.addChild(newPoly)
+
+          let area = Math.round(newPoly.getAreaFromUnit(currentTarget)*100)/100
+          let fixedArea = area.toFixed(2)
+          if (fixedArea%1 != 0){
+            let dec = fixedArea%1 
+            let frac = decimalToFrac(dec)
+            fractionLabel.draw(frac[0],frac[1],50)
+            fractionLabel.x = 100
+            fractionLabel.y = 100
+            app.stage.addChild(fractionLabel)
+            TweenLite.to(fractionLabel,{x: newPoly.x,y: newPoly.y-fractionLabel.height/2,duration:1})
+          }
+          app.stage.addChild(valueLabel)
+          valueLabel.text = Math.floor(area)
+
+          //let newPolgonCenter = 
+
+          TweenLite.to(valueLabel,{x: newPoly.x - fractionLabel.width,y: newPoly.y-fractionLabel.height/3,duration:1})
+
         }
         Nodes.forEach(n=>{
           if (n.activated){
@@ -314,7 +373,11 @@ export const init = (app, setup) => {
         })
         this.first = false
         stencil.reset()
+
+
+        // The one being drawn.
         CurrentPolygon = []
+
       } else {
         let hw = BIG_CIRCLE_RADIUS
         if (CurrentPolygon.length == 0){
@@ -419,6 +482,7 @@ export const init = (app, setup) => {
       // Construct Super
       super(t)
 
+      this.points = points
       this.n = f[0]
       this.d = f[1]
       fractionObj.draw(this.n,this.d,BTN_DIM)
@@ -456,6 +520,18 @@ export const init = (app, setup) => {
       if (this.touching){
         //placeButtons(0)
       }
+    }
+
+    getAreaAsFraction(){
+      let a = polygonArea(this.points)/SQUARE_AREA
+      let f = decimalToFrac(a)
+      return f
+    }
+
+    getAreaFromUnit(val){
+      // HELLLOOOO!!!!!! SQUARE AREA OVER 16 IS NOT GOOD!
+      let a = polygonArea(this.points)/(SQUARE_AREA/16)*val
+      return a
     }
 
     polyPointerUp(){
@@ -550,14 +626,24 @@ export const init = (app, setup) => {
 
   // Loading Script
   function load(){
-    console.log("loading grid nodes")
-    console.log("features",setup.props.features)
     app.loaded = true
     if (setup.props.features){
       features = setup.props.features
     }
 
     let backGround = new makeBackground()
+
+    prompt = new Prompt()
+    prompt.text = "Use the grid to make two and half!"
+    prompt.Height = (WINDOW_HEIGHT - SQUARE_DIM)/6
+    prompt.x = WINDOW_WIDTH/2 - prompt.width/2
+    prompt.y = prompt.height/4
+    app.stage.addChild(prompt)
+
+    valueLabel = new Prompt()
+    valueLabel.Height = BTN_DIM/2
+    //prompt.alpha = 0 
+    app.stage.addChild(valueLabel)
 
     rotateLeftBtn = new PIXI.Sprite.from(ASSETS.ROTATE_LEFT)
     rotateLeftBtn.width = BTN_DIM
@@ -639,6 +725,10 @@ export const init = (app, setup) => {
  
     let {x,y,descriptor} = setup.props.features
     set(x,y)
+    let indicatorSquare = new IndicatorSquare(DX,DY,"1")
+    indicatorSquare.x = Nodes[0].x
+    indicatorSquare.y = Nodes[0].y
+    app.stage.addChild(indicatorSquare)
 
     fractionObj = new BasicFraction(0,1,BTN_DIM)
     fractionObj.x = WINDOW_WIDTH*0.8
@@ -659,8 +749,6 @@ export const init = (app, setup) => {
     fadeAnimation.to([rotateLeftBtn,flipVerticalBtn],1,{alpha: 0,onComplete: onComplete},"+=2")
 
 
-    //fadeAnimation.play()
-
     app.stage.addChild(square)
 
     if (features.double){
@@ -670,6 +758,7 @@ export const init = (app, setup) => {
     Nodes.forEach(n=>{
       app.stage.addChild(n)
     })
+
 
   }
 

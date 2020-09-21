@@ -1,19 +1,9 @@
 import * as PIXI from "pixi.js";
 import blueGradient from "../assets/Clouds.png";
+import plusButton from "../assets/PlusButton.png";
+import minusButton from "../assets/MinusButton.png";
 import spaceGround from "../assets/SpaceGround.png";
 import CheckMark from "../assets/CheckMark.png";
-
-import {
-  BLUE,
-  RED,
-  GREEN,
-  ORANGE,
-  PURPLE,
-  PINK,
-  NUMERAL,
-  BALLS,
-  BUTTONS,
-} from "../AssetManager.js";
 import * as CONST from "./const.js";
 import {
   Draggable,
@@ -67,9 +57,10 @@ export const init = (app, setup) => {
   let WINDOW_HEIGHT = setup.height;
   let HOME_BUTTON_WIDTH = WINDOW_WIDTH / 15;
   let H_W_RATIO = setup.height / setup.width;
-  let NUMBER_LINE_WIDTH = Math.max(WINDOW_WIDTH,WINDOW_HEIGHT) * 0.8;
+  let NUMBER_LINE_WIDTH = Math.max(WINDOW_WIDTH, WINDOW_HEIGHT) * 0.8;
   let SLIDER_DIM = NUMBER_LINE_WIDTH / 8;
   let SELECTOR_Y = (2 / 3) * WINDOW_HEIGHT;
+
 
   const SLIDER_START = {
     x: WINDOW_WIDTH / 2,
@@ -89,6 +80,104 @@ export const init = (app, setup) => {
   let hnumberline;
   let brickGrid;
   let whiskers = new PIXI.Graphics();
+
+  let incYDenominator = new PIXI.Sprite.from(plusButton);
+  incYDenominator.interactive = true;
+  incYDenominator.on("pointerdown", inc);
+  app.stage.addChild(incYDenominator);
+  let decYDenominator = new PIXI.Sprite.from(minusButton);
+  decYDenominator.interactive = true;
+  decYDenominator.on("pointerdown", inc);
+  app.stage.addChild(decYDenominator);
+  let incXDenominator = new PIXI.Sprite.from(plusButton);
+  incXDenominator.interactive = true;
+  incXDenominator.on("pointerdown", inc);
+  app.stage.addChild(incXDenominator);
+  let decXDenominator = new PIXI.Sprite.from(minusButton);
+  decXDenominator.interactive = true;
+  decXDenominator.on("pointerdown", inc);
+  app.stage.addChild(decXDenominator);
+
+  function inc() {
+
+    console.log('incing')
+
+    switch (this) {
+      case incYDenominator:
+        if (vnumberline.denominator < 12){
+          vnumberline.denominator = vnumberline.denominator+1
+        } else {
+          console.log("incY failed")
+        }
+        break;
+      case decYDenominator:
+        if (vnumberline.denominator > 1){
+          vnumberline.denominator = vnumberline.denominator-1
+        }else {
+          console.log("decY failed")
+        }
+        break;
+      case incXDenominator:
+        if (hnumberline.denominator < 12){
+          hnumberline.denominator = hnumberline.denominator+1
+        }else {
+          console.log("incX failed")
+        }
+        break;
+      case decXDenominator:
+        if (hnumberline.denominator > 1){
+         hnumberline.denominator = hnumberline.denominator-1
+        }else {
+          console.log("decX failed")
+        }
+        break;
+      default:
+        console.log("Oops! That object does not exist.");
+    }
+
+    if (hnumberline.denominator == 10){
+      hnumberline.fractionTicks = false
+    } else {
+      hnumberline.fractionTicks = true
+    }
+
+    if (vnumberline.denominator == 10){
+      vnumberline.fractionTicks = false
+    } else {
+      vnumberline.fractionTicks = true
+    }
+
+    let {minFloat,maxFloat}  = hnumberline
+
+    hnumberline.draw(minFloat,maxFloat)
+    vnumberline.draw(minFloat,maxFloat)
+
+    hnumberline.draw(minFloat,maxFloat)
+    vnumberline.draw(minFloat,maxFloat)
+
+    let xParts = brickGrid.config.xNumerator%brickGrid.config.xDenominator
+    let wholeXs = (brickGrid.config.xNumerator - xParts)/brickGrid.config.xDenominator
+
+    let yParts = brickGrid.config.yNumerator%brickGrid.config.yDenominator
+    let wholeYs = (brickGrid.config.yNumerator - yParts)/brickGrid.config.yDenominator
+
+    let newXNumerator = wholeXs*hnumberline.denominator + xParts 
+    let newYNumerator = wholeYs*vnumberline.denominator + yParts 
+
+    const config = {
+      xNumerator: newXNumerator,
+      xDenominator: hnumberline.denominator,
+      yNumerator: newYNumerator,
+      yDenominator: vnumberline.denominator,
+      oneDim: brickGrid.config.oneDim,
+    };
+
+    //brickGrid.draw(config)
+    //brickGrid.resize(config.oneDim)
+
+    slider.x = hnumberline.x + brickGrid.width
+    slider.y = vnumberline.y - brickGrid.height
+  }
 
   // Called on resize
   function resize(newFrame, flex) {
@@ -177,7 +266,7 @@ export const init = (app, setup) => {
     let d = slider.height / 2;
     whiskers.clear();
     whiskers.lineStyle(2, 0x000000);
-    whiskers._fillStyle.alpha = 0.1
+    whiskers._fillStyle.alpha = 0.1;
     whiskers.moveTo(x - d, y);
     whiskers.lineTo(vnumberline.x, y);
     whiskers.moveTo(x, y + d);
@@ -191,46 +280,48 @@ export const init = (app, setup) => {
 
   function sliderPointerMove(e) {
     if (this.touching) {
-      console.log("hello");
-
       drawWhiskers(this.x, this.y);
     }
   }
 
   function sliderPointerUp() {
+
+    let one = hnumberline.getOne();
+
     let _x = this.x - hnumberline.x;
     let _y = vnumberline.y - this.y;
-    console.log("_x,_y", _x, _y);
-    let roundedX = hnumberline.roundPositionToNearestTick(_x);
-    let roundedY = vnumberline.roundPositionToNearestTick(_y);
-    let vX = hnumberline.getNumberLineFloatValueFromPosition(roundedX);
-    let vY = vnumberline.getNumberLineFloatValueFromPosition(roundedY);
+
+    let vX = hnumberline.getNumberLineFloatValueFromPosition(_x);
+    let vY = vnumberline.getNumberLineFloatValueFromPosition(_y);
+
+    let _xD = hnumberline.denominator;
+    let _yD = vnumberline.denominator;
+    let _xN = Math.round(vX * _xD);
+    let _yN = Math.round(vY * _yD);
+
+    let _xPos = (one * _xN) / _xD;
+    let _yPos = (one * _yN) / _yD;
+
+    this.x = hnumberline.x + _xPos;
+    this.y = vnumberline.y - _yPos;
+
 
     vX = Math.round(vX / hnumberline.minorStep) * hnumberline.minorStep;
     vY = Math.round(vY / vnumberline.minorStep) * vnumberline.minorStep;
 
-    if (hnumberline.minorStep < 1) {
-      let c = digitCount(hnumberline.minorStep) - 1;
-      vX = vX.toFixed(c);
-      vY = vY.toFixed(c);
-    }
-
-    this.x = hnumberline.x + roundedX;
-    this.y = vnumberline.y - roundedY;
-
-    whiskers.alpha = 0;
-
     const config = {
-      xNumerator: Math.round(vX / 0.1),
-      xDenominator: Math.round(1 / vnumberline.minorStep),
-      yNumerator: Math.round(vY / 0.1),
-      yDenominator: Math.round(1 / hnumberline.minorStep),
-      oneDim: hnumberline.getOne(),
+      xNumerator: Math.round(vX * hnumberline.denominator),
+      xDenominator: hnumberline.denominator,
+      yNumerator: Math.round(vY * vnumberline.denominator),
+      yDenominator: vnumberline.denominator,
+      oneDim: one,
     };
 
     brickGrid.draw(config);
+    brickGrid.resize(one);
 
-    console.log("config vs brickvconfig", config, brickGrid.config);
+    whiskers.alpha = 0;
+
   }
 
   function nextProblem() {
@@ -262,15 +353,6 @@ export const init = (app, setup) => {
       features = setup.props.features;
     }
 
-    submitButton = new PIXI.Sprite.from(BUTTONS.HOME);
-    submitButton.width = HOME_BUTTON_WIDTH;
-    submitButton.height = HOME_BUTTON_WIDTH;
-    submitButton.x = HOME_BUTTON_WIDTH / 4;
-    submitButton.y = HOME_BUTTON_WIDTH / 4;
-    submitButton.interactive = true;
-    submitButton.on("pointerdown", () => app.goHome());
-    app.stage.addChild(submitButton);
-
     rangeBubbleSelector = new RangeBubbleSelector(
       0.8 * WINDOW_WIDTH,
       currentProblem.MIN,
@@ -286,17 +368,17 @@ export const init = (app, setup) => {
 
     //app.stage.addChild(rangeBubbleSelector);
 
-    let sliderGraphics = new PIXI.Graphics()
-    sliderGraphics.beginFill(0x000000)
-    sliderGraphics.drawCircle(0,0,SLIDER_DIM)
-    let sliderGraphicsTexture = app.renderer.generateTexture(sliderGraphics)
+    let sliderGraphics = new PIXI.Graphics();
+    sliderGraphics.beginFill(0x000000);
+    sliderGraphics.drawCircle(0, 0, SLIDER_DIM);
+    let sliderGraphicsTexture = app.renderer.generateTexture(sliderGraphics);
 
-    slider = new Draggable()
-    slider.texture = sliderGraphicsTexture
+    slider = new Draggable();
+    slider.texture = sliderGraphicsTexture;
     slider.anchor.set(0.5);
-    slider.alpha = 0.5
-    slider.hitArea = new PIXI.Circle(0,0,SLIDER_DIM*4,SLIDER_DIM*4)
-    console.log("sliderhit",slider.hitArea)
+    slider.alpha = 0.5;
+    slider.hitArea = new PIXI.Circle(0, 0, SLIDER_DIM * 4, SLIDER_DIM * 4);
+    console.log("sliderhit", slider.hitArea);
     slider.maxX = rangeBubbleSelector.x + rangeBubbleSelector._width;
     slider.minX = rangeBubbleSelector.x;
     slider.interactive = true;
@@ -345,13 +427,13 @@ export const init = (app, setup) => {
     hnumberline = new HorizontalNumberLine(0, 3.5, width, app);
     hnumberline.draw(0, 3.2);
     hnumberline.x = WINDOW_WIDTH / 2 - width / 2;
-    hnumberline.y = WINDOW_HEIGHT/2 + width/2
+    hnumberline.y = WINDOW_HEIGHT / 2 + width / 2;
     app.stage.addChild(hnumberline);
 
     vnumberline = new VerticalNumberLine(0, 3.5, width, app);
     vnumberline.draw(0, 3.2);
     vnumberline.x = WINDOW_WIDTH / 2 - width / 2;
-    vnumberline.y = WINDOW_HEIGHT/2 + width/2
+    vnumberline.y = WINDOW_HEIGHT / 2 + width / 2;
     app.stage.addChild(vnumberline);
 
     vnumberline.onUpdate = () => {
@@ -386,11 +468,23 @@ export const init = (app, setup) => {
       drawWhiskers(slider.x, slider.y);
     };
 
+    vnumberline.fractionTicks = true;
+    vnumberline.denominator = 3;
+
+    hnumberline.fractionTicks = true;
+    hnumberline.denominator = 3;
+
+    hnumberline.setBoundaries(-1, 5.5, 1);
+    vnumberline.setBoundaries(-1, 5.5, 1);
+
+    hnumberline.draw(0, 3.2);
+    vnumberline.draw(0, 3.2);
+
     const brickGridConfig = {
-      xNumerator: 10,
-      xDenominator: 10,
-      yNumerator: 10,
-      yDenominator: 10,
+      xNumerator: hnumberline.denominator,
+      xDenominator: hnumberline.denominator,
+      yNumerator: vnumberline.denominator,
+      yDenominator: vnumberline.denominator,
       oneDim: hnumberline.getOne(),
     };
 
@@ -402,8 +496,32 @@ export const init = (app, setup) => {
     slider.x = hnumberline.x + brickGrid.width;
     slider.y = vnumberline.y - brickGrid.height;
 
-    hnumberline.setBoundaries(-1, 5.5, 1);
-    vnumberline.setBoundaries(-1, 5.5, 1);
+    let incDim = SLIDER_DIM/3.5
+
+    incYDenominator.width = incDim
+    incYDenominator.height = incDim
+    incYDenominator.x = vnumberline.x 
+    incYDenominator.y = vnumberline.y - vnumberline.length - incDim
+
+    decYDenominator.width = incDim
+    decYDenominator.height = incDim
+    decYDenominator.x = vnumberline.x - incDim
+    decYDenominator.y = vnumberline.y - vnumberline.length - incDim
+
+    incXDenominator.width = incDim 
+    incXDenominator.height = incDim 
+    incXDenominator.x = hnumberline.x + hnumberline.length
+    incXDenominator.y = hnumberline.y - incDim
+
+    decXDenominator.width = incDim 
+    decXDenominator.height = incDim 
+    decXDenominator.x = hnumberline.x + hnumberline.length 
+    decXDenominator.y = hnumberline.y
+
+    app.stage.addChild(incYDenominator);
+    app.stage.addChild(decYDenominator);
+    app.stage.addChild(incXDenominator);
+    app.stage.addChild(decXDenominator);
 
   }
 
