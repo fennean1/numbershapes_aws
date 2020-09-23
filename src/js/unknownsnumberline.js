@@ -19,8 +19,6 @@ import {
   TimelineMax,
   Power4,
 } from "gsap";
-import { css, Tween } from "jquery";
-import { Block } from "@material-ui/icons";
 
 export const init = (app, setup) => {
   let features;
