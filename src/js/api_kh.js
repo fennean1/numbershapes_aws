@@ -7,6 +7,101 @@ import * as CONST from "./const.js";
 
 // CLASSES
 
+
+
+export class BlockRow extends PIXI.Container {
+  constructor(n,width,height,app) {
+    super()
+    // Read In
+    this.app = app
+    this.strokeCompression = 10
+    this._width = width 
+    this._height = height
+
+    // Internal State
+    this.blockTexture;
+
+    // Children
+    this.blockGraphics = new PIXI.Graphics()
+    this.label = new PIXI.Text()
+    this.blocks = []
+    this.activeBlocks = []
+
+    this.init(n,width,height)
+  }
+
+  draw(n,blockWidth = this.blockWidth,height = this._height){
+
+    this.n = n
+    this.blockWidth = blockWidth
+    this.strokeWidth = height/this.strokeCompression
+    this.blockGraphics.clear()
+    this.blockGraphics.lineStyle(this.strokeWidth,0x000000)
+    this.blockGraphics.beginFill(0xf5145b)
+    this.blockGraphics.drawRoundedRect(0,0,blockWidth,height,height/10)
+    this.blockTexture = this.app.renderer.generateTexture(this.blockGraphics)
+
+    this.blocks.forEach((b,i)=>{
+      if (i < n) {
+        this.addChild(b)
+        b.texture.destroy()
+        b.texture = this.blockTexture
+        b.x = blockWidth*i
+        b.alpha = 1
+      }
+      else {
+        b.alpha = 0
+        this.removeChild(b)
+      }
+    })
+  }
+
+
+  set labelText(text){
+    this.label.alpha = 1
+    this.label.text = text
+  }
+
+  /// Slider Pointer Events
+
+
+
+  // Should call redraw after resize complete.
+  resize(width) {
+    this.blockWidth = width
+    this.strokeWidth = this._height/this.strokeCompression
+    this.blockGraphics.clear()
+    this.blockGraphics.lineStyle(this.strokeWidth,0x000000)
+    this.blockGraphics.beginFill(0xf5145b)
+    this.blockGraphics.drawRoundedRect(0,0,width,this._height,this._height/10)
+    this.blockTexture = this.app.renderer.generateTexture(this.blockGraphics)
+
+    this.blocks.forEach((b,i)=>{
+      if (i < this.n) {
+        b.texture.destroy()
+        b.texture = this.blockTexture
+        b.x = this.blockWidth*i
+        b.alpha = 1
+      }
+    })
+
+    this.width = this.blockWidth*this.n
+  }
+
+  init(n,width,height){
+
+
+    for (let i = 0;i<100;i++){
+      let newBlock = new PIXI.Sprite()
+      newBlock.texture = this.blockTexture
+      this.blocks.push(newBlock)
+      this.addChild(newBlock)
+    }
+
+    this.draw(n,width/n,height)
+  }
+}
+
 export class BrickGrid extends PIXI.Container {
   constructor(config,app){
     super()
@@ -291,6 +386,13 @@ export class HorizontalNumberLine extends PIXI.Container {
       return this.length/(this.max - this.min)
     }
   
+    getDistanceFromZeroFromValue(val){
+      return this.getNumberLinePositionFromFloatValue(val) - this.getNumberLinePositionFromFloatValue(0)
+    }
+
+    getDistanceFromZeroFromPosition(pos){
+      return pos - this.getNumberLinePositionFromFloatValue(0)
+    }
 
     synchWith(pointerX){
       let roundedPositionForThis = this.roundPositionToNearestTick(pointerX)
@@ -517,6 +619,8 @@ export class HorizontalNumberLine extends PIXI.Container {
           } else {
             l.texture = this.minorTickTexture;
           }
+
+          
   
           // If it's active, but not part of the new active labels, remove it and set value null.
         } else if (activeLabel) {
@@ -533,6 +637,12 @@ export class HorizontalNumberLine extends PIXI.Container {
         if (empties.length != 0) {
           let newActiveTick = empties.pop();
           newActiveTick.value = k;
+          let mod = Math.abs(newActiveTick.value%this.majorStep/this.majorStep)
+          if (mod < 0.01 || mod > 0.99) {
+            newActiveTick.texture = this.majorTickTexture
+          } else {
+            newActiveTick.texture = this.minorTickTexture
+          }
           newActiveTick.x = (k - this.min) * this.dx;
           newActiveTick.alpha = 1;
         }
@@ -569,7 +679,6 @@ export class HorizontalNumberLine extends PIXI.Container {
         let bounds = this.getBoundsFrom(pA,this.vA)
         this.draw(bounds.min,bounds.max)
         // Execute callback if it's available.
-        console.log("bounds",bounds)
         this.onUpdate && this.onUpdate()
       }
     }
@@ -598,7 +707,6 @@ export class HorizontalNumberLine extends PIXI.Container {
     }
   
    getNumberLinePositionFromFloatValue(val){
-      let pos = (val-this.minFloat)/this.minorStep*this.minorDX
       let pos1 = (val - this.minFloat)/(this.maxFloat-this.minFloat)*this._width
       return pos1
    }
@@ -989,9 +1097,9 @@ export class VerticalNumberLine extends PIXI.Container {
         l.alpha = 1;
         let mod = Math.abs(l.value%majorStep/majorStep)
         if (mod < 0.01 || mod > 0.99) {
-          l.texture = textures[0];
+          l.texture = this.majorTickTexture
         } else {
-          l.texture = textures[1];
+          l.texture = this.minorTickTexture
         }
 
         // If it's active, but not part of the new active labels, remove it and set value null.
@@ -1007,9 +1115,15 @@ export class VerticalNumberLine extends PIXI.Container {
 
     valueKeys.forEach((k) => {
       if (empties.length != 0) {
-        let newActiveTick = empties.pop();
+        let newActiveTick = empties.pop();  
         newActiveTick.value = k;
         newActiveTick.x = 0
+        let mod = Math.abs(newActiveTick.value%majorStep/majorStep)
+        if (mod < 0.01 || mod > 0.99) {
+          newActiveTick.texture = this.majorTickTexture
+        } else {
+          newActiveTick.texture = this.minorTickTexture
+        }
         newActiveTick.y = -dx * (newActiveTick.value - this.min);
         newActiveTick.alpha = 1;
       }

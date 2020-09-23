@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import blueGradient from "../assets/Clouds.png";
+import blueGradient from "../assets/blue-gradient.png";
 import plusButton from "../assets/PlusButton.png";
 import minusButton from "../assets/MinusButton.png";
 import spaceGround from "../assets/SpaceGround.png";
@@ -152,8 +152,8 @@ export const init = (app, setup) => {
     hnumberline.draw(minFloat,maxFloat)
     vnumberline.draw(minFloat,maxFloat)
 
-    hnumberline.draw(minFloat,maxFloat)
-    vnumberline.draw(minFloat,maxFloat)
+
+    /*
 
     let xParts = brickGrid.config.xNumerator%brickGrid.config.xDenominator
     let wholeXs = (brickGrid.config.xNumerator - xParts)/brickGrid.config.xDenominator
@@ -177,6 +177,8 @@ export const init = (app, setup) => {
 
     slider.x = hnumberline.x + brickGrid.width
     slider.y = vnumberline.y - brickGrid.height
+
+    */
   }
 
   // Called on resize
