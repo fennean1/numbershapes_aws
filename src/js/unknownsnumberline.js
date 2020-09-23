@@ -158,6 +158,7 @@ export const init = (app, setup) => {
     backGround.on('pointerdown',backgroundPointerDown)
     backGround.on('pointermove',backgroundPointerMove)
     backGround.on('pointerup',backgroundPointerUp)
+    backGround.on('pointerupoutside',backgroundPointerUp)
     app.stage.addChild(backGround)
 
 
@@ -170,6 +171,7 @@ export const init = (app, setup) => {
 
     blockRowA = new BlockRow(1,initialBlockWidth,WINDOW_HEIGHT/20,app)
     blockRowA.y = numberline.y - blockRowA._height
+    blockRowA.value = numberline.majorStep
     blockRowA.x = numberline.getNumberLinePositionFromFloatValue(0)
 
     sliderA = new Draggable(BLUE_PIN_TEXTURE)
