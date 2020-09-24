@@ -30,23 +30,24 @@ export class BlockRow extends PIXI.Container {
     this.init(n,width,height)
   }
 
-  draw(n,blockWidth = this.blockWidth,height = this._height){
+  draw(n,blockWidth = this.blockWidth){
 
     this.n = n
-    this.blockWidth = blockWidth
-    this.strokeWidth = height/this.strokeCompression
-    this.blockGraphics.clear()
-    this.blockGraphics.lineStyle(this.strokeWidth,0x000000)
-    this.blockGraphics.beginFill(0xf5145b)
-    this.blockGraphics.drawRoundedRect(0,0,blockWidth,height,height/10)
-    this.blockTexture = this.app.renderer.generateTexture(this.blockGraphics)
+    
+    this.updateTextures(blockWidth)
+
 
     this.blocks.forEach((b,i)=>{
       if (i < n) {
         this.addChild(b)
         b.texture.destroy()
         b.texture = this.blockTexture
-        b.x = blockWidth*i
+        if (blockWidth > 0){
+          b.x = blockWidth*i
+        } else {
+          b.x = blockWidth*(i+1) - this.strokeWidth/2
+        }
+  
         b.alpha = 1
       }
       else {
@@ -65,27 +66,39 @@ export class BlockRow extends PIXI.Container {
   /// Slider Pointer Events
 
 
-
-  // Should call redraw after resize complete.
-  resize(width) {
+  updateTextures(width){
+  
     this.blockWidth = width
+    this._width = Math.abs(this.blockWidth*this.n)
     this.strokeWidth = this._height/this.strokeCompression
     this.blockGraphics.clear()
     this.blockGraphics.lineStyle(this.strokeWidth,0x000000)
     this.blockGraphics.beginFill(0xf5145b)
-    this.blockGraphics.drawRoundedRect(0,0,width,this._height,this._height/10)
+    this.blockGraphics.drawRoundedRect(0,0,Math.abs(width),this._height,this._height/10)
     this.blockTexture = this.app.renderer.generateTexture(this.blockGraphics)
+
+
+  }
+
+  // Should call redraw after resize complete.
+  resize(width=this.blockWidth) {
+
+    this.updateTextures(width)
 
     this.blocks.forEach((b,i)=>{
       if (i < this.n) {
         b.texture.destroy()
         b.texture = this.blockTexture
-        b.x = this.blockWidth*i
+        if (width > 0){
+          b.x = width*i
+        } else {
+          b.x = width*(i+1) - this.strokeWidth/2
+        }
         b.alpha = 1
       }
     })
 
-    this.width = this.blockWidth*this.n
+    this.width = this._width
   }
 
   init(n,width,height){
@@ -293,8 +306,6 @@ export class Draggable extends PIXI.Sprite {
 
           let xMaxOut = this.maxX && this.x > this.maxX
           let xMinOut = this.minX && this.x < this.minX
-
-          console.log("maxout minout",xMaxOut,xMinOut)
 
           if (xMaxOut){
             this.x = this.maxX

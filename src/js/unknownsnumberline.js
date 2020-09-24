@@ -43,10 +43,6 @@ export const init = (app, setup) => {
   const BLUE_PIN_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.BLUE_DIAMOND_PIN)
 
 
-
-
-
-
   function sliderAPointerDown(){
 
   }
@@ -63,8 +59,9 @@ export const init = (app, setup) => {
   function sliderAPointerUp(){
     let zero = numberline.getNumberLinePositionFromFloatValue(0)
     this.x = blockRowA.blockWidth*blockRowA.n + zero
-    blockRowA.value = numberline.getNumberLineFloatValueFromPosition(zero+blockRowA.width)
-    sliderA.x = zero+blockRowA.width
+    blockRowA.value = numberline.getNumberLineFloatValueFromPosition(zero+blockRowA.blockWidth*blockRowA.n)
+    sliderA.x = zero+blockRowA.blockWidth*blockRowA.n
+    blockRowA.resize()
   }
 
 
@@ -92,6 +89,7 @@ export const init = (app, setup) => {
     blockRowA.draw(blockRowA.n,blockWidth)
 
     this.x = roundedPosition
+    console.log("blockwidth",)
     sliderA.x = zero + blockWidth*blockRowA.n
     
   }
@@ -118,7 +116,7 @@ export const init = (app, setup) => {
 
       let zero = numberline.getNumberLinePositionFromFloatValue(0)
       blockRowA.x = zero
-      sliderA.x = zero + blockRowA.width 
+      sliderA.x = zero + blockRowA.blockWidth*blockRowA.n
       sliderB.x = zero + blockRowA.blockWidth
     } 
   }
@@ -162,7 +160,7 @@ export const init = (app, setup) => {
     app.stage.addChild(backGround)
 
 
-   numberline = new HorizontalNumberLine(-6,50,WINDOW_WIDTH,app)
+    numberline = new HorizontalNumberLine(-6,50,WINDOW_WIDTH,app)
     numberline.setBoundaries(-100000,100000,1)
     numberline.draw(-6,50)
     numberline.y = WINDOW_HEIGHT/2
@@ -214,11 +212,13 @@ export const init = (app, setup) => {
     } 
 
     numberline.onUpdateComplete = () => {
+      console.log("block row value",blockRowA.value)
       let blockEndPoint = numberline.getNumberLinePositionFromFloatValue(blockRowA.value)
       let zeroX = numberline.getNumberLinePositionFromFloatValue(0)
       let width = blockEndPoint - zeroX
+      console.log("width",width)
       blockRowA.draw(blockRowA.n,width/blockRowA.n)
-      blockRowA.width = width
+      blockRowA.width = Math.abs(width)
     } 
   
   
