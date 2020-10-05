@@ -19,7 +19,6 @@ import {
   Draggable,
   HorizontalNumberLine,
   Strip,
-  rangeBubbleSelector,
   RangeBubbleSelector,
   MathFactPrompt,
   NumberBubble,
@@ -111,23 +110,6 @@ export const init = (app, setup) => {
     };
   }
 
-  // Constructors
-  function makeGround() {
-    // Setup Background
-    this.sprite = new PIXI.Sprite.from(spaceGround);
-    this.sprite.width = WINDOW_WIDTH;
-    this.sprite.height = WINDOW_HEIGHT / 4;
-    this.sprite.x = 0;
-    this.sprite.y = WINDOW_HEIGHT - this.sprite.height;
-    this.sprite.interactive = true;
-
-    //app.stage.addChild(this.sprite);
-
-    this.draw = () => {
-      this.sprite.width = WINDOW_WIDTH;
-      this.sprite.height = WINDOW_HEIGHT;
-    };
-  }
 
   function updateLayoutParams(newFrame) {
     let frame;
@@ -231,14 +213,6 @@ export const init = (app, setup) => {
       features = setup.props.features;
     }
 
-    submitButton = new PIXI.Sprite.from(BUTTONS.HOME);
-    submitButton.width = HOME_BUTTON_WIDTH;
-    submitButton.height = HOME_BUTTON_WIDTH;
-    submitButton.x = HOME_BUTTON_WIDTH / 4;
-    submitButton.y = HOME_BUTTON_WIDTH / 4;
-    submitButton.interactive = true;
-    submitButton.on("pointerdown", () => app.goHome());
-    app.stage.addChild(submitButton);
 
     rangeBubbleSelector = new RangeBubbleSelector(
       0.8 * WINDOW_WIDTH,

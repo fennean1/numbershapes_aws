@@ -6,15 +6,7 @@ import nightBackground from "../assets/NightBackground.png";
 import pinkPin from "../assets/PinkPin.png";
 import greyPin from "../assets/Pin.png";
 import * as CONST from "./const.js";
-import {
-  Fraction,
-  Draggable,
-  distance,
-  FractionFrame,
-  UltimateNumberLine,
-  NumberLine,
-} from "./api.js";
-import { HorizontalNumberLine, NumberLineEstimator, MathFactPrompt, VPAdditionStrips } from "./api_kh.js";
+import { HorizontalNumberLine, NumberLineEstimator, MathFactPrompt, VPAdditionStrips,  Draggable } from "./api_kh.js";
 import {
   TweenMax,
   TimelineLite,

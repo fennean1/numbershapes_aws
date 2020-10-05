@@ -87,9 +87,8 @@ export const init = (app, setup) => {
     let blockWidth = roundedPosition - zero
     blockRowA.value = blockVal*blockRowA.n
     blockRowA.draw(blockRowA.n,blockWidth)
-
+    blockRowA.resize()
     this.x = roundedPosition
-    console.log("blockwidth",)
     sliderA.x = zero + blockWidth*blockRowA.n
     
   }
@@ -206,17 +205,15 @@ export const init = (app, setup) => {
       let zeroDistance = numberline.getDistanceFromZeroFromValue(blockRowA.value)
       let blockEndPoint = numberline.getNumberLinePositionFromFloatValue(blockRowA.value)
       let zeroX = numberline.getNumberLinePositionFromFloatValue(0)
-      sliderA.x = blockEndPoint
       blockRowA.resize(zeroDistance/blockRowA.n)
+      sliderA.x = blockEndPoint
       sliderB.x = zeroX + zeroDistance/blockRowA.n
     } 
 
     numberline.onUpdateComplete = () => {
-      console.log("block row value",blockRowA.value)
       let blockEndPoint = numberline.getNumberLinePositionFromFloatValue(blockRowA.value)
       let zeroX = numberline.getNumberLinePositionFromFloatValue(0)
       let width = blockEndPoint - zeroX
-      console.log("width",width)
       blockRowA.draw(blockRowA.n,width/blockRowA.n)
       blockRowA.width = Math.abs(width)
     } 

@@ -14,7 +14,7 @@ import {
   RangeBubbleSelector,
   MathFactPrompt,
   NumberBubble,
-  BrickGrid,
+  BinomialGrid,
   digitCount,
 } from "./api_kh.js";
 import {
@@ -100,7 +100,7 @@ export const init = (app, setup) => {
 
   function inc() {
 
-    console.log('incing')
+    console.log('incrementinging')
 
     switch (this) {
       case incYDenominator:
@@ -127,7 +127,7 @@ export const init = (app, setup) => {
       case decXDenominator:
         if (hnumberline.denominator > 1){
          hnumberline.denominator = hnumberline.denominator-1
-        }else {
+        } else {
           console.log("decX failed")
         }
         break;
@@ -218,51 +218,6 @@ export const init = (app, setup) => {
     }
   }
 
-  function onSubmitAnswer() {
-    const onComplete = () => {
-      nextProblem();
-    };
-
-    let timeline = new TimelineLite({ paused: true });
-    let targetX = rangeBubbleSelector.getPositionFromValue(
-      currentProblem.TARGET
-    );
-    timeline.to(prompt, {
-      x: rangeBubbleSelector.x + targetX - prompt.width / 2,
-    });
-
-    console.log("targets", currentProblem.MIN, currentProblem.TARGET);
-
-    let target =
-      Math.round(rangeBubbleSelector.leftStripGraphic.value) +
-      Math.round(currentProblem.MIN);
-
-    console.log("target", target);
-
-    if (target == currentProblem.TARGET) {
-      timeline.to(slider, { y: prompt.y + prompt.height / 2 });
-      timeline.to(slider, {
-        width: prompt.height * 1.2,
-        height: prompt.height * 1.2,
-        ease: "bounce",
-      });
-      timeline.to(slider, {
-        width: prompt.height,
-        height: prompt.height,
-        ease: "bounce",
-        onComplete: onComplete,
-      });
-    } else {
-      timeline.to(slider, {
-        y: prompt.y + prompt.height / 2,
-        onComplete: onComplete,
-      });
-    }
-
-    timeline.play();
-
-    TweenLite.to(checkMark, { duration: 0.5, alpha: 0 });
-  }
 
   function drawWhiskers(x, y) {
     let d = slider.height / 2;
@@ -288,34 +243,31 @@ export const init = (app, setup) => {
 
   function sliderPointerUp() {
 
-    let one = hnumberline.getOne();
+  
+
+    let one = hnumberline.getOne()
 
     let _x = this.x - hnumberline.x;
     let _y = vnumberline.y - this.y;
 
-    let vX = hnumberline.getNumberLineFloatValueFromPosition(_x);
-    let vY = vnumberline.getNumberLineFloatValueFromPosition(_y);
+    let xNum = Math.round(_x/hnumberline.minorDX)
+    let yNum = Math.round(_y/vnumberline.minorDX)
 
-    let _xD = hnumberline.denominator;
-    let _yD = vnumberline.denominator;
-    let _xN = Math.round(vX * _xD);
-    let _yN = Math.round(vY * _yD);
+    let vPartitionsPerMajorTick = Math.round(one/vnumberline.minorDX)
+    let hPartitionsPerMajorTick = Math.round(one/hnumberline.minorDX)
 
-    let _xPos = (one * _xN) / _xD;
-    let _yPos = (one * _yN) / _yD;
+
+    let _xPos = (one * xNum) / hPartitionsPerMajorTick;
+    let _yPos = (one * yNum) / vPartitionsPerMajorTick;
 
     this.x = hnumberline.x + _xPos;
     this.y = vnumberline.y - _yPos;
 
-
-    vX = Math.round(vX / hnumberline.minorStep) * hnumberline.minorStep;
-    vY = Math.round(vY / vnumberline.minorStep) * vnumberline.minorStep;
-
     const config = {
-      xNumerator: Math.round(vX * hnumberline.denominator),
-      xDenominator: hnumberline.denominator,
-      yNumerator: Math.round(vY * vnumberline.denominator),
-      yDenominator: vnumberline.denominator,
+      xNumerator: xNum,
+      xDenominator: hPartitionsPerMajorTick,
+      yNumerator: yNum,
+      yDenominator: vPartitionsPerMajorTick,
       oneDim: one,
     };
 
@@ -326,28 +278,6 @@ export const init = (app, setup) => {
 
   }
 
-  function nextProblem() {
-    problemNumber++;
-    currentProblem = problemSet[problemNumber]
-      ? problemSet[problemNumber]
-      : false;
-    if (currentProblem) {
-      rangeBubbleSelector.loadProblem(currentProblem);
-      prompt.lblText = currentProblem.TARGET;
-    } else {
-      problemNumber = 1;
-      currentProblem = problemSet[problemNumber];
-      rangeBubbleSelector.loadProblem(currentProblem);
-      prompt.lblText = currentProblem.TARGET;
-    }
-
-    let sliderX =
-      rangeBubbleSelector.leftStripGraphic.width + rangeBubbleSelector.x;
-
-    TweenLite.to(slider, { x: sliderX, y: SLIDER_START.y, duration: 1 });
-    TweenLite.to(prompt, { x: SLIDER_START.x - prompt.width / 2, duration: 1 });
-    TweenLite.to(lineUp, { x: sliderX, duration: 1 });
-  }
 
   // Loading Script
   function load() {
@@ -396,17 +326,6 @@ export const init = (app, setup) => {
     slider.on("pointerup", sliderPointerUp);
     slider.on("pointerupoutside", sliderPointerUp);
 
-    checkMark = new PIXI.Sprite.from(CheckMark);
-    checkMark.width = slider.width;
-    checkMark.height = checkMark.width;
-    checkMark.interactive = true;
-    checkMark.anchor.set(0.5);
-    checkMark.alpha = 0;
-    checkMark.x = slider.x;
-    checkMark.y = rangeBubbleSelector.y - 2 * checkMark.height;
-    //app.stage.addChild(checkMark);
-    checkMark.on("pointerdown", onSubmitAnswer);
-
     lineUp.lineStyle(2, GREY);
     lineUp.lineTo(0, slider.y - slider.height / 2 - SELECTOR_Y);
     //app.stage.addChild(lineUp)
@@ -441,16 +360,23 @@ export const init = (app, setup) => {
     vnumberline.onUpdate = () => {
       let { min, max } = vnumberline;
       hnumberline.draw(min, max);
-      let one = vnumberline.getOne();
+      let one = vnumberline.getOne()
       brickGrid.resize(one);
       slider.x = hnumberline.x + brickGrid.width;
-      slider.y = vnumberline.y - brickGrid.height;
+      slider.y = hnumberline.y - brickGrid.height;
+    };
+
+    vnumberline.onUpdateComplete = () => {
+      brickGrid.draw(brickGrid.config);
+      let one = vnumberline.getOne()
+      brickGrid.resize(one);
+      drawWhiskers(slider.x, slider.y);
     };
 
     hnumberline.onUpdate = () => {
       let { min, max } = hnumberline;
       vnumberline.draw(min, max);
-      let one = vnumberline.getOne();
+      let one = hnumberline.getOne()
       brickGrid.resize(one);
       slider.x = hnumberline.x + brickGrid.width;
       slider.y = vnumberline.y - brickGrid.height;
@@ -458,14 +384,8 @@ export const init = (app, setup) => {
 
     hnumberline.onUpdateComplete = () => {
       brickGrid.draw(brickGrid.config);
-      let one = hnumberline.getOne();
-      brickGrid.resize(one);
-      drawWhiskers(slider.x, slider.y);
-    };
+      let one = hnumberline.getOne()
 
-    vnumberline.onUpdateComplete = () => {
-      brickGrid.draw(brickGrid.config);
-      let one = vnumberline.getOne();
       brickGrid.resize(one);
       drawWhiskers(slider.x, slider.y);
     };
@@ -476,8 +396,8 @@ export const init = (app, setup) => {
     hnumberline.fractionTicks = true;
     hnumberline.denominator = 3;
 
-    hnumberline.setBoundaries(-1, 5.5, 1);
-    vnumberline.setBoundaries(-1, 5.5, 1);
+    hnumberline.setBoundaries(-1, 7, 1);
+    vnumberline.setBoundaries(-1, 7, 1);
 
     hnumberline.draw(0, 3.2);
     vnumberline.draw(0, 3.2);
@@ -487,10 +407,10 @@ export const init = (app, setup) => {
       xDenominator: hnumberline.denominator,
       yNumerator: vnumberline.denominator,
       yDenominator: vnumberline.denominator,
-      oneDim: hnumberline.getOne(),
+      oneDim: hnumberline.majorDX
     };
 
-    brickGrid = new BrickGrid(brickGridConfig, app);
+    brickGrid = new BinomialGrid(brickGridConfig, app);
     brickGrid.x = vnumberline.x;
     brickGrid.y = vnumberline.y;
     app.stage.addChild(brickGrid);

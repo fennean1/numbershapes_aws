@@ -47,7 +47,6 @@ export class BlockRow extends PIXI.Container {
         } else {
           b.x = blockWidth*(i+1) - this.strokeWidth/2
         }
-  
         b.alpha = 1
       }
       else {
@@ -76,7 +75,6 @@ export class BlockRow extends PIXI.Container {
     this.blockGraphics.beginFill(0xf5145b)
     this.blockGraphics.drawRoundedRect(0,0,Math.abs(width),this._height,this._height/10)
     this.blockTexture = this.app.renderer.generateTexture(this.blockGraphics)
-
 
   }
 
@@ -115,7 +113,7 @@ export class BlockRow extends PIXI.Container {
   }
 }
 
-export class BrickGrid extends PIXI.Container {
+export class BinomialGrid extends PIXI.Container {
   constructor(config,app){
     super()
     this.wholeBrick = new PIXI.Graphics()
@@ -168,6 +166,8 @@ export class BrickGrid extends PIXI.Container {
 
    this.partStroke = Math.min(partY,partX)/15
    this.wholeStroke = oneDim/15
+
+    this.wholeBrick.lineStyle()
 
    this.wholeBrick.lineStyle(this.partStroke,0xffffff)
    this.wholeBrick.beginFill(0x0384fc)
@@ -389,7 +389,6 @@ export class HorizontalNumberLine extends PIXI.Container {
 
       this.hitArea = new PIXI.Rectangle(0,0,this.width,1.5*this.height)
   
-
     }
   
 
@@ -1604,6 +1603,9 @@ export class VerticalNumberLine extends PIXI.Container {
       this.addChild(this.label)
     }
 
+    hideLabel(){
+
+    }
 
     animateTo(w){
       const onUpdate = ()=>{
@@ -1629,8 +1631,6 @@ export class VerticalNumberLine extends PIXI.Container {
     }
 
   }
-
-
 
 
   export class RangeBubbleSelector extends PIXI.Container {
