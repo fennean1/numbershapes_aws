@@ -51,7 +51,7 @@ export default function ProtectedRoute(props) {
   
   const loggedIn = userKeys[localKey]
 
-  const renderMe = loggedIn ? <Arena fullscreen = {true} script = {props.script}/> : <Redirect to = {{
+  const renderMe = loggedIn ? <Arena fullscreen = {true} script = {props.script}/> : <Redirect from = "/" to = {{
     pathname: "login",
     state: {request: path }
   }}/>

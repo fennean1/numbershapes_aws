@@ -86,7 +86,7 @@ export default function InteractiveCard(props) {
         {props.data.shortText}
       </CardContent>
       <CardActions disableSpacing>
-        <Link style={{ textDecoration: 'none' }} target = "_blank"  to={""+props.data.tool}>
+        <Link style={{ textDecoration: 'none' }} target = "_blank"  to={""+props.data.tool + "/" + window.localStorage.getItem('key')}>
           <Button variant = "outlined" >Open</Button>
         </Link>
       </CardActions>

@@ -47,10 +47,11 @@ export default function Login(props) {
 
   
   function onSubmit(){
+    console.log("onsubmit")
     window.localStorage.setItem('key',text)
   }
 
-  const linkTo = props.location.state ? props.location.state.request : '/'
+  const linkTo = props.location.state ? props.location.state.request + "/" + window.localStorage.getItem('key') : '/'
   
   return (
     <Container component="main" maxWidth="xs">
