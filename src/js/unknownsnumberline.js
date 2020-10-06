@@ -139,6 +139,10 @@ export const init = (app, setup) => {
 
   function backgroundPointerUp(e){
     this.touching = false
+
+
+    sliderA.minX && (sliderA.minX = sliderB.x)
+    sliderA.maxX && (sliderA.maxX = sliderB.x)
   }
 
 

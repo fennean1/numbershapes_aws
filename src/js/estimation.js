@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import blueGradient from "../assets/Clouds.png";
+import blueGradient from "../assets/blue-gradient.png";
 import spaceGround from "../assets/SpaceGround.png";
 import spaceShipWindow from "../assets/SpaceShipWindow.png";
 import nightBackground from "../assets/NightBackground.png";

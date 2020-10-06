@@ -2,7 +2,6 @@ import blue_gradient from "../assets/bordered-gradient.png";
 import plus from "../assets/Plus.png";
 import reset from "../assets/Reset.png"
 import trash from "../assets/Trash.png"
-import jiji from "../assets/jiji.png"
 import minus from "../assets/Minus.png"
 import blue_circle from "../assets/BlueCircle.png"
 import red_circle from "../assets/RedCircle.png"
@@ -44,7 +43,6 @@ import yellow_ring from "../assets/YellowRingIcon.png"
 import yellow_circle from "../assets/YellowCircle.png"
 import chalk_board from "../assets/Chalkboard.png"
 import star from "../assets/Cloud.png"
-import space_gradient from "../assets/space-gradient.png"
 import pink_space_ship from "../assets/PinkSpaceShip.png"
 import blue_space_ship from "../assets/BlueSpaceShip.png"
 import pink_square_pin from "../assets/PinkSquarePin.png"
@@ -59,7 +57,6 @@ export const ASSETS = {
     PLUS: plus,
     RESET: reset,
     TRASH: trash,
-    JIJI: jiji,
     MINUS: minus,
     BLUE_CIRCLE: blue_circle,
     RED_CIRCLE: red_circle,
@@ -101,7 +98,6 @@ export const ASSETS = {
     YELLOW_CIRCLE: yellow_circle,
     CHALK_BOARD: chalk_board,
     STAR: star,
-    SPACE_GRADIENT: space_gradient,
     BLUE_SPACE_SHIP: blue_space_ship,
     PINK_SPACE_SHIP: pink_space_ship,
     PINK_SQUARE_PIN: pink_square_pin,
