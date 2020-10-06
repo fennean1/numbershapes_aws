@@ -14,7 +14,7 @@ export class BlockRow extends PIXI.Container {
     super()
     // Read In
     this.app = app
-    this.strokeCompression = 10
+    this.strokeCompression = 50
     this._width = width 
     this._height = height
 
@@ -45,7 +45,7 @@ export class BlockRow extends PIXI.Container {
         if (blockWidth > 0){
           b.x = blockWidth*i
         } else {
-          b.x = blockWidth*(i+1) - this.strokeWidth/2
+          b.x = blockWidth*(i+1)
         }
         b.alpha = 1
       }
@@ -71,9 +71,9 @@ export class BlockRow extends PIXI.Container {
     this._width = Math.abs(this.blockWidth*this.n)
     this.strokeWidth = this._height/this.strokeCompression
     this.blockGraphics.clear()
-    this.blockGraphics.lineStyle(this.strokeWidth,0x000000)
-    this.blockGraphics.beginFill(0xf5145b)
-    this.blockGraphics.drawRoundedRect(0,0,Math.abs(width),this._height,this._height/10)
+    this.blockGraphics.lineStyle(this.strokeWidth,0xffffff,1,0)
+    this.blockGraphics.beginFill(0x1c77ff)
+    this.blockGraphics.drawRoundedRect(0,0,Math.abs(width),this._height,this._height/5)
     this.blockTexture = this.app.renderer.generateTexture(this.blockGraphics)
 
   }
@@ -164,8 +164,9 @@ export class BinomialGrid extends PIXI.Container {
    let partsX = xNumerator%xDenominator
    let partsY = yNumerator%yDenominator
 
-   this.partStroke = Math.min(partY,partX)/15
-   this.wholeStroke = oneDim/15
+   this.partStroke = Math.min(partY,partX)/Math.sqrt(15)
+   this.wholeStroke = Math.sqrt(oneDim/30)
+   this.partStroke = this.wholeStroke
 
     this.wholeBrick.lineStyle()
 
@@ -802,12 +803,6 @@ export class HorizontalNumberLine extends PIXI.Container {
   
     init() {
       for (let i = 0; i <= 100; i++) {
-        let newTick = new PIXI.Sprite(this.majorTickTexture);
-        newTick.anchor.set(0.5, 0);
-        newTick.value = null;
-        newTick.alpha = 0;
-        this.addChild(newTick);
-        this.ticks.push(newTick);
   
         let newLabel = new PIXI.Text();
         newLabel.style.fontSize = this.digitHeight;
@@ -821,12 +816,25 @@ export class HorizontalNumberLine extends PIXI.Container {
         this.labels.push(newLabel);
         newLabel.y = 1.1 * this.majorTickHeight;
       }
+
+          
+  for (let i = 0; i <= 200; i++) {
+    let newTick = new PIXI.Sprite(this.majorTickTexture);
+    newTick.anchor.set(0.5, 0);
+    newTick.value = null;
+    newTick.alpha = 0;
+    this.addChild(newTick);
+    this.ticks.push(newTick);
+  }
+      
+
+
       this.draw(this.min, this.max);
     }
   }
 
 
-// Horizontal Number Line
+// Vertcial Number Line
 export class VerticalNumberLine extends PIXI.Container {
   constructor(min, max, length,app) {
     super();
@@ -1149,7 +1157,6 @@ export class VerticalNumberLine extends PIXI.Container {
     this.touching = true
     let pA = e.data.getLocalPosition(this).y
     this.vA = this.getNumberLineFloatValueFromPosition(pA)
-    console.log("balls")
   }
 
   getBoundsFrom(x,value){
@@ -1168,9 +1175,7 @@ export class VerticalNumberLine extends PIXI.Container {
   pointerMove(e){
     if(this.touching){
       let pA = e.data.getLocalPosition(this).y
-      console.log("pA",pA)
       let bounds = this.getBoundsFrom(pA,this.vA)
-      console.log("bounds",bounds)
       this.draw(bounds.min,bounds.max)
       this.onUpdate && this.onUpdate()
     }
@@ -1282,19 +1287,10 @@ export class VerticalNumberLine extends PIXI.Container {
     );
 
   }
-
-  // Execute callback if it's available.
 }
 
   init() {
     for (let i = 0; i <= 100; i++) {
-      let newTick = new PIXI.Sprite(this.majorTickTexture);
-      newTick.anchor.set(1, 0.5);
-      newTick.value = null;
-      newTick.alpha = 0;
-      this.addChild(newTick);
-      this.ticks.push(newTick);
-
       let newLabel = new PIXI.Text();
       newLabel.style.fontSize = this.digitHeight;
       newLabel.style.fontFamily = "Chalkboard SE";
@@ -1307,6 +1303,16 @@ export class VerticalNumberLine extends PIXI.Container {
       this.labels.push(newLabel);
       newLabel.x = -1.15 * this.majorTickHeight;
     }
+    
+  for (let i = 0; i <= 200; i++) {
+    let newTick = new PIXI.Sprite(this.majorTickTexture);
+    newTick.anchor.set(1, 0.5);
+    newTick.value = null;
+    newTick.alpha = 0;
+    this.addChild(newTick);
+    this.ticks.push(newTick);
+  }
+
     this.draw(this.min, this.max);
   }
 }

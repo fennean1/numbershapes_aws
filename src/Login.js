@@ -13,6 +13,8 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Portal from "./ProtectedRoute"
+import logo from "./assets/favicon.png"
+
 
 const useStyles = makeStyles(theme => ({
   '@global': {
@@ -43,19 +45,19 @@ export default function Login(props) {
   const classes = useStyles();
   const [text,setText] = React.useState('User Code')
 
-  console.log("props.request",props.location.state.request)
-  
   
   function onSubmit(){
     window.localStorage.setItem('key',text)
   }
+
+  const linkTo = props.location.state ? props.location.state.request : '/'
   
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
+        <img src={logo} alt="Logo" />
         </Avatar>
         <Typography component="h1" variant="h5">
           Sign In
@@ -72,7 +74,7 @@ export default function Login(props) {
             name="User Code"
             autoFocus
           />
-          <Link to = {props.location.state.request}>
+          <Link to = {linkTo}>
           <Button
             type="submit"
             fullWidth

@@ -104,7 +104,7 @@ export const init = (app, setup) => {
 
     switch (this) {
       case incYDenominator:
-        if (vnumberline.denominator < 12){
+        if (vnumberline.denominator < 10){
           vnumberline.denominator = vnumberline.denominator+1
         } else {
           console.log("incY failed")
@@ -118,7 +118,7 @@ export const init = (app, setup) => {
         }
         break;
       case incXDenominator:
-        if (hnumberline.denominator < 12){
+        if (hnumberline.denominator < 10){
           hnumberline.denominator = hnumberline.denominator+1
         }else {
           console.log("incX failed")
@@ -385,7 +385,6 @@ export const init = (app, setup) => {
     hnumberline.onUpdateComplete = () => {
       brickGrid.draw(brickGrid.config);
       let one = hnumberline.getOne()
-
       brickGrid.resize(one);
       drawWhiskers(slider.x, slider.y);
     };
@@ -396,8 +395,8 @@ export const init = (app, setup) => {
     hnumberline.fractionTicks = true;
     hnumberline.denominator = 3;
 
-    hnumberline.setBoundaries(-1, 7, 1);
-    vnumberline.setBoundaries(-1, 7, 1);
+    hnumberline.setBoundaries(-1, 16, 1);
+    vnumberline.setBoundaries(-1, 16, 1);
 
     hnumberline.draw(0, 3.2);
     vnumberline.draw(0, 3.2);

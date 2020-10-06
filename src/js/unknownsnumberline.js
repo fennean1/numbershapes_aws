@@ -1,10 +1,5 @@
 import * as PIXI from "pixi.js";
-import blueGradient from "../assets/Clouds.png";
-import spaceGround from "../assets/SpaceGround.png";
-import spaceShipWindow from "../assets/SpaceShipWindow.png";
-import nightBackground from "../assets/NightBackground.png";
-import pinkPin from "../assets/PinkPin.png";
-import Dice from "../assets/Dice.png";
+import blueGradient from "../assets/blue-gradient.png";
 import greyPin from "../assets/Pin.png";
 import * as CONST from "./const.js";
 import {Draggable,HorizontalNumberLine,BlockRow} from "./api_kh.js";
@@ -40,7 +35,8 @@ export const init = (app, setup) => {
 
   //CONST 
 
-  const BLUE_PIN_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.BLUE_DIAMOND_PIN)
+  const BLUE_PIN_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.GREEN_CIRCLE_PIN)
+  const PINK_PIN_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.PINK_SQUARE_PIN)
 
 
   function sliderAPointerDown(){
@@ -70,6 +66,7 @@ export const init = (app, setup) => {
   }
 
   function sliderBPointerMove(){
+    
 
     if (this.touching){
       let zero = numberline.getNumberLinePositionFromFloatValue(0)
@@ -83,13 +80,33 @@ export const init = (app, setup) => {
   function sliderBPointerUp(){
     let zero = numberline.getNumberLinePositionFromFloatValue(0)
     let roundedPosition = numberline.roundPositionToNearestTick(this.x)
+    let deltaZero = this.x - zero
+
+    if (Math.abs(deltaZero) < numberline.minorDX) {
+      if (deltaZero > 0){
+        roundedPosition = numberline.roundPositionUpToNearestTick(this.x)
+      } else {
+        roundedPosition = numberline.roundPositionDownToNearestTick(this.x)
+      }
+    }
+
     let blockVal = numberline.getNumberLineFloatValueFromPosition(roundedPosition)
     let blockWidth = roundedPosition - zero
+
     blockRowA.value = blockVal*blockRowA.n
     blockRowA.draw(blockRowA.n,blockWidth)
     blockRowA.resize()
+
     this.x = roundedPosition
     sliderA.x = zero + blockWidth*blockRowA.n
+
+    if (blockWidth < 0){
+      sliderA.maxX = this.x
+      sliderA.minX = null
+    } else {
+      sliderA.minX = this.x
+      sliderA.maxX = null
+    }
     
   }
 
@@ -172,7 +189,7 @@ export const init = (app, setup) => {
     blockRowA.x = numberline.getNumberLinePositionFromFloatValue(0)
 
     sliderA = new Draggable(BLUE_PIN_TEXTURE)
-    sliderB = new Draggable(BLUE_PIN_TEXTURE)
+    sliderB = new Draggable(PINK_PIN_TEXTURE)
 
     sliderB.anchor.set(0.5,1)
     sliderB.lockY = true
@@ -208,6 +225,7 @@ export const init = (app, setup) => {
       blockRowA.resize(zeroDistance/blockRowA.n)
       sliderA.x = blockEndPoint
       sliderB.x = zeroX + zeroDistance/blockRowA.n
+
     } 
 
     numberline.onUpdateComplete = () => {
@@ -216,6 +234,9 @@ export const init = (app, setup) => {
       let width = blockEndPoint - zeroX
       blockRowA.draw(blockRowA.n,width/blockRowA.n)
       blockRowA.width = Math.abs(width)
+
+      sliderA.minX && (sliderA.minX = sliderB.x)
+      sliderA.maxX && (sliderA.maxX = sliderB.x)
     } 
   
   

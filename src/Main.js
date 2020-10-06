@@ -10,22 +10,20 @@ import * as bubbletarget from "./js/bubbletarget.js"
 import * as multiplicationgrid from "./js/multiplicationgrid.js"
 import * as unknownsnumberline from "./js/unknownsnumberline.js"
 import Landing from "./Login"
-import LandingPage from "./LandingPage"
-import Portal from "./ProtectedRoute"
 import ProtectedRoute from "./ProtectedRoute"
-
+import Manipulatives from "./Manipulatives"
 
 const Main = () => (
   <Switch>
     <Route path="/login/" component={Landing}  />
     <Route exact path="/estimationinput" render={(props)=><ProtectedRoute {...props} fullscreen = {true} script = {estimation.init}/>} />
     <Route exact path="/multiplicationgrid" render={(props)=><ProtectedRoute {...props} fullscreen = {true} script = {multiplicationgrid.init}/>} />
+    <Route exact path="/unknownsnumberline" render={(props)=><ProtectedRoute {...props} fullscreen = {true} script = {unknownsnumberline.init}/>} />
     <Route exact path="/bubbletarget" render={()=><Arena fullscreen = {true} script = {bubbletarget.init}/>} />
-    <Route exact path="/unknownsnumberline" render={()=><Arena fullscreen = {true} script = {unknownsnumberline.init}/>} />
     <Route exact path="/multiplication" render={()=><Arena fullscreen = {true} script = {multiplicationgrid.init}/>} />
     <Route exact path="/gridcutting" render={()=><Arena features = {{x: 5,y: 5,descriptor: false}} fullscreen = {true} script = {gridcutting.init}/>} />
     <Route exact path="/gridnodes" render={()=><Arena features = {{x: 5,y: 5,descriptor: false}} fullscreen = {true} script = {gridnodes.init}/>} />
-    <Route exact path="/" component={LandingPage} />
+    <Route exact path="/" component={Manipulatives} />
   </Switch>
 );
 

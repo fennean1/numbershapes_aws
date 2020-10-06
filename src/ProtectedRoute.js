@@ -47,8 +47,6 @@ export default function ProtectedRoute(props) {
 
   const path = props.match.path
 
-  console.log('path',path)
-
   const localKey = window.localStorage.getItem('key')
   
   const loggedIn = userKeys[localKey]
