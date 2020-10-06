@@ -4,4 +4,5 @@ export const userKeys = {
     estimystery: true,
     imceo: true,
     guessed: true,
+    twitchin: true,
 } 
