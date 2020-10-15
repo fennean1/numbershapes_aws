@@ -12,35 +12,45 @@ import * as CONST from "./const.js";
 
 // CLASSES
 
+
+
 export class AdjustableStrip extends PIXI.Container {
-  constructor(height,app,numberline) {
+  constructor(height, app, numberline) {
     super();
 
     this._height = height;
-    this.numberline = numberline
+    this.numberline = numberline;
     this.color = 0xff4d29;
     this.stripGraphic = new PIXI.Graphics();
     this.stripGraphic.interactive = true;
     this.addChild(this.stripGraphic);
 
-    this.draggerGraphics = new PIXI.Graphics()
-    this.draggerGraphics.beginFill(0xffffff)
-    this.draggerGraphics.drawRoundedRect(0,0,1,this._height,0)
-    this.draggerTexture = app.renderer.generateTexture(this.draggerGraphics)
+    this.draggerGraphics = new PIXI.Graphics();
+    this.draggerGraphics.beginFill(0xffffff);
+    this.draggerGraphics.drawRoundedRect(0, 0, 1, this._height, 0);
+    this.draggerTexture = app.renderer.generateTexture(this.draggerGraphics);
 
     this.draggerTextureA = new PIXI.Texture.from(CONST.ASSETS.ORANGE_SQUARE);
     this.draggerSpriteA = new Draggable();
     this.draggerSpriteA.lockY = true;
-    this.draggerSpriteA.hitArea = new PIXI.Circle(0,0,this._height,this._height)
+    this.draggerSpriteA.hitArea = new PIXI.Circle(
+      0,
+      0,
+      this._height,
+      this._height
+    );
     this.draggerSpriteA.texture = this.draggerTexture;
     this.draggerSpriteA.anchor.set(0.5, 0);
     this.draggerSpriteA.width = 1;
-    this.draggerSpriteA.alpha = 0
-    this.draggerSpriteA.x = this.numberline.getNumberLinePositionFromFloatValue(numberline.minorStep*10)
+    this.draggerSpriteA.alpha = 0;
+    this.draggerSpriteA.x = this.numberline.getNumberLinePositionFromFloatValue(
+      numberline.minorStep * 10
+    );
     this.draggerSpriteA.height = height;
     this.draggerSpriteA.on("pointerdown", this.onPointerDown);
     this.draggerSpriteA.on("pointermove", this.onPointerMove);
     this.draggerSpriteA.on("pointerup", this.onPointerUp);
+    this.draggerSpriteA.on("pointerupoutside", this.onPointerUp);
     this.addChild(this.draggerSpriteA);
 
     this.draggerTextureB = new PIXI.Texture.from(CONST.ASSETS.ORANGE_SQUARE);
@@ -50,19 +60,27 @@ export class AdjustableStrip extends PIXI.Container {
     this.draggerSpriteB.anchor.set(0.5, 0);
     this.draggerSpriteB.width = 1;
     this.draggerSpriteB.height = height;
-    this.draggerSpriteB.alpha = 0
-    this.draggerSpriteB.x = this.numberline.getNumberLinePositionFromFloatValue(0)
-    this.draggerSpriteB.hitArea = new PIXI.Circle(0,0,this._height,this._height)
+    this.draggerSpriteB.alpha = 0;
+    this.draggerSpriteB.x = this.numberline.getNumberLinePositionFromFloatValue(
+      0
+    );
+    this.draggerSpriteB.hitArea = new PIXI.Circle(
+      0,
+      0,
+      this._height,
+      this._height
+    );
     this.draggerSpriteB.on("pointerdown", this.onPointerDown);
     this.draggerSpriteB.on("pointermove", this.onPointerMove);
     this.draggerSpriteB.on("pointerup", this.onPointerUp);
+    this.draggerSpriteB.on("pointerupoutside", this.onPointerUp);
     this.addChild(this.draggerSpriteB);
 
-    this.max = 300
-    this.min = 200
+    this.max = 300;
+    this.min = 200;
 
-    this.updateLayoutParams()
-    this.drawBetween()
+    this.updateLayoutParams();
+    this.drawBetween();
 
     this.interactive = true;
     this.on("pointerdown", this.pointerDown);
@@ -72,11 +90,14 @@ export class AdjustableStrip extends PIXI.Container {
   }
 
   synch() {
+    this.min = this.numberline.getNumberLinePositionFromFloatValue(
+      this.minValue
+    );
+    this.max = this.numberline.getNumberLinePositionFromFloatValue(
+      this.maxValue
+    );
 
-    this.min = this.numberline.getNumberLinePositionFromFloatValue(this.minValue)
-    this.max = this.numberline.getNumberLinePositionFromFloatValue(this.maxValue)
-
-    this.drawBetween()
+    this.drawBetween();
   }
 
   drawBetween() {
@@ -88,12 +109,12 @@ export class AdjustableStrip extends PIXI.Container {
     let maxDragger = draggers.pop();
 
     // Re write to use global coordinates.
-    minDragger.x = this.min - this.x 
-    maxDragger.x = this.max - this.x 
+    minDragger.x = this.min - this.x;
+    maxDragger.x = this.max - this.x;
     this.drawStrip();
   }
 
-  updateLayoutParams(){
+  updateLayoutParams() {
     let draggers = [this.draggerSpriteA, this.draggerSpriteB];
 
     draggers.sort((a, b) => (a.x > b.x ? 1 : -1));
@@ -101,33 +122,27 @@ export class AdjustableStrip extends PIXI.Container {
     this.minDragger = draggers.shift();
     this.maxDragger = draggers.pop();
 
-    this.max = this.maxDragger.getGlobalPosition().x 
-    this.min = this.minDragger.getGlobalPosition().x 
+    this.max = this.maxDragger.getGlobalPosition().x;
+    this.min = this.minDragger.getGlobalPosition().x;
 
-    this.minValue = this.numberline.getNumberLineFloatValueFromPosition(this.min)
-    this.maxValue = this.numberline.getNumberLineFloatValueFromPosition(this.max)
-
+    this.minValue = this.numberline.getNumberLineFloatValueFromPosition(
+      this.min
+    );
+    this.maxValue = this.numberline.getNumberLineFloatValueFromPosition(
+      this.max
+    );
   }
 
-
-
   drawStrip() {
-
-    let x = this.min - this.x
-    let w = this.max - this.min
+    let x = this.min - this.x;
+    let w = this.max - this.min;
 
     this.stripGraphic.clear();
     this.stripGraphic.beginFill(this.color);
 
-    const corner = Math.min(w,this._height)
+    const corner = Math.min(w, this._height);
 
-    this.stripGraphic.drawRoundedRect(
-      x,
-      0,
-      w,
-      this._height,
-      corner / 2
-    );
+    this.stripGraphic.drawRoundedRect(x, 0, w, this._height, corner / 2);
   }
 
   onPointerDown() {
@@ -136,23 +151,27 @@ export class AdjustableStrip extends PIXI.Container {
 
   onPointerMove() {
     if (this.touching) {
-      this.parent.updateLayoutParams()
+      this.parent.updateLayoutParams();
       this.parent.drawStrip();
       this.parent.touching = false;
-      this.parent.onUpdate && this.parent.onUpdate()
+      this.parent.onUpdate && this.parent.onUpdate();
     }
   }
 
   onPointerUp() {
     this.touching = false;
     if (this == this.parent.minDragger) {
-      this.parent.min = this.parent.numberline.roundPositionToNearestTick(this.parent.min)
-      this.parent.drawBetween()
+      this.parent.min = this.parent.numberline.roundPositionToNearestTick(
+        this.parent.min
+      );
+      this.parent.drawBetween();
     } else {
-      this.parent.max = this.parent.numberline.roundPositionToNearestTick(this.parent.max)
-      this.parent.drawBetween()
+      this.parent.max = this.parent.numberline.roundPositionToNearestTick(
+        this.parent.max
+      );
+      this.parent.drawBetween();
     }
-    this.parent.onUpdate && this.parent.onUpdate()
+    this.parent.onUpdate && this.parent.onUpdate();
   }
 
   pointerDown(event) {
@@ -191,29 +210,29 @@ export class AdjustableStrip extends PIXI.Container {
           this.y = this.yMin;
         }
       }
-      this.updateLayoutParams()
-      this.onUpdate && this.onUpdate()
+      this.updateLayoutParams();
+      this.onUpdate && this.onUpdate();
       this.dragged = true;
     }
   }
 
   pointerUp(event) {
     if (this.dragged) {
-      const range = this.max - this.min
-      this.min = this.numberline.roundPositionToNearestTick(this.min)
-      this.max = this.min + range
-      this.drawBetween()
+      const range = this.max - this.min;
+      this.min = this.numberline.roundPositionToNearestTick(this.min);
+      this.max = this.min + range;
+      this.drawBetween();
     }
-    this.updateLayoutParams()
+    this.updateLayoutParams();
     this.touching = false;
-    this.onUpdate && this.onUpdate()
+    this.onUpdate && this.onUpdate();
   }
 
   pointerUpOutside(event) {
     this.touching = false;
   }
-
 }
+
 
 export class BlockRow extends PIXI.Container {
   constructor(n, width, height, app) {
@@ -236,7 +255,6 @@ export class BlockRow extends PIXI.Container {
 
     this.init(n, width, height);
   }
-
 
   draw(n, blockWidth = this.blockWidth) {
     this.n = n;
@@ -1637,14 +1655,12 @@ export class NumberLineEstimator extends PIXI.Container {
     if (Math.abs(delta) < range) {
       this.showLabels = true;
       timeline.to(this.stripGraphic, { width: targetX });
-      sliderTimeline
-        .to(this.slider, { x: targetX })
-        .to(this.slider, {
-          duration: 1,
-          y: -this.parent.height,
-          ease: "power2",
-          onComplete: this.onComplete,
-        });
+      sliderTimeline.to(this.slider, { x: targetX }).to(this.slider, {
+        duration: 1,
+        y: -this.parent.height,
+        ease: "power2",
+        onComplete: this.onComplete,
+      });
     } else if (delta > 0) {
       timeline
         .to(this.stripGraphic, {

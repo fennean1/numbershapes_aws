@@ -3,18 +3,6 @@ import blueGradient from "../assets/blue-gradient.png";
 import greyPin from "../assets/Pin.png";
 import * as CONST from "./const.js";
 import {Draggable,HorizontalNumberLine,BlockRow,AdjustableStrip} from "./api_kh.js";
-import { fabric } from "fabric";
-import {
-  TweenMax,
-  TimelineLite,
-  Power2,
-  Elastic,
-  CSSPlugin,
-  TweenLite,
-  TimelineMax,
-  Power4,
-} from "gsap";
-import { StoreSharp } from "@material-ui/icons";
 
 export const init = (app, setup) => {
   let features;
@@ -221,7 +209,6 @@ export const init = (app, setup) => {
 
     const sliderAspect = 0.3125
 
-    console.log("sliderAspecxt",sliderAspect)
 
     sliderB.anchor.set(0.5,1)
     sliderB.height = WINDOW_HEIGHT/4
@@ -277,8 +264,6 @@ export const init = (app, setup) => {
       sliderA.maxX && (sliderA.maxX = sliderB.x)
     } 
   
-
-
     
     for (let i=0;i<1;i++){
       let strip = new AdjustableStrip(WINDOW_HEIGHT/20,app,numberline)
@@ -293,12 +278,6 @@ export const init = (app, setup) => {
       app.stage.addChild(strip)
       activeStrip = strip
     }
-  
-
-
-  
-    
-
 
   }
 
