@@ -1,4 +1,4 @@
-import blue_gradient from "../assets/bordered-gradient.png";
+import blue_gradient from "../assets/blue-gradient.png";
 import plus from "../assets/Plus.png";
 import reset from "../assets/Reset.png"
 import trash from "../assets/Trash.png"
@@ -51,6 +51,8 @@ import green_circle_pin from "../assets/GreenCirclePin.png"
 import orange_triangle_pin from "../assets/OrangeTrianglePin.png"
 import pure_glass_bubble from "../assets/PureGlassBubble.png"
 import night_background from "../assets/NightBackground.png"
+import blank_card from "../assets/BlankCard.png"
+import orange_square from "../assets/OrangeSquare.png"
 
 export const ASSETS = {
     BLUE_GRADIENT: blue_gradient,
@@ -98,6 +100,7 @@ export const ASSETS = {
     YELLOW_CIRCLE: yellow_circle,
     CHALK_BOARD: chalk_board,
     STAR: star,
+    BLANK_CARD: blank_card,
     BLUE_SPACE_SHIP: blue_space_ship,
     PINK_SPACE_SHIP: pink_space_ship,
     PINK_SQUARE_PIN: pink_square_pin,
@@ -105,7 +108,8 @@ export const ASSETS = {
     GREEN_CIRCLE_PIN: green_circle_pin,
     ORANGE_TRIANGLE_PIN: orange_triangle_pin,
     PURE_GLASS_BUBBLE: pure_glass_bubble,
-    NIGHT_BACKGROUND: night_background
+    NIGHT_BACKGROUND: night_background,
+    ORANGE_SQUARE: orange_square,
 }
 
 export const CUISENAIRE_COLORS = {

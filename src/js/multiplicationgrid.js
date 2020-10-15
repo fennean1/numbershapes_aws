@@ -2,8 +2,6 @@ import * as PIXI from "pixi.js";
 import blueGradient from "../assets/blue-gradient.png";
 import plusButton from "../assets/PlusButton.png";
 import minusButton from "../assets/MinusButton.png";
-import spaceGround from "../assets/SpaceGround.png";
-import CheckMark from "../assets/CheckMark.png";
 import * as CONST from "./const.js";
 import {
   Draggable,
@@ -29,6 +27,9 @@ import {
 } from "gsap";
 import * as PROBLEM_SETS from "./problemSets.js";
 
+
+
+
 export const init = (app, setup) => {
   let features = {};
   let viewPort = new PIXI.Container();
@@ -45,6 +46,10 @@ export const init = (app, setup) => {
   // Textures
   const PURE_GLASS_BUBBLE_TEXTURE = new PIXI.Texture.from(
     CONST.ASSETS.PURE_GLASS_BUBBLE
+  );
+
+  const BACKGROUND_TEXTURE = new PIXI.Texture.from(
+    CONST.ASSETS.BLUE_GRADIENT
   );
 
   // Problem Set
@@ -67,8 +72,7 @@ export const init = (app, setup) => {
     y: SELECTOR_Y + 2 * SLIDER_DIM,
   };
 
-  backGround = new makeBackground();
-  app.stage.addChild(backGround.sprite);
+
 
   // VARS
 
@@ -188,26 +192,6 @@ export const init = (app, setup) => {
     app.renderer.resize(WINDOW_WIDTH, WINDOW_HEIGHT);
   }
 
-  // Constructors
-  function makeBackground() {
-    // Setup Background
-    let backGroundGraphics = new PIXI.Graphics();
-    backGroundGraphics.beginFill(0xffffff);
-    backGroundGraphics.drawRoundedRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-    this.sprite = new PIXI.Sprite.from(blueGradient);
-    this.sprite.width = WINDOW_WIDTH;
-    this.sprite.height = WINDOW_HEIGHT;
-    this.sprite.x = 0;
-    this.sprite.y = 0;
-    this.sprite.interactive = true;
-
-    app.stage.addChild(this.sprite);
-
-    this.draw = () => {
-      this.sprite.width = WINDOW_WIDTH;
-      this.sprite.height = WINDOW_HEIGHT;
-    };
-  }
 
   function updateLayoutParams(newFrame) {
     let frame;
@@ -242,8 +226,6 @@ export const init = (app, setup) => {
   }
 
   function sliderPointerUp() {
-
-  
 
     let one = hnumberline.getOne()
 
@@ -284,6 +266,12 @@ export const init = (app, setup) => {
     if (setup.props.features) {
       features = setup.props.features;
     }
+
+    backGround = new PIXI.Sprite()
+    backGround.texture = BACKGROUND_TEXTURE
+    backGround.width = WINDOW_WIDTH
+    backGround.height = WINDOW_HEIGHT
+    app.stage.addChild(backGround)
 
     rangeBubbleSelector = new RangeBubbleSelector(
       0.8 * WINDOW_WIDTH,

@@ -5,7 +5,7 @@ export const userKeys = {
     guessed: true, // KH Internal 
     twitchin: true, // Caitlin Twitchin
     danifry: true, // Dani Fry
-    a1b2c3: true,
+    a1b2c3: true, // Group One
     b3c4d5: true, 
     c4b3d2: true,
 } 
