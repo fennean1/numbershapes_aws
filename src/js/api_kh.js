@@ -18,6 +18,13 @@ export class AdjustableStrip extends PIXI.Container {
   constructor(height, app, numberline) {
     super();
 
+    this.TYPES = {
+      ARROW: 0,
+      SHUTTLE: 1,
+    }
+
+    this.type = this.TYPES.ARROW
+
     this._height = height;
     this.numberline = numberline;
     this.color = 0xff4d29;
@@ -82,6 +89,7 @@ export class AdjustableStrip extends PIXI.Container {
     this.updateLayoutParams();
     this.drawBetween();
 
+
     this.interactive = true;
     this.on("pointerdown", this.pointerDown);
     this.on("pointermove", this.pointerMove);
@@ -133,16 +141,71 @@ export class AdjustableStrip extends PIXI.Container {
     );
   }
 
+
+  /*
+  getStripTexture(){
+    let texture;
+    switch (this.type){
+      case this.TYPES.ARROW
+      this
+    }
+  }
+  */
+
+  drawArrowTexture(){
+  
+    let x = this.min - this.x;
+    let w = this.max - this.min;
+
+    const stroke = this._height/10
+    const t = stroke*5
+    this.stripGraphic.clear()
+
+    if (this.draggerSpriteA.x > this.draggerSpriteB.x) {
+      this.stripGraphic.lineStyle(stroke,this.color)
+      this.stripGraphic.moveTo(x+t,0)
+      this.stripGraphic.lineTo(x+w,0)
+      this.stripGraphic.endFill()
+      this.stripGraphic.beginFill(this.color)
+      this.stripGraphic.lineStyle(0,this.color)
+      this.stripGraphic.moveTo(x,0)
+      this.stripGraphic.lineTo(x+t,t)
+      this.stripGraphic.lineTo(x+t,-t)
+      this.stripGraphic.lineTo(x,0)
+      this.stripGraphic.endFill()
+    } else {
+      this.stripGraphic.lineStyle(stroke,this.color)
+      this.stripGraphic.moveTo(x,0)
+      this.stripGraphic.lineTo(x+w-t,0)
+      this.stripGraphic.endFill()
+      this.stripGraphic.beginFill(this.color)
+      this.stripGraphic.lineStyle(0,this.color)
+      this.stripGraphic.moveTo(x+w,0)
+      this.stripGraphic.lineTo(x+w-t,t)
+      this.stripGraphic.lineTo(x+w-t,-t)
+      this.stripGraphic.lineTo(x+w,0)
+      this.stripGraphic.endFill()
+    }
+
+
+    //this.hitArea = new PIXI.Rectangle(x,0,this.width,this.height)
+
+
+    //this.stripGraphic.clear();
+    this.stripGraphic.beginFill(this.color);
+
+    const corner = Math.min(w, this._height);
+    this.stripGraphic.lineStyle(0,0xffffff)
+    this.stripGraphic._fillStyle.alpha = 0.005
+    this.stripGraphic.drawRoundedRect(x, -this._height/2, w, this._height, corner / 2);
+
+  }
+
   drawStrip() {
     let x = this.min - this.x;
     let w = this.max - this.min;
 
-    this.stripGraphic.clear();
-    this.stripGraphic.beginFill(this.color);
-
-    const corner = Math.min(w, this._height);
-
-    this.stripGraphic.drawRoundedRect(x, 0, w, this._height, corner / 2);
+    this.drawArrowTexture()
   }
 
   onPointerDown() {
@@ -150,6 +213,7 @@ export class AdjustableStrip extends PIXI.Container {
   }
 
   onPointerMove() {
+    console.log("this.touching",this.touching)
     if (this.touching) {
       this.parent.updateLayoutParams();
       this.parent.drawStrip();
@@ -159,6 +223,7 @@ export class AdjustableStrip extends PIXI.Container {
   }
 
   onPointerUp() {
+    console.log("pointerup")
     this.touching = false;
     if (this == this.parent.minDragger) {
       this.parent.min = this.parent.numberline.roundPositionToNearestTick(
@@ -171,6 +236,7 @@ export class AdjustableStrip extends PIXI.Container {
       );
       this.parent.drawBetween();
     }
+
     this.parent.onUpdate && this.parent.onUpdate();
   }
 

@@ -38,13 +38,13 @@ export const init = (app, setup) => {
     app.stage.addChild(whiskerMax)
     whiskerMax.clear()
     whiskerMax.lineStyle(s,activeStrip.color)
-    whiskerMax.moveTo(activeStrip.max-t,activeStrip.y+activeStrip._height/2)
+    whiskerMax.moveTo(activeStrip.max-t,activeStrip.y)
     whiskerMax.lineTo(activeStrip.max-t,numberline.y)
 
     app.stage.addChild(whiskerMin)
     whiskerMin.clear()
     whiskerMin.lineStyle(2,activeStrip.color)
-    whiskerMin.moveTo(activeStrip.min+t,activeStrip.y+activeStrip._height/2)
+    whiskerMin.moveTo(activeStrip.min+t,activeStrip.y)
     whiskerMin.lineTo(activeStrip.min+t,numberline.y)
 
   }

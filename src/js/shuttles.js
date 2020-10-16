@@ -35,14 +35,14 @@ export const init = (app, setup) => {
     app.stage.addChild(whiskerMax)
     whiskerMax.clear()
     whiskerMax.lineStyle(2,activeStrip.color)
-    whiskerMax.moveTo(activeStrip.max-1,activeStrip.y+activeStrip._height/2)
+    whiskerMax.moveTo(activeStrip.max-1,activeStrip.y)
     whiskerMax.lineTo(activeStrip.max-1,numberline.y)
     whiskerMax.alpha = 0.75
 
     app.stage.addChild(whiskerMin)
     whiskerMin.clear()
     whiskerMin.lineStyle(2,activeStrip.color)
-    whiskerMin.moveTo(activeStrip.min+1,activeStrip.y+activeStrip._height/2)
+    whiskerMin.moveTo(activeStrip.min+1,activeStrip.y)
     whiskerMin.lineTo(activeStrip.min+1,numberline.y)
     whiskerMin.alpha = 0.75
 
@@ -269,7 +269,7 @@ export const init = (app, setup) => {
       strip.onUpdate = ()=> {
         drawWhiskers()
       }
-      strip.alpha = 0.75
+      //strip.alpha = 0.75
       strip.on("pointerdown",()=>{activeStrip = strip})
       strips.push(strip)
       app.stage.addChild(strip)
