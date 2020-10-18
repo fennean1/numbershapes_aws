@@ -57,24 +57,25 @@ export class FractionStrip extends PIXI.Container {
     this.draggerGraphics.drawRoundedRect(0, 0, 1, this._height, 0);
     this.draggerTexture = app.renderer.generateTexture(this.draggerGraphics);
 
+
     this.adjusterGraphics = new PIXI.Graphics();
     this.adjusterGraphics.beginFill(0xffffff);
     this.adjusterGraphics.drawCircle(0, 0, this._height);
     this.adjusterTexture = app.renderer.generateTexture(this.adjusterGraphics);
-
+    this.adjusterTexture = new PIXI.Texture.from(CONST.ASSETS.PIN)
 
     // Adjuster Sprite
     this.adjusterSprite= new Draggable()
     this.adjusterSprite.texture = this.adjusterTexture;
-    this.adjusterSprite.anchor.set(0.5, 0);
+    this.adjusterSprite.anchor.set(0.5, 1);
     this.adjusterSprite.width = this._height
-    this.adjusterSprite.height = this._height
+    this.adjusterSprite.height = 1/0.3*this._height
+    this.adjusterSprite.rotation = Math.PI
     this.adjusterSprite.lockY = true
-    this.adjusterSprite.y = 1.2*this._height
+    this.adjusterSprite.y = 0
     this.adjusterSprite.x = this.numberline.getNumberLinePositionFromFloatValue(
       numberline.minorStep * 10
     );
-    this.adjusterSprite.height = height;
     this.adjusterSprite.on("pointerdown", this.onAdjustPointerDown);
     this.adjusterSprite.on("pointermove", this.onAdjustPointerMove);
     this.adjusterSprite.on("pointerup", this.onAdjustPointerUp);
@@ -231,6 +232,7 @@ export class FractionStrip extends PIXI.Container {
 
    let w = this.max - this.min
    this.adjusterSprite.minX = this.minDragger.x + w/12
+   this.adjusterSprite.maxX = this.minDragger.x + w
 
 
   }

@@ -20,7 +20,7 @@ const Main = () => (
     <Route path="/login/" component={Landing}  />
     <Route exact path="/:any/login/" component={Landing}  />
     <Route exact path="/estimationinput" render={(props)=><ProtectedRoute {...props} fullscreen = {true} script = {estimation.init}/>} />
-    <Route exact path="/decorators" render={(props)=><ProtectedRoute {...props} fullscreen = {true} script = {decorators.init}/>} />
+    <Route path="/decorators" render={(props)=><ProtectedRoute {...props} fullscreen = {true} script = {decorators.init}/>} />
     <Route path="/multiplicationgrid" render={(props)=><ProtectedRoute {...props} fullscreen = {true} script = {multiplicationgrid.init}/>} />
     <Route path="/unknownsnumberline" render={(props)=><ProtectedRoute {...props} fullscreen = {true} script = {unknownsnumberline.init}/>} />
     <Route path="/arrows" render={(props)=><ProtectedRoute {...props} fullscreen = {true} script = {shuttles.init}/>} />
@@ -28,9 +28,10 @@ const Main = () => (
     <Route exact path="/multiplication" render={()=><Arena fullscreen = {true} script = {multiplicationgrid.init}/>} />
     <Route exact path="/gridcutting" render={()=><Arena features = {{x: 5,y: 5,descriptor: false}} fullscreen = {true} script = {gridcutting.init}/>} />
     <Route exact path="/gridnodes" render={()=><Arena features = {{x: 5,y: 5,descriptor: false}} fullscreen = {true} script = {gridnodes.init}/>} />
-    <Route exact path="/shuttlesu" render={()=><Arena fullscreen = {true} script = {multiplicationgrid.init}/>} />
-    <Route exact path="/decoratorsu" render={()=><Arena fullscreen = {true} script = {multiplicationgrid.init}/>} />
-    <Route exact path="/unknownsnumberlineu" render={()=><Arena fullscreen = {true} script = {multiplicationgrid.init}/>} />
+    <Route exact path="/arrowsu" render={()=><Arena fullscreen = {true} script = {shuttles.init}/>} />
+    <Route exact path="/multiplicationgridu" render={()=><Arena fullscreen = {true} script = {multiplicationgrid.init}/>} />
+    <Route exact path="/decoratorsu" render={()=><Arena fullscreen = {true} script = {decorators.init}/>} />
+    <Route exact path="/unknownsnumberlineu" render={()=><Arena fullscreen = {true} script = {unknownsnumberline.init}/>} />
     <Route exact path="/" component={Manipulatives} />
   </Switch>
 );

@@ -46,6 +46,7 @@ import star from "../assets/Cloud.png"
 import pink_space_ship from "../assets/PinkSpaceShip.png"
 import blue_space_ship from "../assets/BlueSpaceShip.png"
 import pink_square_pin from "../assets/PinkSquarePin.png"
+import pin from "../assets/Pin.png"
 import blue_diamond_pin from "../assets/BlueDiamondPin.png"
 import green_circle_pin from "../assets/GreenCirclePin.png"
 import orange_triangle_pin from "../assets/OrangeTrianglePin.png"
@@ -110,6 +111,7 @@ export const ASSETS = {
     PURE_GLASS_BUBBLE: pure_glass_bubble,
     NIGHT_BACKGROUND: night_background,
     ORANGE_SQUARE: orange_square,
+    PIN: pin,
 }
 
 export const CUISENAIRE_COLORS = {

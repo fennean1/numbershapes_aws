@@ -43,3 +43,13 @@ export const ARROWS = {
   coreSkillDescription:
     "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
 };
+
+
+export const DECORATORS = {
+  shortText: "Decorative Math Objects",
+  title: "Decorators",
+  previewImg: "Decorators.png",
+  tool: "/decorators",
+  coreSkillDescription:
+    "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
+};
