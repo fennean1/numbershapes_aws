@@ -33,14 +33,14 @@ export const init = (app, setup) => {
 
     app.stage.addChild(whiskerMax)
     whiskerMax.clear()
-    whiskerMax.lineStyle(2,activeStrip.color)
+    whiskerMax.lineStyle(2,0xffffff)
     whiskerMax.moveTo(activeStrip.max-1,activeStrip.y)
     whiskerMax.lineTo(activeStrip.max-1,numberline.y)
     whiskerMax.alpha = 0.75
 
     app.stage.addChild(whiskerMin)
     whiskerMin.clear()
-    whiskerMin.lineStyle(2,activeStrip.color)
+    whiskerMin.lineStyle(2,0xffffff)
     whiskerMin.moveTo(activeStrip.min+1,activeStrip.y)
     whiskerMin.lineTo(activeStrip.min+1,numberline.y)
     whiskerMin.alpha = 0.75
@@ -205,7 +205,7 @@ export const init = (app, setup) => {
     sliderA = new Draggable(BLUE_PIN_TEXTURE)
     sliderB = new Draggable(PINK_PIN_TEXTURE)
 
-    const sliderAspect = sliderA.width/sliderA.height
+    const sliderAspect = 0.3125
 
     sliderB.anchor.set(0.5,1)
     sliderB.height = WINDOW_HEIGHT/4
@@ -233,9 +233,9 @@ export const init = (app, setup) => {
     sliderA.on('pointerupoutside',sliderAPointerUp)
 
     app.stage.addChild(numberline)
-    //app.stage.addChild(sliderB)
-    //app.stage.addChild(sliderA)
-    //app.stage.addChild(blockRowA)
+    app.stage.addChild(sliderB)
+    app.stage.addChild(sliderA)
+    app.stage.addChild(blockRowA)
 
 
     numberline.onUpdate = () => {
@@ -261,16 +261,44 @@ export const init = (app, setup) => {
       sliderA.maxX && (sliderA.maxX = sliderB.x)
     } 
   
-    for (let i=0;i<4;i++){
+    for (let i=0;i<1;i++){
       let strip = new FractionStrip(WINDOW_HEIGHT/20,app,numberline)
-      strip.x = 0
-      strip.y = numberline.y - WINDOW_HEIGHT/20*1.1*(i+1)
+      strip.x =  WINDOW_WIDTH/2.5
+      strip.y = WINDOW_HEIGHT/10
       strip.onUpdate = ()=> {
         drawWhiskers()
       }
       //strip.alpha = 0.75
       strip.on("pointerdown",()=>{activeStrip = strip})
       strips.push(strip)
+      app.stage.addChild(strip)
+    }
+
+    for (let i=0;i<1;i++){
+      let strip = new AdjustableStrip(WINDOW_HEIGHT/20,app,numberline)
+      strip.x = WINDOW_WIDTH/5
+      strip.y = WINDOW_HEIGHT/10
+      strip.onUpdate = ()=> {
+        drawWhiskers()
+      }
+      //strip.alpha = 0.75
+      strip.on("pointerdown",()=>{activeStrip = strip})
+      strips.push(strip)
+      app.stage.addChild(strip)
+    }
+
+    for (let i=0;i<1;i++){
+      let strip = new AdjustableStrip(WINDOW_HEIGHT/20,app,numberline)
+      strip.TYPE = strip.TYPES.SHUTTLE
+      strip.x = WINDOW_WIDTH/2
+      strip.y = WINDOW_HEIGHT/10
+      strip.onUpdate = ()=> {
+        drawWhiskers()
+      }
+      //strip.alpha = 0.75
+      strip.on("pointerdown",()=>{activeStrip = strip})
+      strips.push(strip)
+      strip.drawBetween()
       app.stage.addChild(strip)
     }
 
