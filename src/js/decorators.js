@@ -2,6 +2,9 @@ import * as PIXI from "pixi.js";
 import blueGradient from "../assets/blue-gradient.png";
 import greyPin from "../assets/Pin.png";
 import * as CONST from "./const.js";
+import {
+  TweenLite,
+} from "gsap";
 import {Draggable,HorizontalNumberLine,BlockRow,AdjustableStrip,FractionStrip} from "./api_kh.js";
 
 export const init = (app, setup) => {
@@ -27,6 +30,8 @@ export const init = (app, setup) => {
 
   const BLUE_PIN_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.GREEN_CIRCLE_PIN)
   const PINK_PIN_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.PINK_SQUARE_PIN)
+  const BLUE_GRADIENT_TEXTURE = new PIXI.Texture.from(blueGradient)
+
 
 
   function drawWhiskers(){
@@ -179,16 +184,23 @@ export const init = (app, setup) => {
       features = setup.props.features;
     }
 
-    backGround = new PIXI.Sprite.from(blueGradient)
+    backGround = new PIXI.Sprite()
     backGround.interactive = true
-    backGround.width = WINDOW_WIDTH
-    backGround.height = WINDOW_HEIGHT
+    backGround.alpha = 0
     backGround.on('pointerdown',backgroundPointerDown)
     backGround.on('pointermove',backgroundPointerMove)
     backGround.on('pointerup',backgroundPointerUp)
     backGround.on('pointerupoutside',backgroundPointerUp)
     app.stage.addChild(backGround)
 
+
+    
+    setTimeout(()=>{
+      backGround.texture = BLUE_GRADIENT_TEXTURE
+      backGround.width = WINDOW_WIDTH
+      backGround.height = WINDOW_HEIGHT
+      TweenLite.to(backGround,{alpha: 1})
+    },500)
 
     numberline = new HorizontalNumberLine(-6,50,WINDOW_WIDTH,app)
     numberline.setBoundaries(-100000,100000,1)

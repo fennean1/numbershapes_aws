@@ -49,7 +49,7 @@ export const init = (app, setup) => {
   );
 
   const BACKGROUND_TEXTURE = new PIXI.Texture.from(
-    CONST.ASSETS.BLUE_GRADIENT
+    blueGradient
   );
 
   // Problem Set
@@ -268,10 +268,17 @@ export const init = (app, setup) => {
     }
 
     backGround = new PIXI.Sprite()
-    backGround.texture = BACKGROUND_TEXTURE
-    backGround.width = WINDOW_WIDTH
-    backGround.height = WINDOW_HEIGHT
+    backGround.alpha = 0
     app.stage.addChild(backGround)
+
+
+    setTimeout(()=>{
+      backGround.texture = BACKGROUND_TEXTURE
+      backGround.width = WINDOW_WIDTH
+      backGround.height = WINDOW_HEIGHT
+      TweenLite.to(backGround,{alpha: 1})
+    },500)
+
 
     rangeBubbleSelector = new RangeBubbleSelector(
       0.8 * WINDOW_WIDTH,
