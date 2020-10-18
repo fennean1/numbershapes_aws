@@ -25,7 +25,7 @@ export class FractionStrip extends PIXI.Container {
     this._height = height;
     this.numberline = numberline;
     this.color = 0xff2655;
-    this.denominator = 2.5
+    this.denominator = 2
     this.app = app
     
     this.stripTexture;

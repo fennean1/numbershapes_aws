@@ -262,7 +262,7 @@ export const init = (app, setup) => {
     } 
   
     for (let i=0;i<4;i++){
-      let strip = new FractionStrip(WINDOW_HEIGHT/20,app,numberline)
+      let strip = new AdjustableStrip(WINDOW_HEIGHT/20,app,numberline)
       strip.x = 0
       strip.y = numberline.y - WINDOW_HEIGHT/20*1.1*(i+1)
       strip.onUpdate = ()=> {
