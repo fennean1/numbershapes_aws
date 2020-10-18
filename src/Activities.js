@@ -35,11 +35,11 @@ export const X_BLOCKS = {
     "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
 };
 
-export const DECORATORS = {
-  shortText: "A Collection Of Mathematical Objects",
-  title: "Mathematical Objects",
-  previewImg: "XBlocks.png",
-  tool: "/decorators",
+export const ARROWS = {
+  shortText: "Arrows On A Number Line",
+  title: "Arrows",
+  previewImg: "Arrows.png",
+  tool: "/arrows",
   coreSkillDescription:
     "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
 };

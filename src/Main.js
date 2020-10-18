@@ -23,7 +23,7 @@ const Main = () => (
     <Route exact path="/decorators" render={(props)=><ProtectedRoute {...props} fullscreen = {true} script = {decorators.init}/>} />
     <Route path="/multiplicationgrid" render={(props)=><ProtectedRoute {...props} fullscreen = {true} script = {multiplicationgrid.init}/>} />
     <Route path="/unknownsnumberline" render={(props)=><ProtectedRoute {...props} fullscreen = {true} script = {unknownsnumberline.init}/>} />
-    <Route path="/shuttles" render={(props)=><ProtectedRoute {...props} fullscreen = {true} script = {shuttles.init}/>} />
+    <Route path="/arrows" render={(props)=><ProtectedRoute {...props} fullscreen = {true} script = {shuttles.init}/>} />
     <Route exact path="/bubbletarget" render={()=><Arena fullscreen = {true} script = {bubbletarget.init}/>} />
     <Route exact path="/multiplication" render={()=><Arena fullscreen = {true} script = {multiplicationgrid.init}/>} />
     <Route exact path="/gridcutting" render={()=><Arena features = {{x: 5,y: 5,descriptor: false}} fullscreen = {true} script = {gridcutting.init}/>} />
