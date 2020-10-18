@@ -567,6 +567,7 @@ export class AdjustableStrip extends PIXI.Container {
 
 
     if (this.TYPE == this.TYPES.SHUTTLE) {
+      this.stripGraphic.clear()
       this.stripGraphic.beginFill(0x00a123);
 
       const corner = Math.min(w, this._height);
