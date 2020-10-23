@@ -23,6 +23,7 @@ export const init = (app, setup) => {
   let strips = [];
   let activeStrip;
 
+
   let whiskerMin = new PIXI.Graphics()
   let whiskerMax = new PIXI.Graphics()
 
@@ -34,7 +35,6 @@ export const init = (app, setup) => {
 
 
   function drawWhiskers(min,max){
-
 
     const s = 2
     const t = s/2
@@ -289,7 +289,6 @@ export const init = (app, setup) => {
       activeStrip = strip
     }
 
-    sliderA.minX = sliderB.x
 
   }
 

@@ -32,8 +32,6 @@ export const init = (app, setup) => {
   const PINK_PIN_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.PINK_SQUARE_PIN)
   const BLUE_GRADIENT_TEXTURE = new PIXI.Texture.from(blueGradient)
 
-
-
   function drawWhiskers(){
 
     app.stage.addChild(whiskerMax)

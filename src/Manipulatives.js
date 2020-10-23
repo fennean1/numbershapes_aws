@@ -23,26 +23,18 @@ export default class Interactives extends Component {
                 {" "}
                 <InteractiveCard  data={ACTIVITIES.MULTIPLICATION_GRID} />
               </div>
-              <div style={{ margin: 5, flex: 1 }}>
-                {" "}
-                <InteractiveCard  data={ACTIVITIES.DECORATORS} />
-              </div>
             </div>
             </Grid>
             <Grid xs = {12} item = {true}  sm = {4} >
             <div style={{ flexDirection: "column", display: "flex", flex: 1 }}>
             <div style={{ margin: 5, flex: 1 }}>
                 {" "}
-                <InteractiveCard  data={ACTIVITIES.X_BLOCKS} />
+                <InteractiveCard  data={ACTIVITIES.DECORATORS} />
               </div>
             </div>
             </Grid>
             <Grid xs = {12} item = {true} sm = {4} >
             <div style={{ flexDirection: "column", display: "flex", flex: 1 }}>
-            <div style={{ margin: 5, flex: 1 }}>
-                {" "}
-                <InteractiveCard  data={ACTIVITIES.ARROWS} />
-              </div>
             </div>
             </Grid>
           </Grid>

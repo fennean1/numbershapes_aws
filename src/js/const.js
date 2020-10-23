@@ -54,6 +54,12 @@ import pure_glass_bubble from "../assets/PureGlassBubble.png"
 import night_background from "../assets/NightBackground.png"
 import blank_card from "../assets/BlankCard.png"
 import orange_square from "../assets/OrangeSquare.png"
+import fraction_bar_icon from "../assets/FractionBarIcon.png"
+import strip_icon from "../assets/StripIcon.png"
+import arrow_icon from "../assets/ArrowIcon.png"
+import fraction_bar_pin from "../assets/FractionBarPin.png"
+import zoom_button from "../assets/ZoomButton.png"
+
 
 export const ASSETS = {
     BLUE_GRADIENT: blue_gradient,
@@ -112,6 +118,11 @@ export const ASSETS = {
     NIGHT_BACKGROUND: night_background,
     ORANGE_SQUARE: orange_square,
     PIN: pin,
+    STRIP_ICON: strip_icon,
+    ARROW_ICON: arrow_icon,
+    FRACTION_BAR_ICON: fraction_bar_icon,
+    FRACTION_BAR_PIN: fraction_bar_pin,
+    ZOOM_BUTTION: zoom_button,
 }
 
 export const CUISENAIRE_COLORS = {

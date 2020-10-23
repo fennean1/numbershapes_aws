@@ -65,7 +65,7 @@ class Arena extends Component {
 
   // Need fullscreen prop
   render() {
-    let styleType = this.props.fullscreen ? { height: "100vh" } : null;
+    let styleType = this.props.fullscreen ? { height: "100vh"} : null;
     return (
       <div>
         <div

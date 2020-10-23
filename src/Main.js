@@ -14,10 +14,12 @@ import * as decorators from "./js/decorators.js"
 import Landing from "./Login"
 import ProtectedRoute from "./ProtectedRoute"
 import Manipulatives from "./Manipulatives"
+import SplitPage from "./SplitPage"
 
 const Main = () => (
   <Switch>
     <Route path="/login/" component={Landing}  />
+    <Route path="/splitpage" component={SplitPage}  />
     <Route exact path="/:any/login/" component={Landing}  />
     <Route exact path="/estimationinput" render={(props)=><ProtectedRoute {...props} fullscreen = {true} script = {estimation.init}/>} />
     <Route path="/decorators" render={(props)=><ProtectedRoute {...props} fullscreen = {true} script = {decorators.init}/>} />

@@ -2,6 +2,17 @@
   text-align: center;
 }
 
+.manipContainer {
+  background-color: #000000;
+  flex: 2
+}
+
+.questionMenu {
+  flex: 1;
+  height: 100vh;
+  background-color: #c00ffe;
+}
+
 .clouds {
   background: url('./assets/blue-gradient.png') no-repeat;
   height: 100vh;
