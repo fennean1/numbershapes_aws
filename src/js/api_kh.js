@@ -9,7 +9,6 @@ import {
   TimelineMax,
 } from "gsap";
 import * as CONST from "./const.js";
-import { TimerSharp } from "@material-ui/icons";
 
 // CLASSES
 
