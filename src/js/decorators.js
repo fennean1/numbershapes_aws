@@ -143,9 +143,8 @@ export const init = (app, setup) => {
   }
 
   function deleteObject(obj){
-    activeStrip = null 
-    drawWhiskers()
-
+    whiskerMax.clear()
+    whiskerMin.clear()
     const onComplete = () => {
       let i = strips.indexOf(obj)
       strips.splice(i)
@@ -297,6 +296,8 @@ export const init = (app, setup) => {
   function zoomFit(){
 
     console.log("strips",strips)
+    
+    if (strips.length !=0){
 
     let minXs = strips.map(s=>{
         return s.minDragger.getGlobalPosition().x
@@ -309,8 +310,11 @@ export const init = (app, setup) => {
     xMin = xMin > 0 ? 0.8*xMin : 1.2*xMin
     let vMin = numberline.getNumberLineFloatValueFromPosition(xMin+0.1*xMin)
     let vMax = numberline.getNumberLineFloatValueFromPosition(xMax*1.1)
-
+    const centerVal = (vMin+vMax)/2
+    numberline.flexPoint = centerVal 
+    magnifyingPin.value = centerVal
     numberline.zoomTo(vMin,vMax,2)
+    }
   }
 
   // Called on resize
@@ -458,7 +462,7 @@ export const init = (app, setup) => {
 
     magnifyingPin = new Pin(numberline,pinState)
     magnifyingPin.x = numberline.getNumberLinePositionFromFloatValue(0)
-    magnifyingPin.y = numberline.y - WINDOW_HEIGHT/4
+    magnifyingPin.y = numberline.y + WINDOW_HEIGHT/4
     magnifyingPin.drawWhisker()
     magnifyingPin.value = 0
     app.stage.addChild(magnifyingPin)
