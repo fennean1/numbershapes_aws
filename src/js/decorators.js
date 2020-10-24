@@ -34,7 +34,7 @@ export const init = (app, setup) => {
   let blockRowA;
   let backGround;
   let strips = [];
-  let activeStrip;
+  let activeStrip = null
   let dragger;
   let stripGeneratorBtn;
   let fractionBarGeneratorBtn;
@@ -77,6 +77,7 @@ export const init = (app, setup) => {
     strip.drawBetween()
     app.stage.addChild(strip)
     activeStrip = strip
+    console.log("strips",strips)
   }
 
   function createFractionBar(){
@@ -106,6 +107,7 @@ export const init = (app, setup) => {
     TweenLite.to(strip,{y: NEW_OBJ_Y})
     app.stage.addChild(strip)
         activeStrip = strip
+        console.log("strips",strips)
   }
 
   function createArrow(){
@@ -134,6 +136,12 @@ export const init = (app, setup) => {
     TweenLite.to(strip,{y: NEW_OBJ_Y})
     app.stage.addChild(strip)
     activeStrip = strip
+
+    console.log("strips",strips)
+
+    strips.forEach(s=>{
+      console.log("hello",strips.indexOf(s))
+    })
   }
 
   function checkForDeletion(){
@@ -143,16 +151,18 @@ export const init = (app, setup) => {
   }
 
   function deleteObject(obj){
+    activeStrip = null
     whiskerMax.clear()
     whiskerMin.clear()
+    let i = strips.indexOf(obj)
+    console.log("removing index",i)
+    strips.splice(i,1)
+
+    console.log("strips",strips)
+
     const onComplete = () => {
-      let i = strips.indexOf(obj)
-      strips.splice(i)
       app.stage.removeChild(obj)
       obj.destroy()
-      if (strips.length != 0){
-        activeStrip = strips[0]
-      } 
     } 
     TweenLite.to(obj,{y: -WINDOW_HEIGHT/2,onComplete: onComplete})
   }
@@ -160,15 +170,16 @@ export const init = (app, setup) => {
   function onStripDown(){
     activeStrip = this 
     app.stage.addChild(this)
+    console.log("index",strips.indexOf(this))
   }
 
 
   function drawWhiskers(){
 
-    whiskerMax.clear()
-    whiskerMin.clear()
-
     if (activeStrip != null){
+
+      whiskerMax.clear()
+      whiskerMin.clear()
       whiskerMax.lineStyle(2,0xffffff)
       whiskerMax.moveTo(activeStrip.max-1,activeStrip.y)
       whiskerMax.lineTo(activeStrip.max-1,numberline.y)
