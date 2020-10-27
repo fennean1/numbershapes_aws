@@ -1,17 +1,136 @@
 import * as PIXI from "pixi.js";
 import {
-  TweenMax,
   TimelineLite,
-  Power2,
-  Elastic,
-  CSSPlugin,
   TweenLite,
-  TimelineMax,
 } from "gsap";
 import * as CONST from "./const.js";
 
 // CLASSES
 
+
+export function getOptimalMarkings(min, max, width) {
+  let majorSteps = [
+    0.00001,
+    0.00005,
+    0.0001,
+    0.0005,
+    0.001,
+    0.005,
+    0.01,
+    0.05,
+    0.1,
+    0.5,
+    1,
+    5,
+    10,
+    50,
+    100,
+    500,
+    1000,
+    5000,
+    10000,
+    50000,
+    100000,
+  ];
+  let minorSteps = [
+    0.00001,
+    0.00005,
+    0.0001,
+    0.0005,
+    0.001,
+    0.005,
+    0.01,
+    0.1,
+    1,
+    5,
+    10,
+    50,
+    100,
+    500,
+    1000,
+    5000,
+    10000,
+    50000,
+    100000,
+  ];
+  let minorStepIndex = 0;
+  let majorStepIndex = -1;
+  let digitHeight = 0;
+  let ticksNeeded = (max - min) / minorSteps[minorStepIndex];
+  let majorStep = 0.0001;
+  let minorStep = 0.0001;
+
+  while (digitHeight < width / 50) {
+    majorStepIndex += 1;
+    let numberOfIncrements = Math.round(
+      (max - min) / majorSteps[majorStepIndex]
+    );
+    let maxDigits = 1;
+    if (majorSteps[majorStepIndex] >= 1) {
+      if (min < 0) {
+        maxDigits = digitCount(Math.floor(Math.abs(min))) + 1;
+      } else {
+        maxDigits = digitCount(Math.ceil(max));
+      }
+    } else {
+      if (min < 0) {
+        maxDigits =
+          digitCount(Math.abs(Math.floor(min))) +
+          digitCount(majorSteps[majorStepIndex]) +
+          1;
+      } else {
+        maxDigits =
+          digitCount(Math.ceil(max)) + digitCount(majorSteps[majorStepIndex]);
+      }
+    }
+
+    let numberOfDigitWidths = (maxDigits + 1) * (numberOfIncrements - 1);
+
+    let digitWidth = width / numberOfDigitWidths;
+    digitHeight = (6 / 5) * digitWidth;
+    minorStep = minorSteps[majorStepIndex - 1];
+    majorStep = majorSteps[majorStepIndex];
+  }
+
+  while (ticksNeeded >= 100) {
+    minorStepIndex += 1;
+    ticksNeeded = (max - min) / minorSteps[minorStepIndex];
+    minorStep = minorSteps[minorStepIndex];
+  }
+
+  digitHeight = width / 50;
+
+  const params = {
+    MAJOR_STEP: majorStep,
+    MINOR_STEP: minorStep,
+    DIGIT_HEIGHT: digitHeight,
+  };
+  return params;
+}
+
+
+class Basic {
+
+  constructor(){
+
+  }
+
+  test(){
+
+
+
+    let axis;
+
+    const onUpdate = ()=>{
+      axis.updateSubscribers()
+    }
+
+    TweenLite.to(axis,{minorStep: 5,onUpdate: onUpdate})
+
+
+  }
+
+}
 
 // In Progress
 export class Axis {
@@ -22,11 +141,10 @@ export class Axis {
       max: 10,
       minorStep: 1,
       majorStep: 1,
-      width: 100,
-      height: 10
+      length: 100,
     }
 
-    this.init();
+    this.state = state
 
   }
 
@@ -131,121 +249,12 @@ export class Axis {
     };
   }
 
-  numberLineParameters(min, max, width) {
-    let majorSteps = [
-      0.00001,
-      0.00005,
-      0.0001,
-      0.0005,
-      0.001,
-      0.005,
-      0.01,
-      0.05,
-      0.1,
-      0.5,
-      1,
-      5,
-      10,
-      50,
-      100,
-      500,
-      1000,
-      5000,
-      10000,
-      50000,
-      100000,
-    ];
-    let minorSteps = [
-      0.00001,
-      0.00005,
-      0.0001,
-      0.0005,
-      0.001,
-      0.005,
-      0.01,
-      0.1,
-      1,
-      5,
-      10,
-      50,
-      100,
-      500,
-      1000,
-      5000,
-      10000,
-      50000,
-      100000,
-    ];
-    let minorStepIndex = 0;
-    let majorStepIndex = -1;
-    let digitHeight = 0;
-    let ticksNeeded = (max - min) / minorSteps[minorStepIndex];
-    let majorStep = 0.0001;
-    let minorStep = 0.0001;
 
-    while (digitHeight < width / 50) {
-      majorStepIndex += 1;
-      let numberOfIncrements = Math.round(
-        (max - min) / majorSteps[majorStepIndex]
-      );
-      let maxDigits = 1;
-      if (majorSteps[majorStepIndex] >= 1) {
-        if (min < 0) {
-          maxDigits = digitCount(Math.floor(Math.abs(min))) + 1;
-        } else {
-          maxDigits = digitCount(Math.ceil(max));
-        }
-      } else {
-        if (min < 0) {
-          maxDigits =
-            digitCount(Math.abs(Math.floor(min))) +
-            digitCount(majorSteps[majorStepIndex]) +
-            1;
-        } else {
-          maxDigits =
-            digitCount(Math.ceil(max)) + digitCount(majorSteps[majorStepIndex]);
-        }
-      }
-
-      let numberOfDigitWidths = (maxDigits + 1) * (numberOfIncrements - 1);
-
-      let digitWidth = width / numberOfDigitWidths;
-      digitHeight = (6 / 5) * digitWidth;
-      minorStep = minorSteps[majorStepIndex - 1];
-      majorStep = majorSteps[majorStepIndex];
-    }
-
-    while (ticksNeeded >= 100) {
-      minorStepIndex += 1;
-      ticksNeeded = (max - min) / minorSteps[minorStepIndex];
-      minorStep = minorSteps[minorStepIndex];
-    }
-
-    digitHeight = width / 50;
-
-    const params = {
-      MAJOR_STEP: majorStep,
-      MINOR_STEP: minorStep,
-      DIGIT_HEIGHT: digitHeight,
-    };
-    return params;
+  updateSubscribers(){
+    this.subscribers.forEach(s=>{
+        s.update()
+    })
   }
-
-  // HMMM...
-  zoomTo(min, max, duration, onComplete, onUpdate) {
-    const update = () => {
-      onUpdate();
-      this.draw(this.min, this.max);
-    };
-    TweenLite.to(this, {
-      max: max,
-      min: min,
-      duration: duration,
-      onUpdate: update,
-      onComplete: onComplete,
-    });
-  }
-
 
   setLayoutParams(min, max) {
     this.params = this.numberLineParameters(min, max, this._width);
@@ -296,11 +305,354 @@ export class Axis {
     return numbersNeeded;
   }
 
+}
 
-  init() {
+
+export class MultiplicationStrip extends PIXI.Container {
+  constructor(app,numberline,state) {
+    super();
+
+
+    this.state = state
+
+    // Access _height this through 'state' in the future.
+    this._height = this.state.height;
+    this.numberline = numberline;
+    this.color = 0xc548db;
+    this.denominator = this.state.denominator
+    this.app = app
+    
+    this.stripTexture;
+    this.openStripTexture;
+
+    this.stripGraphic = new PIXI.Graphics();
+    this.stripGraphic.lineStyle(3,0x000000)
+    this.stripGraphic.drawRoundedRect(0,0,20,20,1)
+    this.addChild(this.stripGraphic)
+
+    this.openStripGraphic = new PIXI.Graphics();
+    this.openStripGraphic.lineStyle(3,0x000000)
+    this.openStripGraphic.drawRoundedRect(0,0,20,20,1)
+
+    this.draggerGraphics = new PIXI.Graphics();
+    this.draggerGraphics.beginFill(0xffffff);
+    this.draggerGraphics.drawRoundedRect(0, 0, 1, this._height, 0);
+    this.draggerTexture = app.renderer.generateTexture(this.draggerGraphics);
+
+
+    this.adjusterGraphics = new PIXI.Graphics();
+    this.adjusterGraphics.beginFill(0xffffff);
+    this.adjusterGraphics.drawCircle(0, 0, this._height);
+    this.adjusterTexture = app.renderer.generateTexture(this.adjusterGraphics);
+    this.adjusterTexture = new PIXI.Texture.from(CONST.ASSETS.FRACTION_BAR_PIN)
+
+    // Adjuster Sprite
+    this.adjusterSprite= new Draggable()
+    this.adjusterSprite.texture = this.adjusterTexture;
+    this.adjusterSprite.anchor.set(0.5, 0);
+    this.adjusterSprite.width = this._height
+    this.adjusterSprite.rotation = Math.PI
+    this.adjusterSprite.height = 1/0.75*this._height
+    this.adjusterSprite.lockY = true
+    this.adjusterSprite.y = -this.height/2
+
+
+    this.adjusterSprite.on("pointerdown", this.onAdjustPointerDown);
+    this.adjusterSprite.on("pointermove", this.onAdjustPointerMove);
+    this.adjusterSprite.on("pointerup", this.onAdjustPointerUp);
+    this.adjusterSprite.on("pointerupoutside", this.onAdjustPointerUp);
+    this.addChild(this.adjusterSprite);
+
+
+    this.draggerTextureA = new PIXI.Texture.from(CONST.ASSETS.ORANGE_SQUARE);
+    this.draggerSpriteA = new Draggable();
+    this.draggerSpriteA.lockY = true;
+    this.draggerSpriteA.hitArea = new PIXI.Circle(
+      0,
+      0,
+      this._height,
+      this._height
+    );
+    this.draggerSpriteA.texture = this.draggerTexture;
+    this.draggerSpriteA.anchor.set(0.5, 0);
+    this.draggerSpriteA.width = 1;
+    this.draggerSpriteA.alpha = 0;
+    this.draggerSpriteA.height = this.state.height;
+    //this.draggerSpriteA.on("pointerdown", this.onPointerDown);
+    //this.draggerSpriteA.on("pointermove", this.onPointerMove);
+    //this.draggerSpriteA.on("pointerup", this.onPointerUp);
+    //this.draggerSpriteA.on("pointerupoutside", this.onPointerUp);
+    this.draggerSpriteA.interactive = false
+    this.addChild(this.draggerSpriteA);
+
+    this.draggerTextureB = new PIXI.Texture.from(CONST.ASSETS.ORANGE_SQUARE);
+    this.draggerSpriteB = new Draggable();
+    this.draggerSpriteB.lockY = true;
+    this.draggerSpriteB.texture = this.draggerTexture;
+    this.draggerSpriteB.anchor.set(0.5, 0);
+    this.draggerSpriteB.width = 1;
+    this.draggerSpriteB.height = this.state.height;
+    this.draggerSpriteB.alpha = 0;
+    this.draggerSpriteB.hitArea = new PIXI.Circle(
+      0,
+      0,
+      this._height,
+      this._height
+    );
+    this.draggerSpriteB.on("pointerdown", this.onPointerDown);
+    this.draggerSpriteB.on("pointermove", this.onPointerMove);
+    this.draggerSpriteB.on("pointerup", this.onPointerUp);
+    this.draggerSpriteB.on("pointerupoutside", this.onPointerUp);
+    this.addChild(this.draggerSpriteB);
+
+    this.draggerSpriteA.x = this.numberline.getNumberLinePositionFromFloatValue(this.state.minValue) - this.x;
+    this.draggerSpriteB.x = this.numberline.getNumberLinePositionFromFloatValue(this.state.blockValue*this.state.numberOfBlocks); - this.x;
+
+
+    this.draw()
+
+    this.adjusterSprite.x = this.minDragger.x + this.blockWidth 
+
+    this.interactive = true;
+    this.on("pointerdown", this.pointerDown);
+    this.on("pointermove", this.pointerMove);
+    this.on("pointerup", this.pointerUp);
+    this.on("pointerupoutside", this.pointerUp);
+  }
+
+  redraw(newFrame){
+    this._height = newFrame.height
+    this.synch()
+  }
+
+
+  synch() {
+    this.min = this.numberline.getNumberLinePositionFromFloatValue(
+      this.minValue
+    );
+    this.max = this.numberline.getNumberLinePositionFromFloatValue(
+      this.maxValue
+    );
+
+    this.minDragger.x = this.min - this.x
+    this.maxDragger.x = this.max - this.x
+    this.draw();
+    this.adjusterSprite.x = this.minDragger.x + this.blockWidth
+
+  }
+
+  updateLayoutParams() {
+    let draggers = [this.draggerSpriteA, this.draggerSpriteB];
+
+    draggers.sort((a, b) => (a.x > b.x ? 1 : -1));
+
+    this.minDragger = draggers.shift();
+    this.maxDragger = draggers.pop();
+
+    this.max = this.maxDragger.getGlobalPosition().x;
+    this.min = this.minDragger.getGlobalPosition().x;
+
+    this.minValue = this.numberline.getNumberLineFloatValueFromPosition(
+      this.min
+    );
+    this.maxValue = this.numberline.getNumberLineFloatValueFromPosition(
+      this.max
+    );
+
+   let w = this.max - this.min
+   this.blockWidth = this.numberline.getDistanceFromZeroFromValue(this.state.blockValue)
+   this.state.numberOfBlocks = w/this.blockWidth
+   this.adjusterSprite.minX = this.minDragger.x + w/12
+   this.adjusterSprite.maxX = this.minDragger.x + w
+
+   this._height = this.state.frame.height*this.state.heightRatio
+
+   this.maxDragger.minX = this.minDragger.x + this.blockWidth
+   this.adjusterSprite.minX = this.minDragger.x + this.numberline.minorDX
+
+  }
+
+
+  draw(newFrame){
+  
+    if (newFrame){
+      this.state.frame = newFrame
+    }
+
+    this.updateLayoutParams()
+
+    let x = this.min - this.x;
+    let w = this.max - this.min;
+
+
+    const stroke = this._height/10
+    const t = stroke*5
+    const corner = Math.min(w, this._height);
+    this.stripGraphic.clear()
+    this.stripGraphic.x = x
+    this.stripGraphic.beginFill(this.color);
+    this.stripGraphic.lineStyle(1,0xffffff)
+
+    const fractionBlock = this.state.numberOfBlocks%1
+    const remainderWidth = fractionBlock*this.blockWidth
+    const roundedNumberOfBlocks = Math.floor(this.state.numberOfBlocks)
+
+
+    for (let i = 0;i<=roundedNumberOfBlocks;i++){
+      if (i==roundedNumberOfBlocks){
+        this.stripGraphic.drawRoundedRect(this.blockWidth*(i), -this._height/2, remainderWidth, this._height, Math.min(this._height,remainderWidth)/5);
+      } else {
+        this.stripGraphic.drawRoundedRect(this.blockWidth*i, -this._height/2, this.blockWidth, this._height, corner/5);
+      }
+    }
+
+/*
+    this.blocks.forEach((b,i)=>{
+      if (i < roundedDenominator) {
+        this.stripGraphic.drawRoundedRect(this.blockWidth*i, -this._height/2, this.blockWidth, this._height, corner/5);
+      } else if (i == roundedDenominator && remainderWidth != 0) {
+         this.stripGraphic.drawRoundedRect(this.blockWidth*(i), -this._height/2, remainderWidth, this._height, Math.min(this._height,remainderWidth)/5);
+      }
+    })
+
+    */
+
+  }
+
+  onStripPointerDown(){
    
   }
+ 
+  onStripPointerMove(){
+
+ }
+ 
+ onStripPointerUp(){
+  if (this.parent.dragged == false){
+   if (this.texture == this.parent.openStripTexture){
+     this.texture = this.parent.stripTexture
+   } else {
+    this.texture = this.parent.openStripTexture
+   }
+  }
+ }
+
+onAdjustPointerDown(){
+
 }
+
+  onAdjustPointerMove(){
+    if (this.touching) {
+      const blockWidth =  Math.abs(this.x - this.parent.minDragger.x)
+      this.parent.state.blockValue = this.parent.numberline.getValueForWidth(blockWidth)
+
+      const maxValue = this.parent.state.blockValue*this.parent.state.numberOfBlocks
+      const totalWidth = this.parent.numberline.getDistanceFromZeroFromValue(maxValue)
+      this.parent.maxDragger.x = this.parent.minDragger.x + totalWidth
+    
+      console.log("totalwidth",totalWidth,maxValue)
+
+      this.parent.draw();
+
+      this.parent.touching = false;
+      this.parent.onUpdate && this.parent.onUpdate();
+    }
+  }
+  
+  onAdjustPointerUp(){
+    this.parent.draw();
+    this.touching = false;
+    this.x = this.parent.minDragger.x + this.parent.blockWidth 
+  }
+
+  onPointerDown() {
+    this.touching = true;
+  }
+
+  onPointerMove() {
+    if (this.touching) {
+      this.parent.draw();
+      this.parent.touching = false;
+      this.parent.onUpdate && this.parent.onUpdate();
+      this.parent.adjusterSprite.x = this.parent.minDragger.x + this.parent.blockWidth
+    }
+  }
+
+  onPointerUp() {
+    this.touching = false;
+    if (this == this.parent.minDragger) {
+      this.x = this.parent.min - this.parent.x
+      this.parent.draw();
+    } else {
+      this.x = this.parent.max - this.parent.x
+      this.parent.draw();
+    }
+    this.parent.onUpdate && this.parent.onUpdate();
+  }
+
+  pointerDown(event) {
+    this.touching = true;
+    this.dragged = false;
+    this.deltaTouch = {
+      x: this.x - event.data.global.x,
+      y: this.y - event.data.global.y,
+    };
+  }
+
+  pointerMove(event) {
+    if (this.touching) {
+
+      if (!this.lockX) {
+        this.x = event.data.global.x + this.deltaTouch.x;
+
+        let xMaxOut = this.maxX && this.x > this.maxX;
+        let xMinOut = this.minX && this.x < this.minX;
+
+        if (xMaxOut) {
+          this.x = this.maxX;
+        } else if (xMinOut) {
+          this.x = this.minX;
+        }
+      }
+
+      if (!this.lockY) {
+        this.y = event.data.global.y + this.deltaTouch.y;
+
+        let yMaxOut = this.maxY && this.y > this.yMax;
+        let yMinOut = this.minY && this.y < this.yMin;
+
+        if (yMaxOut) {
+          this.y = this.yMax;
+        } else if (yMinOut) {
+          this.y = this.yMin;
+        }
+      }
+      this.updateLayoutParams();
+      this.onUpdate && this.onUpdate();
+      this.dragged = true;
+    }
+  }
+
+  pointerUp(event) {
+    if (this.dragged) {
+      const range = this.max - this.min;
+      this.min = this.numberline.roundPositionToNearestTick(this.min);
+      this.max = this.min + range;
+      this.draw();
+    }
+    this.touching = false;
+    this.dragged = false
+    this.synch()
+    this.onUpdate && this.onUpdate();
+  }
+
+  pointerUpOutside(event) {
+    this.touching = false;
+  }
+  
+  
+}
+
 
 
 export class FractionStrip extends PIXI.Container {
@@ -313,7 +665,7 @@ export class FractionStrip extends PIXI.Container {
     // Access _height this through 'state' in the future.
     this._height = this.state.height;
     this.numberline = numberline;
-    this.color = 0xff2655;
+    this.color = 0x1c77ff;
     this.denominator = this.state.denominator
     this.app = app
     
@@ -487,8 +839,7 @@ export class FractionStrip extends PIXI.Container {
     let w = this.max - this.min;
 
 
-    const stroke = this._height/10
-    const t = stroke*5
+    const stroke = this._height/20
     const corner = Math.min(w, this._height);
 
     const remainder = this.denominator%1 
@@ -499,7 +850,7 @@ export class FractionStrip extends PIXI.Container {
     this.stripGraphic.clear()
     this.stripGraphic.x = x
     this.stripGraphic.beginFill(this.color);
-    this.stripGraphic.lineStyle(1,0xffffff)
+    this.stripGraphic.lineStyle(stroke,0xffffff,1,0)
     this.blocks.forEach((b,i)=>{
       if (i < roundedDenominator) {
         this.stripGraphic.drawRoundedRect(this.blockWidth*i, -this._height/2, this.blockWidth, this._height, corner/5);
@@ -660,7 +1011,9 @@ export class AdjustableStrip extends PIXI.Container {
 
     this._height = this.state.height;
     this.numberline = numberline;
-    this.color = 0xff4d29;
+    this.color = 0x1c77ff;
+    this.negativeColor = 0xff2655
+    this.positiveColor = 0x00a123
     this.stripGraphic = new PIXI.Graphics();
     this.stripGraphic.interactive = true;
     this.addChild(this.stripGraphic);
@@ -780,29 +1133,30 @@ export class AdjustableStrip extends PIXI.Container {
     let x = this.min - this.x;
     let w = this.max - this.min;
 
-    const stroke = this._height/10
-    const t = stroke*5
+    const stroke = this._height/20
+    const t = stroke*10
     this.stripGraphic.clear()
 
     if (this.draggerSpriteA.x > this.draggerSpriteB.x) {
-      this.stripGraphic.lineStyle(stroke,this.color)
+
+      this.stripGraphic.lineStyle(3*stroke,this.negativeColor)
       this.stripGraphic.moveTo(x+t,0)
       this.stripGraphic.lineTo(x+w,0)
       this.stripGraphic.endFill()
-      this.stripGraphic.beginFill(this.color)
-      this.stripGraphic.lineStyle(0,this.color)
+      this.stripGraphic.beginFill(this.negativeColor)
+      this.stripGraphic.lineStyle(0,this.negativeColor)
       this.stripGraphic.moveTo(x,0)
       this.stripGraphic.lineTo(x+t,t)
       this.stripGraphic.lineTo(x+t,-t)
       this.stripGraphic.lineTo(x,0)
       this.stripGraphic.endFill()
     } else {
-      this.stripGraphic.lineStyle(stroke,this.color)
+      this.stripGraphic.lineStyle(3*stroke,this.positiveColor)
       this.stripGraphic.moveTo(x,0)
       this.stripGraphic.lineTo(x+w-t,0)
       this.stripGraphic.endFill()
-      this.stripGraphic.beginFill(this.color)
-      this.stripGraphic.lineStyle(0,this.color)
+      this.stripGraphic.beginFill(this.positiveColor)
+      this.stripGraphic.lineStyle(0,this.positiveColor)
       this.stripGraphic.moveTo(x+w,0)
       this.stripGraphic.lineTo(x+w-t,t)
       this.stripGraphic.lineTo(x+w-t,-t)
@@ -813,19 +1167,19 @@ export class AdjustableStrip extends PIXI.Container {
 
     if (this.TYPE == this.TYPES.SHUTTLE) {
       this.stripGraphic.clear()
-      this.stripGraphic.beginFill(0x00a123);
+      this.stripGraphic.beginFill(this.color);
 
       const corner = Math.min(w, this._height);
-      this.stripGraphic.lineStyle(0,this.color)
+      this.stripGraphic.lineStyle(stroke,0xffffff,1,0)
       this.stripGraphic._fillStyle.alpha = 1
-      this.stripGraphic.drawRoundedRect(x, -this._height/2, w, this._height, corner / 2);
+      this.stripGraphic.drawRoundedRect(x, -this._height/2, w, this._height, corner / 5);
   
     } else {
       this.stripGraphic.beginFill(this.color);
       const corner = Math.min(w, this._height);
-      this.stripGraphic.lineStyle(0,0x00a123)
+      this.stripGraphic.lineStyle(0,this.color)
       this.stripGraphic._fillStyle.alpha = 0.005
-      this.stripGraphic.drawRoundedRect(x, -this._height/2, w, this._height, corner / 2);
+      this.stripGraphic.drawRoundedRect(x, -this._height/2, w, this._height, corner / 5);
   
     }
   }
@@ -1321,6 +1675,10 @@ export class HorizontalNumberLine extends PIXI.Container {
     return pos - this.getNumberLinePositionFromFloatValue(0);
   }
 
+  getValueForWidth(width){
+    return width/this.majorDX*this.majorStep
+  }
+
   synchWith(pointerX) {
     let roundedPositionForThis = this.roundPositionToNearestTick(pointerX);
     let valForThisFromRoundedPosition = this.getNumberLineFloatValueFromPosition(
@@ -1503,6 +1861,7 @@ export class HorizontalNumberLine extends PIXI.Container {
       if (needsToBeSet) {
         l.text = l.value;
         l.x = (l.value - this.min) * this.dx;
+        l.y = 1.1 * this.majorTickHeight;
         l.style.fontSize = this.digitHeight;
         l.alpha = 1;
 
@@ -1521,6 +1880,7 @@ export class HorizontalNumberLine extends PIXI.Container {
     valueKeys.forEach((k) => {
       if (empties.length != 0) {
         let newActiveLbl = empties.pop();
+        newActiveLbl.y = 1.1 * this.majorTickHeight;
         newActiveLbl.value = k;
         newActiveLbl.text = k;
         newActiveLbl.x = (k - this.min) * this.dx;
@@ -1546,8 +1906,12 @@ export class HorizontalNumberLine extends PIXI.Container {
         let mod = Math.abs((l.value % this.majorStep) / this.majorStep);
         if (mod < 0.01 || mod > 0.99) {
           l.texture = this.majorTickTexture;
+          l.height = this.majorTickHeight
+          l.width = this.majorTickThickness
         } else {
           l.texture = this.minorTickTexture;
+          l.height = this.minorTickHeight
+          l.width = this.minorTickThickness
         }
 
         // If it's active, but not part of the new active labels, remove it and set value null.
@@ -1570,8 +1934,12 @@ export class HorizontalNumberLine extends PIXI.Container {
         );
         if (mod < 0.01 || mod > 0.99) {
           newActiveTick.texture = this.majorTickTexture;
+          newActiveTick.height = this.majorTickHeight
+          newActiveTick.width= this.majorTickThickness
         } else {
           newActiveTick.texture = this.minorTickTexture;
+          newActiveTick.height = this.minorTickHeight
+          newActiveTick.width= this.minorTickThickness
         }
         newActiveTick.x = (k - this.min) * this.dx;
         newActiveTick.alpha = 1;
@@ -1660,6 +2028,8 @@ export class HorizontalNumberLine extends PIXI.Container {
     this.minFloat = min;
     this.maxFloat = max;
 
+    this.lineThickness = this._width/300
+
     if (this.fractionTicks) {
       this.params.MINOR_STEP = 1 / this.denominator;
       this.params.MAJOR_STEP = 1;
@@ -1701,8 +2071,19 @@ export class HorizontalNumberLine extends PIXI.Container {
     return numbersNeeded;
   }
 
+  redraw(newFrame){
+     this._width = newFrame.width 
+     this.line.width = this._width
+     this.line.height = this.lineThickness
+     this.line.y = 0
+     this.hitArea.width = this._width 
+     this.hitArea.height = this.height
+     this.draw()
+  }
+
   // NLD_DRAW
-  draw(min, max) {
+  draw(min = this.min, max = this.max) {
+
     let range = max - min;
 
     if (
@@ -1712,6 +2093,7 @@ export class HorizontalNumberLine extends PIXI.Container {
       range < this.upperRange
     ) {
       this.setLayoutParams(min, max);
+  
 
       let numbersNeededForLabels = this.getNumbersNeeded(
         min,
@@ -1805,8 +2187,6 @@ export class VerticalNumberLine extends PIXI.Container {
     this.on("pointermove", this.pointerMove);
 
     this.init();
-
-    let x = new PIXI.Rectangle();
 
     //this.hitArea = new PIXI.Rectangle(0,0,-1.5*this._width/10,-this._width)
     this.hitArea = new PIXI.Rectangle(-50, -length, 50, length);
@@ -2921,6 +3301,7 @@ export class Pin extends PIXI.Container {
     this.numberline = numberline
     this.whisker = new PIXI.Graphics()
 
+    this.stroke = this.state.width/20
 
     this.addChild(this.whisker)
     this.addChild(this.grabber)
@@ -2997,13 +3378,14 @@ export class Pin extends PIXI.Container {
   }
 
 
+
   synch(){
     this.x = this.numberline.getNumberLinePositionFromFloatValue(this.value)
   }
 
   drawWhisker(){
       this.whisker.clear()
-      this.whisker.lineStyle(2,0x000000)
+      this.whisker.lineStyle(this.stroke,0x000000)
       this.whisker.moveTo(0,0)
       this.whisker.lineTo(0,this.numberline.y -this.y)
   }

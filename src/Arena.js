@@ -39,8 +39,8 @@ class Arena extends Component {
     this.setState({ open: true });
   }
 
-  goHome() {
-    window.location.assign("http://khtestenv.herokuapp.com");
+  resize(){
+    this.app.resize({width: this.gameCanvas.clientWidth,height: this.gameCanvas.clientHeight})
   }
 
   componentDidMount() {
@@ -52,15 +52,15 @@ class Arena extends Component {
       props: this.props,
     };
 
-    this.app.help = () => this.loadInstructions();
-    this.app.goHome = () => this.goHome();
-
     this.app.renderer.resize(
       this.gameCanvas.clientWidth,
       this.gameCanvas.clientHeight
     );
 
     this.props.script(this.app, setup);
+
+
+    //window.addEventListener('resize',()=>this.resize())
   }
 
   // Need fullscreen prop
