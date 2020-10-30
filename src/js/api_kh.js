@@ -1466,6 +1466,7 @@ export class BinomialGrid extends PIXI.Container {
       for (let j = 0; j < yNumerator; j++) {
         let s = this.sprites[k];
         s.anchor.set(0, 1);
+        s.texture.destroy()
         if (j >= yNumerator - partsY && i >= xNumerator - partsX) {
           s.texture = this.partBrickTexture;
           s.x = i * partX;
@@ -1658,6 +1659,10 @@ export class HorizontalNumberLine extends PIXI.Container {
     this.init();
 
     this.hitArea = new PIXI.Rectangle(0, 0, this.width, 1.5 * this.height);
+  }
+
+  hideLabels(){
+    this.labels.forEach(l=>{l.visible = false})
   }
 
   getOne() {
@@ -2190,6 +2195,10 @@ export class VerticalNumberLine extends PIXI.Container {
 
     //this.hitArea = new PIXI.Rectangle(0,0,-1.5*this._width/10,-this._width)
     this.hitArea = new PIXI.Rectangle(-50, -length, 50, length);
+  }
+
+  hideLabels(){
+    this.labels.forEach(l=>{l.visible = false})
   }
 
   synchWith(pointerX) {

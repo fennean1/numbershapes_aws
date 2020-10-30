@@ -34,6 +34,7 @@ const Main = () => (
     <Route exact path="/multiplicationgridu" render={()=><Arena fullscreen = {true} script = {multiplicationgrid.init}/>} />
     <Route exact path="/decoratorsu" render={()=><Arena fullscreen = {true} script = {decorators.init}/>} />
     <Route exact path="/unknownsnumberlineu" render={()=><Arena fullscreen = {true} script = {unknownsnumberline.init}/>} />
+    <Route exact path="/multiplicationgridk2" render={()=><Arena fullscreen = {true} features = {{type: "k2"}} script = {multiplicationgrid.init}/>} />
     <Route exact path="/" component={Manipulatives} />
   </Switch>
 );

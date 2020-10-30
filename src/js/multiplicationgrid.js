@@ -385,10 +385,10 @@ export const init = (app, setup) => {
     };
 
     vnumberline.fractionTicks = true;
-    vnumberline.denominator = 3;
+    vnumberline.denominator = 2;
 
     hnumberline.fractionTicks = true;
-    hnumberline.denominator = 3;
+    hnumberline.denominator = 2;
 
     hnumberline.setBoundaries(-1, 16, 1);
     vnumberline.setBoundaries(-1, 16, 1);
@@ -434,10 +434,17 @@ export const init = (app, setup) => {
     decXDenominator.x = hnumberline.x + hnumberline.length 
     decXDenominator.y = hnumberline.y
 
-    app.stage.addChild(incYDenominator);
-    app.stage.addChild(decYDenominator);
-    app.stage.addChild(incXDenominator);
-    app.stage.addChild(decXDenominator);
+
+    if (features.type == "k2"){
+      hnumberline.hideLabels()
+      vnumberline.hideLabels()
+      console.log("hiding")
+    } else {
+      app.stage.addChild(incYDenominator);
+      app.stage.addChild(decYDenominator);
+      app.stage.addChild(incXDenominator);
+      app.stage.addChild(decXDenominator);
+    }
 
   }
 
