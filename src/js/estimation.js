@@ -1,30 +1,18 @@
 import * as PIXI from "pixi.js";
 import blueGradient from "../assets/blue-gradient.png";
 import spaceGround from "../assets/SpaceGround.png";
-import spaceShipWindow from "../assets/SpaceShipWindow.png";
-import nightBackground from "../assets/NightBackground.png";
 import pinkPin from "../assets/PinkPin.png";
 import greyPin from "../assets/Pin.png";
 import * as CONST from "./const.js";
 import { HorizontalNumberLine, NumberLineEstimator, MathFactPrompt, VPAdditionStrips,  Draggable } from "./api_kh.js";
 import {
-  TweenMax,
-  TimelineLite,
-  Power2,
-  Elastic,
-  CSSPlugin,
   TweenLite,
-  TimelineMax,
-  Power4,
-
 } from "gsap";
 import * as PROBLEM_SETS from "./problemSets.js"
 
 export const init = (app, setup) => {
   let features = {}
-  let viewPort = new PIXI.Container();
   let backGround;
-  let homeButton;
   let ground;
   let ultimateNumberLine;
   let pins = [];
@@ -33,15 +21,8 @@ export const init = (app, setup) => {
 
   // CONSTANTS
 
-  // Colors
-  const NL_COLOR = 0x000000;
-
   // Textures
-  const MOVER_DOT = new PIXI.Texture.from(CONST.ASSETS.MOVER_DOT);
-  const SPACE_SHIP_WINDOW = new PIXI.Texture.from(spaceShipWindow);
-  const PIN_TEXTURE_2 = new PIXI.Texture.from(CONST.ASSETS.BLUE_SPACE_SHIP);
   const PIN_TEXTURE = new PIXI.Texture.from(pinkPin);
-  const BLUE_CIRCLE = new PIXI.Texture.from(CONST.ASSETS.STAR);
   const SHARP_PIN_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.SHARP_PIN);
   const GREY_PIN_TEXTURE = new PIXI.Texture.from(greyPin);
 

@@ -14,9 +14,6 @@ export const init = (app, setup) => {
   const WINDOW_HEIGHT = setup.height
   const BTN_DIM = Math.min(WINDOW_WIDTH,WINDOW_HEIGHT)/10
   const NEW_OBJ_Y = WINDOW_HEIGHT/4
-  const BLUE_PIN_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.GREEN_CIRCLE_PIN)
-  const PINK_PIN_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.PINK_SQUARE_PIN)
-  const DRAGGER_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.MOVER_DOT)
   const FRACTION_BAR_ICON_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.FRACTION_BAR_ICON)
   const STRIP_ICON_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.STRIP_ICON)
   const ARROW_ICON_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.ARROW_ICON)
