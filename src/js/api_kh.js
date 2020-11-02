@@ -724,7 +724,6 @@ export class FractionStrip extends PIXI.Container {
     this.addChild(this.adjusterSprite);
 
 
-    this.draggerTextureA = new PIXI.Texture.from(CONST.ASSETS.ORANGE_SQUARE);
     this.draggerSpriteA = new Draggable();
     this.draggerSpriteA.lockY = true;
     this.draggerSpriteA.hitArea = new PIXI.Circle(
@@ -747,7 +746,7 @@ export class FractionStrip extends PIXI.Container {
     this.draggerSpriteA.on("pointerupoutside", this.onPointerUp);
     this.addChild(this.draggerSpriteA);
 
-    this.draggerTextureB = new PIXI.Texture.from(CONST.ASSETS.ORANGE_SQUARE);
+
     this.draggerSpriteB = new Draggable();
     this.draggerSpriteB.lockY = true;
     this.draggerSpriteB.texture = this.draggerTexture;
@@ -1023,7 +1022,6 @@ export class AdjustableStrip extends PIXI.Container {
     this.draggerGraphics.drawRoundedRect(0, 0, 1, this._height, 0);
     this.draggerTexture = app.renderer.generateTexture(this.draggerGraphics);
 
-    this.draggerTextureA = new PIXI.Texture.from(CONST.ASSETS.ORANGE_SQUARE);
     this.draggerSpriteA = new Draggable();
     this.draggerSpriteA.lockY = true;
     this.draggerSpriteA.hitArea = new PIXI.Circle(
@@ -1046,7 +1044,6 @@ export class AdjustableStrip extends PIXI.Container {
     this.draggerSpriteA.on("pointerupoutside", this.onPointerUp);
     this.addChild(this.draggerSpriteA);
 
-    this.draggerTextureB = new PIXI.Texture.from(CONST.ASSETS.ORANGE_SQUARE);
     this.draggerSpriteB = new Draggable();
     this.draggerSpriteB.lockY = true;
     this.draggerSpriteB.texture = this.draggerTexture;
