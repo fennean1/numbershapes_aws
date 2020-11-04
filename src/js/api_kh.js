@@ -318,7 +318,7 @@ export class MultiplicationStrip extends PIXI.Container {
     // Access _height this through 'state' in the future.
     this._height = this.state.height;
     this.numberline = numberline;
-    this.color = 0xc548db;
+    this.color = 0x1C77FF;
     this.denominator = this.state.denominator
     this.app = app
     
@@ -363,8 +363,6 @@ export class MultiplicationStrip extends PIXI.Container {
     this.adjusterSprite.on("pointerupoutside", this.onAdjustPointerUp);
     this.addChild(this.adjusterSprite);
 
-
-    this.draggerTextureA = new PIXI.Texture.from(CONST.ASSETS.ORANGE_SQUARE);
     this.draggerSpriteA = new Draggable();
     this.draggerSpriteA.lockY = true;
     this.draggerSpriteA.hitArea = new PIXI.Circle(
@@ -385,7 +383,6 @@ export class MultiplicationStrip extends PIXI.Container {
     this.draggerSpriteA.interactive = false
     this.addChild(this.draggerSpriteA);
 
-    this.draggerTextureB = new PIXI.Texture.from(CONST.ASSETS.ORANGE_SQUARE);
     this.draggerSpriteB = new Draggable();
     this.draggerSpriteB.lockY = true;
     this.draggerSpriteB.texture = this.draggerTexture;
@@ -407,11 +404,12 @@ export class MultiplicationStrip extends PIXI.Container {
 
     this.draggerSpriteA.x = this.numberline.getNumberLinePositionFromFloatValue(this.state.minValue) - this.x;
     this.draggerSpriteB.x = this.numberline.getNumberLinePositionFromFloatValue(this.state.blockValue*this.state.numberOfBlocks); - this.x;
+    this.state.blockWidth = (this.draggerSpriteB.x - this.draggerSpriteA.x)/this.state.numberOfBlocks
 
 
     this.draw()
 
-    this.adjusterSprite.x = this.minDragger.x + this.blockWidth 
+    this.adjusterSprite.x = this.minDragger.x + this.state.blockWidth 
 
     this.interactive = true;
     this.on("pointerdown", this.pointerDown);
@@ -436,8 +434,12 @@ export class MultiplicationStrip extends PIXI.Container {
 
     this.minDragger.x = this.min - this.x
     this.maxDragger.x = this.max - this.x
+
+    this.state.blockWidth = (this.draggerSpriteB.x - this.draggerSpriteA.x)/this.state.numberOfBlocks
+
+
     this.draw();
-    this.adjusterSprite.x = this.minDragger.x + this.blockWidth
+    this.adjusterSprite.x = this.draggerSpriteA.x + this.state.blockWidth
 
   }
 
@@ -459,16 +461,16 @@ export class MultiplicationStrip extends PIXI.Container {
       this.max
     );
 
-   let w = this.max - this.min
-   this.blockWidth = this.numberline.getDistanceFromZeroFromValue(this.state.blockValue)
-   this.state.numberOfBlocks = w/this.blockWidth
-   this.adjusterSprite.minX = this.minDragger.x + w/12
-   this.adjusterSprite.maxX = this.minDragger.x + w
+   if (this.minDragger == this.draggerSpriteB){
+     this.draggerSpriteB.maxX = this.adjusterSprite.x
+     this.draggerSpriteB.minX = null
+   } else {
+    this.draggerSpriteB.maxX = null
+    this.draggerSpriteB.minX = this.adjusterSprite.x
+   }
+  
 
    this._height = this.state.frame.height*this.state.heightRatio
-
-   this.maxDragger.minX = this.minDragger.x + this.blockWidth
-   this.adjusterSprite.minX = this.minDragger.x + this.numberline.minorDX
 
   }
 
@@ -481,41 +483,42 @@ export class MultiplicationStrip extends PIXI.Container {
 
     this.updateLayoutParams()
 
-    let x = this.min - this.x;
     let w = this.max - this.min;
 
+    
+    const bW = this.state.blockWidth
 
     const stroke = this._height/10
     const t = stroke*5
-    const corner = Math.min(w, this._height);
+    const corner = Math.abs(Math.min(w, this._height))
     this.stripGraphic.clear()
-    this.stripGraphic.x = x
+    this.stripGraphic.x = this.draggerSpriteA.x
     this.stripGraphic.beginFill(this.color);
     this.stripGraphic.lineStyle(1,0xffffff)
 
     const fractionBlock = this.state.numberOfBlocks%1
-    const remainderWidth = fractionBlock*this.blockWidth
+    const remainderWidth = fractionBlock*bW
     const roundedNumberOfBlocks = Math.floor(this.state.numberOfBlocks)
 
 
-    for (let i = 0;i<=roundedNumberOfBlocks;i++){
-      if (i==roundedNumberOfBlocks){
-        this.stripGraphic.drawRoundedRect(this.blockWidth*(i), -this._height/2, remainderWidth, this._height, Math.min(this._height,remainderWidth)/5);
-      } else {
-        this.stripGraphic.drawRoundedRect(this.blockWidth*i, -this._height/2, this.blockWidth, this._height, corner/5);
+    if (this.minDragger == this.draggerSpriteB){
+      for (let i = 1;i<=roundedNumberOfBlocks+1;i++){
+        if (i==roundedNumberOfBlocks+1){
+          this.stripGraphic.drawRoundedRect(-Math.abs(bW)*this.state.numberOfBlocks, -this._height/2, Math.abs(remainderWidth), this._height, Math.abs(Math.min(this._height, Math.abs(remainderWidth)))/5);
+        } else {
+          this.stripGraphic.drawRoundedRect(Math.abs(bW)*(-i), -this._height/2, Math.abs(bW), this._height, corner/5);
+        }
+      }
+    } else  {
+      for (let i = 0;i<=roundedNumberOfBlocks;i++){
+        if (i==roundedNumberOfBlocks){
+          this.stripGraphic.drawRoundedRect(bW*(i), -this._height/2, remainderWidth, this._height, Math.min(this._height,remainderWidth)/5);
+        } else {
+          this.stripGraphic.drawRoundedRect(bW*(i), -this._height/2, bW, this._height, corner/5);
+        }
       }
     }
 
-/*
-    this.blocks.forEach((b,i)=>{
-      if (i < roundedDenominator) {
-        this.stripGraphic.drawRoundedRect(this.blockWidth*i, -this._height/2, this.blockWidth, this._height, corner/5);
-      } else if (i == roundedDenominator && remainderWidth != 0) {
-         this.stripGraphic.drawRoundedRect(this.blockWidth*(i), -this._height/2, remainderWidth, this._height, Math.min(this._height,remainderWidth)/5);
-      }
-    })
-
-    */
 
   }
 
@@ -543,15 +546,10 @@ onAdjustPointerDown(){
 
   onAdjustPointerMove(){
     if (this.touching) {
-      const blockWidth =  Math.abs(this.x - this.parent.minDragger.x)
-      this.parent.state.blockValue = this.parent.numberline.getValueForWidth(blockWidth)
-
-      const maxValue = this.parent.state.blockValue*this.parent.state.numberOfBlocks
-      const totalWidth = this.parent.numberline.getDistanceFromZeroFromValue(maxValue)
-      this.parent.maxDragger.x = this.parent.minDragger.x + totalWidth
+      this.parent.state.blockWidth =  this.x - this.parent.draggerSpriteA.x
+      this.parent.state.blockValue = this.parent.numberline.getValueForWidth(this.parent.state.blockWidth)
+      this.parent.draggerSpriteB.x = this.parent.draggerSpriteA.x + this.parent.state.blockWidth*this.parent.state.numberOfBlocks
     
-      console.log("totalwidth",totalWidth,maxValue)
-
       this.parent.draw();
 
       this.parent.touching = false;
@@ -562,7 +560,7 @@ onAdjustPointerDown(){
   onAdjustPointerUp(){
     this.parent.draw();
     this.touching = false;
-    this.x = this.parent.minDragger.x + this.parent.blockWidth 
+    // this.x = this.parent.draggerSpriteA.x + this.parent.blockWidth 
   }
 
   onPointerDown() {
@@ -571,22 +569,17 @@ onAdjustPointerDown(){
 
   onPointerMove() {
     if (this.touching) {
+      this.parent.state.numberOfBlocks = Math.abs((this.parent.draggerSpriteA.x - this.x)/this.parent.state.blockWidth)
+
       this.parent.draw();
       this.parent.touching = false;
       this.parent.onUpdate && this.parent.onUpdate();
-      this.parent.adjusterSprite.x = this.parent.minDragger.x + this.parent.blockWidth
     }
   }
 
   onPointerUp() {
     this.touching = false;
-    if (this == this.parent.minDragger) {
-      this.x = this.parent.min - this.parent.x
-      this.parent.draw();
-    } else {
-      this.x = this.parent.max - this.parent.x
-      this.parent.draw();
-    }
+
     this.parent.onUpdate && this.parent.onUpdate();
   }
 
@@ -665,7 +658,7 @@ export class FractionStrip extends PIXI.Container {
     // Access _height this through 'state' in the future.
     this._height = this.state.height;
     this.numberline = numberline;
-    this.color = 0x1c77ff;
+    this.color = 0xff6c17;
     this.denominator = this.state.denominator
     this.app = app
     
@@ -849,12 +842,12 @@ export class FractionStrip extends PIXI.Container {
     this.stripGraphic.clear()
     this.stripGraphic.x = x
     this.stripGraphic.beginFill(this.color);
-    this.stripGraphic.lineStyle(stroke,0xffffff,1,0)
+    this.stripGraphic.lineStyle(stroke,0x000000,1,0)
     this.blocks.forEach((b,i)=>{
       if (i < roundedDenominator) {
-        this.stripGraphic.drawRoundedRect(this.blockWidth*i, -this._height/2, this.blockWidth, this._height, corner/5);
+        this.stripGraphic.drawRoundedRect(this.blockWidth*i, -this._height/2, this.blockWidth, this._height, 1);
       } else if (i == roundedDenominator && remainderWidth != 0) {
-         this.stripGraphic.drawRoundedRect(this.blockWidth*(i), -this._height/2, remainderWidth, this._height, Math.min(this._height,remainderWidth)/5);
+         this.stripGraphic.drawRoundedRect(this.blockWidth*(i), -this._height/2, remainderWidth, this._height, 1);
       }
     })
 

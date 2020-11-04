@@ -33,7 +33,6 @@ export default class Interactives extends Component {
             </Grid>
             <Grid xs = {12} item = {true} sm = {4} >
             <div style={{ flexDirection: "column", display: "flex", flex: 1 }}>
-
             </div>
             </Grid>
           </Grid>

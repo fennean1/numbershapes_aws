@@ -366,7 +366,7 @@ export const init = (app, setup) => {
     stripGeneratorBtn.y = BTN_DIM/8
     stripGeneratorBtn.height = BTN_DIM
     stripGeneratorBtn.width = stripGeneratorBtn.height
-    stripGeneratorBtn.on('pointerdown',createStrip)
+    stripGeneratorBtn.on('pointerdown',createMultiplicationStrip)
     app.stage.addChild(stripGeneratorBtn)
 
     arrowGeneratorBtn = new PIXI.Sprite(ARROW_ICON_TEXTURE)
@@ -412,8 +412,6 @@ export const init = (app, setup) => {
     magnifyingPin.value = 0
     app.stage.addChild(magnifyingPin)
 
-
-    //createMultiplicationStrip()
 
   }
 
