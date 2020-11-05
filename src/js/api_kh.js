@@ -646,8 +646,6 @@ onAdjustPointerDown(){
   
 }
 
-
-
 export class FractionStrip extends PIXI.Container {
   constructor(app,numberline,state) {
     super();
@@ -674,18 +672,6 @@ export class FractionStrip extends PIXI.Container {
     this.openStripGraphic.lineStyle(3,0x000000)
     this.openStripGraphic.drawRoundedRect(0,0,20,20,1)
 
-    // Initialize the blocks.
-    this.blocks = []
-    for (let i=0;i<12;i++){
-      let s = new PIXI.Sprite()
-      s.texture = this.openStripTexture
-      //s.on('pointerdown',this.onStripPointerDown)
-      //s.on('pointermove',this.onStripPointerMove)
-      //s.on('pointerup',this.onStripPointerUp)
-      //s.interactive = true
-      this.blocks.push(s)
-      this.addChild(s)
-    }
 
     this.draggerGraphics = new PIXI.Graphics();
     this.draggerGraphics.beginFill(0xffffff);
@@ -776,6 +762,7 @@ export class FractionStrip extends PIXI.Container {
     this.on("pointerup", this.pointerUp);
     this.on("pointerupoutside", this.pointerUp);
 
+    this.addChild(this.stripGraphic)
 
   }
 
@@ -828,22 +815,28 @@ export class FractionStrip extends PIXI.Container {
     this.updateLayoutParams()
 
     let x = this.min - this.x;
-    let w = this.max - this.min;
-
 
     const stroke = this._height/20
-    const corner = Math.min(w, this._height);
-
+ 
     const remainder = this.denominator%1 
     const remainderWidth = remainder*this.blockWidth
-
     const roundedDenominator = Math.floor(this.denominator)
 
     this.stripGraphic.clear()
     this.stripGraphic.x = x
+
+
+    this.state.numerators.forEach((b,i)=>{
+    this.stripGraphic.lineStyle(stroke,0x000000,1,0)  
     this.stripGraphic.beginFill(this.color);
-    this.stripGraphic.lineStyle(stroke,0x000000,1,0)
-    this.blocks.forEach((b,i)=>{
+
+
+      if (b == 0){
+        this.stripGraphic._fillStyle.alpha = 0.01
+      }
+
+
+
       if (i < roundedDenominator) {
         this.stripGraphic.drawRoundedRect(this.blockWidth*i, -this._height/2, this.blockWidth, this._height, 1);
       } else if (i == roundedDenominator && remainderWidth != 0) {
@@ -882,6 +875,7 @@ onAdjustPointerDown(){
 
 
     if (this.touching) {
+      this.parent.dragged = true
      const blockWidth = Math.abs(this.x-x)
      this.parent.denominator = w/blockWidth 
       this.parent.draw();
@@ -905,6 +899,7 @@ onAdjustPointerDown(){
     if (this.touching) {
       this.parent.draw();
       this.parent.touching = false;
+      this.parent.dragged = true
       this.parent.onUpdate && this.parent.onUpdate();
       this.parent.adjusterSprite.x = this.parent.minDragger.x + this.parent.blockWidth
     }
@@ -912,6 +907,7 @@ onAdjustPointerDown(){
 
   onPointerUp() {
     this.touching = false;
+    /*
     if (this == this.parent.minDragger) {
       this.x = this.parent.min - this.parent.x
       this.parent.draw();
@@ -919,6 +915,7 @@ onAdjustPointerDown(){
       this.x = this.parent.max - this.parent.x
       this.parent.draw();
     }
+    */
     this.parent.onUpdate && this.parent.onUpdate();
   }
 
@@ -971,7 +968,25 @@ onAdjustPointerDown(){
       this.min = this.numberline.roundPositionToNearestTick(this.min);
       this.max = this.min + range;
       this.draw();
+    } else {
+
+
+      let x = event.data.getLocalPosition(this).x;
+
+      let n = (this.minDragger.x - x)/(this.draggerSpriteA.x - this.draggerSpriteB.x)*this.denominator
+      n = Math.floor(n)
+
+
+      if (this.state.numerators[n] == 1){
+        console.log("n 1 to 0",n)
+        this.state.numerators[n] = 0
+      } else {
+        console.log("n 0 to 1",n)
+        this.state.numerators[n] = 1
+      }
+  
     }
+
     this.touching = false;
     this.dragged = false
     this.synch()

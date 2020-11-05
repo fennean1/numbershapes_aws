@@ -77,7 +77,7 @@ export const init = (app, setup) => {
     console.log("strips",strips)
   }
 
-  function createFractionBar(){
+  function createFractionStrip(){
 
     const x1 = numberline.getNumberLineFloatValueFromPosition(WINDOW_HEIGHT/4)
     const x2 = numberline.getNumberLineFloatValueFromPosition(3*WINDOW_HEIGHT/4)
@@ -87,7 +87,7 @@ export const init = (app, setup) => {
       xMax: x2,
       height: WINDOW_HEIGHT/20,
       denominator: 2,
-      numerators: [1,3,5,6]
+      numerators: [1,0,0,0,0,0,0,0,0,0,0,0]
     }
 
     let strip = new FractionStrip(app,numberline,initialState)
@@ -342,9 +342,6 @@ export const init = (app, setup) => {
     numberline.draw(-6,50)
     numberline.y = WINDOW_HEIGHT/2
 
-    let initialBlockWidth = numberline.majorDX
-
-
 
     app.stage.addChild(numberline)
 
@@ -355,9 +352,6 @@ export const init = (app, setup) => {
       drawWhiskers()
     } 
 
-    numberline.onUpdateComplete = () => {
-
-    } 
 
 
     stripGeneratorBtn = new PIXI.Sprite(STRIP_ICON_TEXTURE)
@@ -384,7 +378,7 @@ export const init = (app, setup) => {
     fractionBarGeneratorBtn.y = BTN_DIM/8
     fractionBarGeneratorBtn.height = BTN_DIM
     fractionBarGeneratorBtn.width = fractionBarGeneratorBtn.height
-    fractionBarGeneratorBtn.on('pointerdown',createFractionBar)
+    fractionBarGeneratorBtn.on('pointerdown',createFractionStrip)
     app.stage.addChild(fractionBarGeneratorBtn)
 
     zoomWindowBtn = new PIXI.Sprite(ZOOM_BUTTON_TEXTURE)
