@@ -1,4 +1,4 @@
-import * as PIXI from "pixi.js";
+import * as PIXI from "pixi.js-legacy";
 import blueGradient from "../assets/blue-gradient.png";
 import plusButton from "../assets/PlusButton.png";
 import minusButton from "../assets/MinusButton.png";
@@ -16,14 +16,7 @@ import {
   digitCount,
 } from "./api_kh.js";
 import {
-  TweenMax,
-  TimelineLite,
-  Power2,
-  Elastic,
-  CSSPlugin,
   TweenLite,
-  TimelineMax,
-  Power4,
 } from "gsap";
 import * as PROBLEM_SETS from "./problemSets.js";
 
@@ -40,13 +33,8 @@ export const init = (app, setup) => {
 
   // CONSTANTS
   // Colors
-  const NL_COLOR = 0x000000;
   const GREY = 0xa6a6a6;
 
-  // Textures
-  const PURE_GLASS_BUBBLE_TEXTURE = new PIXI.Texture.from(
-    CONST.ASSETS.PURE_GLASS_BUBBLE
-  );
 
   const BACKGROUND_TEXTURE = new PIXI.Texture.from(
     blueGradient

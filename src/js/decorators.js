@@ -1,19 +1,22 @@
-import * as PIXI from "pixi.js";
+import * as PIXI from "pixi.js-legacy";
 import blueGradient from "../assets/blue-gradient.png";
 import MagnifyingGlass from "../assets/MagnifyingGlass.png";
 import * as CONST from "./const.js";
 import {
   TweenLite,
 } from "gsap";
-import {Draggable,HorizontalNumberLine,BlockRow,AdjustableStrip,FractionStrip, Pin, MultiplicationStrip} from "./api_kh.js";
+import {HorizontalNumberLine,AdjustableStrip,FractionStrip, Pin, MultiplicationStrip} from "./api_kh.js";
 
 export const init = (app, setup) => {
   let features;
+  let state;
 
-  const WINDOW_WIDTH = setup.width
-  const WINDOW_HEIGHT = setup.height
-  const BTN_DIM = Math.min(WINDOW_WIDTH,WINDOW_HEIGHT)/10
-  const NEW_OBJ_Y = WINDOW_HEIGHT/4
+    // Layout Params
+  let VIEW_WIDTH = setup.width
+  let VIEW_HEIGHT = setup.height
+  let BTN_DIM = Math.min(VIEW_WIDTH,VIEW_HEIGHT)/10
+
+  const NEW_OBJ_Y = VIEW_HEIGHT/4
   const FRACTION_BAR_ICON_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.FRACTION_BAR_ICON)
   const STRIP_ICON_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.STRIP_ICON)
   const ARROW_ICON_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.ARROW_ICON)
@@ -22,77 +25,37 @@ export const init = (app, setup) => {
   
   const BLUE_GRADIENT_TEXTURE = new PIXI.Texture.from(blueGradient)
 
-
-
   // Objects
   let numberline;
-  let sliderA;
-  let sliderB;
-  let blockRowA;
   let backGround;
   let strips = [];
   let activeStrip = null
-  let dragger;
   let stripGeneratorBtn;
   let fractionBarGeneratorBtn;
   let arrowGeneratorBtn;
   let zoomWindowBtn;
   let magnifyingPin;
 
-  let fractionBars = []
-  let arrows = []
-
   let whiskerMin = new PIXI.Graphics()
   let whiskerMax = new PIXI.Graphics()
 
-  //CONST 
-  function createStrip(){
-
-    const v1 = numberline.getNumberLineFloatValueFromPosition(WINDOW_HEIGHT/4)
-    const v2 = numberline.getNumberLineFloatValueFromPosition(3*WINDOW_HEIGHT/4)
-
-    const initialState = {
-      minValue: v1,
-      maxValue: v2,
-      height: WINDOW_HEIGHT/20,
-      direction: 'right'
-    }
-
-    let strip = new AdjustableStrip(app,numberline,initialState)
-    strip.TYPE = strip.TYPES.SHUTTLE
-    strip.x = 0
-    strip.y = 1.1*WINDOW_HEIGHT
-    strip.onUpdate = ()=> {
-      drawWhiskers()
-    }
-    //strip.alpha = 0.75
-    strip.on("pointerdown",onStripDown)
-    strip.on("pointerup",checkForDeletion)
-    strip.on("pointerupoutside",checkForDeletion)
-    strips.push(strip)
-    TweenLite.to(strip,{y: NEW_OBJ_Y})
-    strip.drawBetween()
-    app.stage.addChild(strip)
-    activeStrip = strip
-    console.log("strips",strips)
-  }
 
   function createFractionStrip(){
 
-    const x1 = numberline.getNumberLineFloatValueFromPosition(WINDOW_HEIGHT/4)
-    const x2 = numberline.getNumberLineFloatValueFromPosition(3*WINDOW_HEIGHT/4)
+    const x1 = numberline.getNumberLineFloatValueFromPosition(VIEW_HEIGHT/4)
+    const x2 = numberline.getNumberLineFloatValueFromPosition(3*VIEW_HEIGHT/4)
 
     const initialState = {
       xMin: x1,
       xMax: x2,
-      height: WINDOW_HEIGHT/20,
+      height: VIEW_HEIGHT/20,
       denominator: 2,
       numerators: [1,0,0,0,0,0,0,0,0,0,0,0]
     }
 
     let strip = new FractionStrip(app,numberline,initialState)
     strip.x =  0
-    strip.y = 1.1*WINDOW_HEIGHT
+    strip.y = 1.1*VIEW_HEIGHT
     strip.onUpdate = ()=> {
       drawWhiskers()
     }
@@ -110,8 +73,8 @@ export const init = (app, setup) => {
 
   function createMultiplicationStrip(){
 
-    const v1 = numberline.getNumberLineFloatValueFromPosition(WINDOW_WIDTH/4)
-    const v2 = numberline.getNumberLineFloatValueFromPosition(3*WINDOW_WIDTH/4)
+    const v1 = numberline.getNumberLineFloatValueFromPosition(VIEW_WIDTH/4)
+    const v2 = numberline.getNumberLineFloatValueFromPosition(3*VIEW_WIDTH/4)
 
 
     const initialState = {
@@ -120,21 +83,12 @@ export const init = (app, setup) => {
       numberOfBlocks: 3,
       blockValue: numberline.majorStep,
       heightRatio: 1/20,
-      frame: {width: WINDOW_WIDTH,height: WINDOW_HEIGHT},
-      height: WINDOW_HEIGHT/20,
-    }
-
-    const nitialState = {
-      minValue: v1,
-      xMax: v2,
-      height: WINDOW_HEIGHT/20,
-      denominator: 2,
-      numerators: [1,3,5,6]
+      frame: {width: VIEW_WIDTH,height: VIEW_HEIGHT},
     }
 
     let strip = new MultiplicationStrip(app,numberline,initialState)
     strip.x =  0
-    strip.y = 1.1*WINDOW_HEIGHT
+    strip.y = 1.1*VIEW_HEIGHT
     strip.onUpdate = ()=> {
       drawWhiskers()
     }
@@ -151,19 +105,19 @@ export const init = (app, setup) => {
 
   function createArrow(){
 
-    const v1 = numberline.getNumberLineFloatValueFromPosition(WINDOW_HEIGHT/4)
-    const v2 = numberline.getNumberLineFloatValueFromPosition(3*WINDOW_HEIGHT/4)
+    const v1 = numberline.getNumberLineFloatValueFromPosition(VIEW_HEIGHT/4)
+    const v2 = numberline.getNumberLineFloatValueFromPosition(3*VIEW_HEIGHT/4)
 
     const initialState = {
       minValue: v1,
       maxValue: v2,
-      height: WINDOW_HEIGHT/20,
+      height: VIEW_HEIGHT/20,
       direction: 'right'
     }
 
     let strip = new AdjustableStrip(app,numberline,initialState)
     strip.x = 0
-    strip.y = 1.1*WINDOW_HEIGHT
+    strip.y = 1.1*VIEW_HEIGHT
     strip.onUpdate = ()=> {
       drawWhiskers()
     }
@@ -203,7 +157,7 @@ export const init = (app, setup) => {
       app.stage.removeChild(obj)
       obj.destroy()
     } 
-    TweenLite.to(obj,{y: -WINDOW_HEIGHT/2,onComplete: onComplete})
+    TweenLite.to(obj,{y: -VIEW_HEIGHT/2,onComplete: onComplete})
   }
 
   function onStripDown(){
@@ -289,18 +243,53 @@ export const init = (app, setup) => {
     }
   }
 
-  // Called on resize
-  function resize(newFrame) {
-    // Make sure all layout parameters are up to date.
-    updateLayoutParams(newFrame);
-    strips[0].redraw(newFrame)
-    drawWhiskers()
 
+  // Called on resize
+  let execute;
+  function resize(newFrame) {
+  clearTimeout(execute);
+  
+  execute = setTimeout(()=>{
+    updateLayoutParams(newFrame)
     backGround.width = newFrame.width 
     backGround.height = newFrame.height
     numberline.redraw(newFrame)
+    numberline.y = VIEW_HEIGHT/2
+    if (strips.length != 0) {
+      strips.forEach(s=>s.redraw(newFrame))
+      drawWhiskers()
+    } 
 
-    app.renderer.resize(newFrame.width,newFrame.height);
+    stripGeneratorBtn.x = VIEW_WIDTH - (BTN_DIM/3 + BTN_DIM)
+    stripGeneratorBtn.y = BTN_DIM/8
+    stripGeneratorBtn.height = BTN_DIM
+    stripGeneratorBtn.width = stripGeneratorBtn.height
+
+    arrowGeneratorBtn.x = VIEW_WIDTH - (BTN_DIM/3 + 2*BTN_DIM)
+    arrowGeneratorBtn.y = BTN_DIM/8
+    arrowGeneratorBtn.height = BTN_DIM
+    arrowGeneratorBtn.width = arrowGeneratorBtn.height
+
+    fractionBarGeneratorBtn.x = VIEW_WIDTH - (BTN_DIM/3 + 3*BTN_DIM)
+    fractionBarGeneratorBtn.y = BTN_DIM/8
+    fractionBarGeneratorBtn.height = BTN_DIM
+    fractionBarGeneratorBtn.width = fractionBarGeneratorBtn.height
+
+    zoomWindowBtn.x = VIEW_WIDTH - (BTN_DIM/3 + 4*BTN_DIM)
+    zoomWindowBtn.y = BTN_DIM/8
+    zoomWindowBtn.height = BTN_DIM
+    zoomWindowBtn.width = zoomWindowBtn.height
+
+    magnifyingPin.width = BTN_DIM/1.5,
+    magnifyingPin.height = BTN_DIM/1.5,
+    magnifyingPin.y = numberline.y + VIEW_HEIGHT/4
+    magnifyingPin.drawWhisker()
+
+    app.renderer.resize(newFrame.width,newFrame.height)
+
+    },500);
+
+
   }
 
 
@@ -309,8 +298,12 @@ export const init = (app, setup) => {
     if (newFrame) {
       frame = newFrame;
     } else {
-      frame = { width: WINDOW_WIDTH, height: WINDOW_HEIGHT };
+      frame = { width: VIEW_WIDTH, height: VIEW_HEIGHT };
     }
+
+    VIEW_WIDTH = frame.width
+    VIEW_HEIGHT = frame.height
+    BTN_DIM =  Math.min(VIEW_WIDTH,VIEW_HEIGHT)/10
   }
 
   // Loading Script
@@ -332,15 +325,15 @@ export const init = (app, setup) => {
     
     setTimeout(()=>{
       backGround.texture = BLUE_GRADIENT_TEXTURE
-      backGround.width = WINDOW_WIDTH
-      backGround.height = WINDOW_HEIGHT
+      backGround.width = VIEW_WIDTH
+      backGround.height = VIEW_HEIGHT
       TweenLite.to(backGround,{alpha: 1})
     },500)
 
-    numberline = new HorizontalNumberLine(-6,50,WINDOW_WIDTH,app)
+    numberline = new HorizontalNumberLine(-6,50,VIEW_WIDTH,app)
     numberline.setBoundaries(-100000,100000,1)
     numberline.draw(-6,50)
-    numberline.y = WINDOW_HEIGHT/2
+    numberline.y = VIEW_HEIGHT/2
 
 
     app.stage.addChild(numberline)
@@ -356,7 +349,7 @@ export const init = (app, setup) => {
 
     stripGeneratorBtn = new PIXI.Sprite(STRIP_ICON_TEXTURE)
     stripGeneratorBtn.interactive = true 
-    stripGeneratorBtn.x = WINDOW_WIDTH - (BTN_DIM/3 + BTN_DIM)
+    stripGeneratorBtn.x = VIEW_WIDTH - (BTN_DIM/3 + BTN_DIM)
     stripGeneratorBtn.y = BTN_DIM/8
     stripGeneratorBtn.height = BTN_DIM
     stripGeneratorBtn.width = stripGeneratorBtn.height
@@ -365,7 +358,7 @@ export const init = (app, setup) => {
 
     arrowGeneratorBtn = new PIXI.Sprite(ARROW_ICON_TEXTURE)
     arrowGeneratorBtn.interactive = true 
-    arrowGeneratorBtn.x = WINDOW_WIDTH - (BTN_DIM/3 + 2*BTN_DIM)
+    arrowGeneratorBtn.x = VIEW_WIDTH - (BTN_DIM/3 + 2*BTN_DIM)
     arrowGeneratorBtn.y = BTN_DIM/8
     arrowGeneratorBtn.height = BTN_DIM
     arrowGeneratorBtn.width = arrowGeneratorBtn.height
@@ -374,7 +367,7 @@ export const init = (app, setup) => {
 
     fractionBarGeneratorBtn = new PIXI.Sprite(FRACTION_BAR_ICON_TEXTURE)
     fractionBarGeneratorBtn.interactive = true 
-    fractionBarGeneratorBtn.x = WINDOW_WIDTH - (BTN_DIM/3 + 3*BTN_DIM)
+    fractionBarGeneratorBtn.x = VIEW_WIDTH - (BTN_DIM/3 + 3*BTN_DIM)
     fractionBarGeneratorBtn.y = BTN_DIM/8
     fractionBarGeneratorBtn.height = BTN_DIM
     fractionBarGeneratorBtn.width = fractionBarGeneratorBtn.height
@@ -383,7 +376,7 @@ export const init = (app, setup) => {
 
     zoomWindowBtn = new PIXI.Sprite(ZOOM_BUTTON_TEXTURE)
     zoomWindowBtn.interactive = true 
-    zoomWindowBtn.x = WINDOW_WIDTH - (BTN_DIM/3 + 4*BTN_DIM)
+    zoomWindowBtn.x = VIEW_WIDTH - (BTN_DIM/3 + 4*BTN_DIM)
     zoomWindowBtn.y = BTN_DIM/8
     zoomWindowBtn.height = BTN_DIM
     zoomWindowBtn.width = zoomWindowBtn.height
@@ -401,7 +394,7 @@ export const init = (app, setup) => {
 
     magnifyingPin = new Pin(numberline,pinState)
     magnifyingPin.x = numberline.getNumberLinePositionFromFloatValue(0)
-    magnifyingPin.y = numberline.y + WINDOW_HEIGHT/4
+    magnifyingPin.y = numberline.y + VIEW_HEIGHT/4
     magnifyingPin.drawWhisker()
     magnifyingPin.value = 0
     app.stage.addChild(magnifyingPin)

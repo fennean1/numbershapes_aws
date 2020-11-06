@@ -1,4 +1,4 @@
-import * as PIXI from "pixi.js";
+import * as PIXI from "pixi.js-legacy";
 import {
   TimelineLite,
   TweenLite,
@@ -316,7 +316,7 @@ export class MultiplicationStrip extends PIXI.Container {
     this.state = state
 
     // Access _height this through 'state' in the future.
-    this._height = this.state.height;
+    this._height = this.state.frame.height*this.state.heightRatio;
     this.numberline = numberline;
     this.color = 0x1C77FF;
     this.denominator = this.state.denominator
@@ -388,7 +388,7 @@ export class MultiplicationStrip extends PIXI.Container {
     this.draggerSpriteB.texture = this.draggerTexture;
     this.draggerSpriteB.anchor.set(0.5, 0);
     this.draggerSpriteB.width = 1;
-    this.draggerSpriteB.height = this.state.height;
+    this.draggerSpriteB.height = this._height;
     this.draggerSpriteB.alpha = 0;
     this.draggerSpriteB.hitArea = new PIXI.Circle(
       0,
@@ -766,6 +766,10 @@ export class FractionStrip extends PIXI.Container {
 
   }
 
+  redraw(newFrame){
+    this._height = newFrame.height/20
+    this.synch()
+  }
 
   synch() {
     this.min = this.numberline.getNumberLinePositionFromFloatValue(
@@ -1085,6 +1089,11 @@ export class AdjustableStrip extends PIXI.Container {
     this.on("pointermove", this.pointerMove);
     this.on("pointerup", this.pointerUp);
     this.on("pointerupoutside", this.pointerUp);
+  }
+
+  redraw(newFrame){
+    this._height = newFrame.height/20
+    this.synch()
   }
 
   synch() {
@@ -2084,6 +2093,7 @@ export class HorizontalNumberLine extends PIXI.Container {
   redraw(newFrame){
      this._width = newFrame.width 
      this.line.width = this._width
+     this.lineThickness = this._width/300
      this.line.height = this.lineThickness
      this.line.y = 0
      this.hitArea.width = this._width 

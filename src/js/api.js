@@ -1,5 +1,5 @@
 // Problem que setup
-import * as PIXI from "pixi.js";
+import * as PIXI from "pixi.js-legacy";
 import { TweenMax, TimelineLite, Power2, Elastic, CSSPlugin, TweenLite, TimelineMax } from "gsap";
 import {NUMBERS} from "../AssetManager.js"
 import * as CONST from "./const.js";

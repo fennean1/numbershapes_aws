@@ -1,4 +1,4 @@
-import * as PIXI from "pixi.js";
+import * as PIXI from "pixi.js-legacy";
 import * as CONST from "./const.js";
 import { TweenMax, TimelineLite, Power2, Elastic, CSSPlugin, TweenLite, TimelineMax } from "gsap";
 import {getIndexOfNearestVertice, Line, polygonArea,DraggablePoly, splitMultiplePolygons} from "./api.js";

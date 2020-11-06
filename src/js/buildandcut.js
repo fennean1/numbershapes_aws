@@ -1,4 +1,4 @@
-import * as PIXI from "pixi.js";
+import * as PIXI from "pixi.js-legacy";
 import blueGradient from "../assets/blue-gradient.png";
 import * as CONST from "./const.js";
 import QuestionMark from '../assets/QuestionMark.png'
