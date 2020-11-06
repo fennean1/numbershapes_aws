@@ -67,7 +67,6 @@ export const init = (app, setup) => {
     TweenLite.to(strip,{y: NEW_OBJ_Y})
     app.stage.addChild(strip)
         activeStrip = strip
-        console.log("strips",strips)
   }
 
 
@@ -148,10 +147,7 @@ export const init = (app, setup) => {
     whiskerMax.clear()
     whiskerMin.clear()
     let i = strips.indexOf(obj)
-    console.log("removing index",i)
     strips.splice(i,1)
-
-    console.log("strips",strips)
 
     const onComplete = () => {
       app.stage.removeChild(obj)
@@ -163,7 +159,6 @@ export const init = (app, setup) => {
   function onStripDown(){
     activeStrip = this 
     app.stage.addChild(this)
-    console.log("index",strips.indexOf(this))
   }
 
 
@@ -280,8 +275,8 @@ export const init = (app, setup) => {
     zoomWindowBtn.height = BTN_DIM
     zoomWindowBtn.width = zoomWindowBtn.height
 
-    magnifyingPin.width = BTN_DIM/1.5,
-    magnifyingPin.height = BTN_DIM/1.5,
+    magnifyingPin.grabber.width = BTN_DIM/1.5
+    magnifyingPin.grabber.height = BTN_DIM/1.5
     magnifyingPin.y = numberline.y + VIEW_HEIGHT/4
     magnifyingPin.drawWhisker()
 
@@ -331,7 +326,7 @@ export const init = (app, setup) => {
     },500)
 
     numberline = new HorizontalNumberLine(-6,50,VIEW_WIDTH,app)
-    numberline.setBoundaries(-100000,100000,1)
+    numberline.setBoundaries(-100000,100000,0.05)
     numberline.draw(-6,50)
     numberline.y = VIEW_HEIGHT/2
 
@@ -411,3 +406,5 @@ export const init = (app, setup) => {
   app.resize = (frame) => resize(frame);
 
 };
+
+

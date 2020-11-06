@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./App.css";
 
-import * as Pixi from "pixi.js-legacy";
+import * as PIXI from "pixi.js-legacy";
 
 class Arena extends Component {
   constructor() {
@@ -18,12 +18,8 @@ class Arena extends Component {
   }
 
   componentWillMount() {
-    Pixi.settings.RESOLUTION = 2;
-    this.app = new Pixi.Application(0, 0, {
-      forceCanvas: true,
-      backgroundColor: 0xffffff,
-      antialias: false,
-    });
+    PIXI.settings.RESOLUTION = 2;
+    this.app = new PIXI.Application();
     this.app.renderer.backgroundColor = 0xffffff;
     this.app.renderer.resolution = 2;
     this.app.renderer.autoDensity = true;
