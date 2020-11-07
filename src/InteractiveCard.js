@@ -73,9 +73,13 @@ export default function InteractiveCard(props) {
         {props.data.shortText}
       </CardContent>
       <CardActions disableSpacing>
-        <Link style={{ textDecoration: 'none' }} target = "_blank"  to={""+props.data.tool + "/" + window.localStorage.getItem('key')}>
-          <Button variant = "outlined" >Open</Button>
+        <Link style={{ textDecoration: 'none' }} target = "_blank"  to={""+props.data.tool + "/"}>
+          <Button variant = "outlined" >Tool</Button>
         </Link>
+
+        <a style={{ textDecoration: 'none' }} target = "_blank"  href={""+props.data.gameShow}>
+          <Button variant = "outlined" >Game Show</Button>
+        </a>
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>

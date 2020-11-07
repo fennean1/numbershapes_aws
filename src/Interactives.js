@@ -13,6 +13,8 @@ export default class Interactives extends Component {
   render() {
     return (
       <div >
+        <div>Poop</div>
+        <img src = './assets/knowledgehooklogo.png'/>
         <div style = {{display: "flex",flexDirection: 'column'}} >
         <Grid  container>
           <Grid xs = {12} item = {true}  sm = {4} >

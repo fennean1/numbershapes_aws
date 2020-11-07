@@ -12,7 +12,6 @@ export default class Interactives extends Component {
   render() {
     return (
       <div className = "clouds">
-
       <div className = "container" style = {{paddingTop: 20}} >
         <div style = {{display: "flex",flexDirection: 'column'}} >
         <Grid  container>
