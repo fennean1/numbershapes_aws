@@ -27,8 +27,6 @@ export const init = (app, setup) => {
   let features = {};
   let viewPort = new PIXI.Container();
   let backGround;
-  let submitButton;
-  let checkMark;
   let lineUp = new PIXI.Graphics();
 
   // CONSTANTS
