@@ -5,10 +5,10 @@ import * as CONST from "./const.js";
 import {
   TweenLite,
 } from "gsap";
-import {HorizontalNumberLine,AdjustableStrip,FractionStrip, Pin, MultiplicationStrip} from "./api_kh.js";
+import {HorizontalNumberLine,AdjustableStrip,Chip,FractionStrip, Pin, MultiplicationStrip} from "./api_kh.js";
 
 export const init = (app, setup) => {
-  let features;
+  let features = {}
   let state;
 
     // Layout Params
@@ -68,6 +68,24 @@ export const init = (app, setup) => {
     app.stage.addChild(strip)
         activeStrip = strip
   }
+
+  function createPrimeChip(){
+
+    const state = {
+      radius: VIEW_HEIGHT/20,
+      value: 20,
+    }
+
+    let chip = new Chip(numberline,state)
+    chip.x = 200 
+    chip.y = 200
+    chip.drawWhisker()
+    chip.synch()
+    strips.push(chip)
+    app.stage.addChild(chip)
+
+  }
+
 
 
   function createMultiplicationStrip(){
@@ -129,11 +147,6 @@ export const init = (app, setup) => {
     app.stage.addChild(strip)
     activeStrip = strip
 
-    console.log("strips",strips)
-
-    strips.forEach(s=>{
-      console.log("hello",strips.indexOf(s))
-    })
   }
 
   function checkForDeletion(){
@@ -341,7 +354,6 @@ export const init = (app, setup) => {
     } 
 
 
-
     stripGeneratorBtn = new PIXI.Sprite(STRIP_ICON_TEXTURE)
     stripGeneratorBtn.interactive = true 
     stripGeneratorBtn.x = VIEW_WIDTH - (BTN_DIM/3 + BTN_DIM)
@@ -393,6 +405,10 @@ export const init = (app, setup) => {
     magnifyingPin.drawWhisker()
     magnifyingPin.value = 0
     app.stage.addChild(magnifyingPin)
+
+    if (features.chip){
+      createPrimeChip()
+    }
 
   }
 

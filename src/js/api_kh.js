@@ -4,8 +4,28 @@ import {
   TweenLite,
 } from "gsap";
 import * as CONST from "./const.js";
+import { extend } from "jquery";
 
 // CLASSES
+// Helpers
+export function digitCount(n) {
+  var count = 1;
+
+  if (n >= 1) {
+    while (n / 10 >= 1) {
+      n /= 10;
+      ++count;
+    }
+    return count;
+  } else {
+    ++count;
+    while (n % 1 != 0) {
+      n *= 10;
+      ++count;
+    }
+    return count - 1;
+  }
+}
 
 
 export function getOptimalMarkings(min, max, width) {
@@ -108,8 +128,134 @@ export function getOptimalMarkings(min, max, width) {
   return params;
 }
 
+export class PrimeChip extends PIXI.Container {
+  constructor(state){
+    super()
 
-class Basic {
+    this.state = state
+
+    this.colors = {
+      1: 0xD0D2D3,
+      2: 0xE5A131,
+      3: 0x9BC566,
+      5: 0x87CAEE,
+      7: 0x887CB6,
+    }
+
+    this.holePercentage = 0.50
+
+    this.graphics = new PIXI.Graphics()
+    this.descriptor = new PIXI.Text()
+    this.descriptor.style.fontFamily = "Chalkboard SE"
+    this.descriptor.style.fontSize = this.radius*this.holePercentage
+    this.descriptor.anchor.set(0.5)
+
+
+    this.addChild(this.graphics)
+    this.addChild(this.descriptor)
+
+    this.draw(this.state.value)
+
+
+  }
+
+
+  
+  draw(num){
+
+    let digits = digitCount(num)
+
+
+    this.primeFactorArray = getPrimeFactorization(num)
+    let theta = (2*Math.PI)/this.primeFactorArray.length
+
+    this.primeFactorArray.sort()
+
+
+    let ro = this.state.radius 
+    let ri = this.state.radius*this.holePercentage
+    let d = Math.PI/2
+
+    this.descriptor.style.fontSize = ri/Math.sqrt(digits)  
+    this.descriptor.text = num
+
+
+    this.graphics.clear()
+    this.graphics.lineStyle(ri/15,0xffffff)
+
+    if (this.primeFactorArray.length == 1){
+      
+      let pF = this.primeFactorArray[0]
+      let color;
+
+      if (this.colors[pF]){
+        color = this.colors[pF]
+      } else {
+        color = 0xD3604F
+      }
+      this.graphics.beginFill(color)
+      this.graphics.drawCircle(0,0,ro)
+
+
+    } else {
+
+      this.primeFactorArray.forEach((f,i)=> {
+
+        let color;
+  
+        console.log("f",this.colors[f])
+  
+        if (this.colors[f]){
+          console.log('fffff',f)
+          color = this.colors[f]
+        } else {
+          color = 0xD3604F
+        }
+  
+        this.graphics.beginFill(color)
+        this.graphics.moveTo(ri*Math.cos(theta*i-d),ri*Math.sin(theta*i-d))
+        this.graphics.lineTo(ro*Math.cos(theta*i-d),ro*Math.sin(theta*i-d))
+        this.graphics.arc(0,0,ro,theta*i-d,theta*(i+1)-d)
+        this.graphics.lineTo(ri*Math.cos(theta*(i+1)-d),ri*Math.sin(theta*(i+1)-d))
+  
+      })
+
+    }
+
+
+    this.graphics.beginFill(0xffffff)
+    this.graphics.drawCircle(0,0,ri)
+
+  }
+}
+
+export function getPrimeFactorization(num) {
+  num = Math.abs(num)
+  function is_prime(num) {
+    for (let i = 2; i <= Math.sqrt(num); i++)
+    {
+      if (num % i === 0) return false;
+    }
+    return true;
+  }
+  let result = [];
+  for (let i = 2; i <= num; i++)
+  {
+    while (is_prime(i) && num % i === 0) 
+    {
+      result.push(i);
+      num /= i;
+    }
+  }
+
+  if (result.length == 0){
+    result = [1]
+  }
+
+  return result;
+}
+
+export class BasicAxis  {
 
   constructor(){
 
@@ -3291,26 +3437,6 @@ export class VPAdditionStrips extends PIXI.Container {
   pause() {}
 }
 
-// Helpers
-export function digitCount(n) {
-  var count = 1;
-
-  if (n >= 1) {
-    while (n / 10 >= 1) {
-      n /= 10;
-      ++count;
-    }
-    return count;
-  } else {
-    ++count;
-    while (n % 1 != 0) {
-      n *= 10;
-      ++count;
-    }
-    return count - 1;
-  }
-}
-
 
 export class Pin extends PIXI.Container {
   constructor(numberline,state){
@@ -3405,6 +3531,104 @@ export class Pin extends PIXI.Container {
 
   synch(){
     this.x = this.numberline.getNumberLinePositionFromFloatValue(this.value)
+  }
+
+  drawWhisker(){
+      this.whisker.clear()
+      this.whisker.lineStyle(this.stroke,0x000000)
+      this.whisker.moveTo(0,0)
+      this.whisker.lineTo(0,this.numberline.y -this.y)
+  }
+
+}
+
+
+
+export class Chip extends PIXI.Container {
+  constructor(numberline,state){
+    super()
+    this.state = state
+
+    this.primeChip = new PrimeChip(state)
+    this.whisker = new PIXI.Graphics()
+    this.numberline = numberline
+
+    this.stroke = this.state.radius/20
+
+    this.addChild(this.whisker)
+    this.addChild(this.primeChip)
+
+    this.dragged = false;
+    this.touching = false;
+    this.interactive = true;
+    this.lockX = false;
+    this.lockY = false;
+    this.minX = null;
+    this.maxX = null;
+    this.minY = null;
+    this.maxY = null;
+    this.on("pointerdown", this.pointerDown);
+    this.on("pointermove", this.pointerMove);
+    this.on("pointerup", this.pointerUp);
+    this.on("pointerupoutside", this.pointerUp);
+  }
+
+  redraw(newFrame){
+    
+  }
+
+  pointerDown(event) {
+    this.touching = true;
+    this.dragged = false;
+    this.deltaTouch = {
+      x: this.x - event.data.global.x,
+      y: this.y - event.data.global.y,
+    };
+  }
+
+  pointerMove(event) {
+    if (this.touching) {
+      if (!this.lockX) {
+        this.x = event.data.global.x + this.deltaTouch.x;
+
+        let xMaxOut = this.maxX && this.x > this.maxX;
+        let xMinOut = this.minX && this.x < this.minX;
+
+        if (xMaxOut) {
+          this.x = this.maxX;
+        } else if (xMinOut) {
+          this.x = this.minX;
+        }
+      }
+
+      if (!this.lockY) {
+        this.y = event.data.global.y + this.deltaTouch.y;
+
+        let yMaxOut = this.maxY && this.y > this.yMax;
+        let yMinOut = this.minY && this.y < this.yMin;
+
+        if (yMaxOut) {
+          this.y = this.yMax;
+        } else if (yMinOut) {
+          this.y = this.yMin;
+        }
+      }
+      this.drawWhisker()
+      this.dragged = true;
+    }
+  }
+
+  pointerUp(event) {
+    this.state.value = Math.round(this.numberline.getNumberLineFloatValueFromPosition(this.x))
+    this.touching = false;
+    this.primeChip.draw(this.state.value)
+    this.x = this.numberline.getNumberLinePositionFromFloatValue(this.state.value)
+  }
+
+
+
+  synch(){
+    this.x = this.numberline.getNumberLinePositionFromFloatValue(this.state.value)
   }
 
   drawWhisker(){

@@ -26,6 +26,7 @@ const Main = () => (
     <Route exact path="/arrows" render={()=><Arena fullscreen = {true} script = {shuttles.init}/>} />
     <Route path="/multiplicationgrid" render={()=><Arena fullscreen = {true} script = {multiplicationgrid.init}/>} />
     <Route path="/decorators" render={()=><Arena fullscreen = {true} script = {decorators.init}/>} />
+    <Route path="/primechip" render={()=><Arena fullscreen = {true} features = {{chip: true}} script = {decorators.init}/>} />
     <Route path="/multiplicationgridk2" render={()=><Arena fullscreen = {true} features = {{type: "k2"}} script = {multiplicationgrid.init}/>} />
     <Route path="/" component={Manipulatives} />
   </Switch>
