@@ -10,6 +10,7 @@ import * as shuttles from "./js/shuttles.js"
 import * as bubbletarget from "./js/bubbletarget.js"
 import * as multiplicationgrid from "./js/multiplicationgrid.js"
 import * as decorators from "./js/decorators.js"
+import * as primechips from "./js/primechips.js"
 import Landing from "./Login"
 import ProtectedRoute from "./ProtectedRoute"
 import Manipulatives from "./Manipulatives"
@@ -27,6 +28,7 @@ const Main = () => (
     <Route path="/multiplicationgrid" render={()=><Arena fullscreen = {true} script = {multiplicationgrid.init}/>} />
     <Route path="/decorators" render={()=><Arena fullscreen = {true} script = {decorators.init}/>} />
     <Route path="/primechip" render={()=><Arena fullscreen = {true} features = {{chip: true}} script = {decorators.init}/>} />
+    <Route path="/primechips" render={()=><Arena fullscreen = {true} features = {{chip: true}} script = {primechips.init}/>} />
     <Route path="/multiplicationgridk2" render={()=><Arena fullscreen = {true} features = {{type: "k2"}} script = {multiplicationgrid.init}/>} />
     <Route path="/" component={Manipulatives} />
   </Switch>

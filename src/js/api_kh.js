@@ -190,12 +190,20 @@ export class PrimeChip extends PIXI.Container {
       let pF = this.primeFactorArray[0]
       let color;
 
-      if (this.colors[pF]){
+    if (this.colors[pF]){
         color = this.colors[pF]
-      } else {
+      }  else {
         color = 0xD3604F
       }
+
       this.graphics.beginFill(color)
+
+      if (this.state.blank){
+        color = 0xffffff
+        this.graphics.beginFill(color)
+        this.graphics._fillStyle.alpha = 0.5
+      } 
+     
       this.graphics.drawCircle(0,0,ro)
 
 
@@ -210,8 +218,16 @@ export class PrimeChip extends PIXI.Container {
         } else {
           color = 0xD3604F
         }
-  
+
         this.graphics.beginFill(color)
+
+
+        if (this.state.blank){
+          color = 0xffffff
+          this.graphics.beginFill(color)
+          this.graphics._fillStyle.alpha = 0.5
+        } 
+  
         this.graphics.moveTo(ri*Math.cos(theta*i-d),ri*Math.sin(theta*i-d))
         this.graphics.lineTo(ro*Math.cos(theta*i-d),ro*Math.sin(theta*i-d))
         this.graphics.arc(0,0,ro,theta*i-d,theta*(i+1)-d)
@@ -463,10 +479,10 @@ export class MultiplicationStrip extends PIXI.Container {
 
     this.state = state
 
+    this.TYPE = 'ms'
     // Access _height this through 'state' in the future.
     this._height = this.state.frame.height*this.state.heightRatio;
     this.numberline = numberline;
-    this.color = 0x1C77FF;
     this.denominator = this.state.denominator
     this.app = app
     
@@ -474,7 +490,7 @@ export class MultiplicationStrip extends PIXI.Container {
     this.openStripTexture;
 
     this.stripGraphic = new PIXI.Graphics();
-    this.stripGraphic.lineStyle(3,0x000000)
+    this.stripGraphic.lineStyle(3,this.state.strokeColor)
     this.stripGraphic.drawRoundedRect(0,0,20,20,1)
     this.addChild(this.stripGraphic)
 
@@ -487,11 +503,6 @@ export class MultiplicationStrip extends PIXI.Container {
     this.draggerGraphics.drawRoundedRect(0, 0, 1, this._height, 0);
     this.draggerTexture = app.renderer.generateTexture(this.draggerGraphics);
 
-
-    this.adjusterGraphics = new PIXI.Graphics();
-    this.adjusterGraphics.beginFill(0xffffff);
-    this.adjusterGraphics.drawCircle(0, 0, this._height);
-    this.adjusterTexture = app.renderer.generateTexture(this.adjusterGraphics);
     this.adjusterTexture = new PIXI.Texture.from(CONST.ASSETS.FRACTION_BAR_PIN)
 
     // Adjuster Sprite
@@ -637,12 +648,11 @@ export class MultiplicationStrip extends PIXI.Container {
     const bW = this.state.blockWidth
 
     const stroke = this._height/10
-    const t = stroke*5
     const corner = Math.abs(Math.min(w, this._height))
     this.stripGraphic.clear()
     this.stripGraphic.x = this.draggerSpriteA.x
-    this.stripGraphic.beginFill(this.color);
-    this.stripGraphic.lineStyle(1,0xffffff)
+    this.stripGraphic.beginFill(this.state.fillColor);
+    this.stripGraphic.lineStyle(this._height/15,this.state.strokeColor)
 
     const fractionBlock = this.state.numberOfBlocks%1
     const remainderWidth = fractionBlock*bW
@@ -651,17 +661,17 @@ export class MultiplicationStrip extends PIXI.Container {
 
     if (this.minDragger == this.draggerSpriteB){
       for (let i = 1;i<=roundedNumberOfBlocks+1;i++){
-        if (i==roundedNumberOfBlocks+1){
+        if (i==roundedNumberOfBlocks+1 && this.draggerSpriteB.touching){
           this.stripGraphic.drawRoundedRect(-Math.abs(bW)*this.state.numberOfBlocks, -this._height/2, Math.abs(remainderWidth), this._height, Math.abs(Math.min(this._height, Math.abs(remainderWidth)))/5);
-        } else {
+        } else if (i<roundedNumberOfBlocks+1) {
           this.stripGraphic.drawRoundedRect(Math.abs(bW)*(-i), -this._height/2, Math.abs(bW), this._height, corner/5);
         }
       }
     } else  {
       for (let i = 0;i<=roundedNumberOfBlocks;i++){
-        if (i==roundedNumberOfBlocks){
+        if (i==roundedNumberOfBlocks && this.draggerSpriteB.touching){
           this.stripGraphic.drawRoundedRect(bW*(i), -this._height/2, remainderWidth, this._height, Math.min(this._height,remainderWidth)/5);
-        } else {
+        } else if (i<roundedNumberOfBlocks) {
           this.stripGraphic.drawRoundedRect(bW*(i), -this._height/2, bW, this._height, corner/5);
         }
       }
@@ -718,7 +728,6 @@ onAdjustPointerDown(){
   onPointerMove() {
     if (this.touching) {
       this.parent.state.numberOfBlocks = Math.abs((this.parent.draggerSpriteA.x - this.x)/this.parent.state.blockWidth)
-
       this.parent.draw();
       this.parent.touching = false;
       this.parent.onUpdate && this.parent.onUpdate();
@@ -727,7 +736,9 @@ onAdjustPointerDown(){
 
   onPointerUp() {
     this.touching = false;
-
+    this.parent.state.numberOfBlocks = Math.round(Math.abs((this.parent.draggerSpriteA.x - this.x)/this.parent.state.blockWidth))
+    this.parent.draggerSpriteB.x = this.parent.draggerSpriteA.x+this.parent.state.numberOfBlocks*this.parent.state.blockWidth
+    this.parent.draw()
     this.parent.onUpdate && this.parent.onUpdate();
   }
 
@@ -779,11 +790,11 @@ onAdjustPointerDown(){
       const range = this.max - this.min;
       this.min = this.numberline.roundPositionToNearestTick(this.min);
       this.max = this.min + range;
+      this.synch()
       this.draw();
     }
     this.touching = false;
     this.dragged = false
-    this.synch()
     this.onUpdate && this.onUpdate();
   }
 
@@ -799,12 +810,13 @@ export class FractionStrip extends PIXI.Container {
     super();
 
 
+    this.TYPE = 'fs'
     this.state = state
 
     // Access _height this through 'state' in the future.
     this._height = this.state.height;
     this.numberline = numberline;
-    this.color = 0xff6c17;
+    this.color = this.state.color
     this.denominator = this.state.denominator
     this.app = app
     
@@ -839,7 +851,7 @@ export class FractionStrip extends PIXI.Container {
     this.adjusterSprite.anchor.set(0.5, 0);
     this.adjusterSprite.width = this._height
     this.adjusterSprite.rotation = Math.PI
-    this.adjusterSprite.height = 1/0.77*this._height
+    this.adjusterSprite.height = 1/0.75*this._height
     this.adjusterSprite.lockY = true
     this.adjusterSprite.y = -this.height/2
 
@@ -3550,6 +3562,8 @@ export class Chip extends PIXI.Container {
   constructor(numberline,state){
     super()
     this.state = state
+
+    this.TYPE = 'c'
 
     this.primeChip = new PrimeChip(state)
     this.whisker = new PIXI.Graphics()
