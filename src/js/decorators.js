@@ -419,10 +419,6 @@ export const init = (app, setup) => {
     magnifyingPin.value = 0
     app.stage.addChild(magnifyingPin)
 
-    if (features.chip){
-      createPrimeChip()
-    }
-
   }
 
 
