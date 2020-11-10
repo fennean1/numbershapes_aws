@@ -6,6 +6,7 @@ import arrow_icon from "../assets/ArrowIcon.png"
 import fraction_bar_pin from "../assets/FractionBarPin.png"
 import pin from "../assets/Pin.png"
 import zoom_button from "../assets/ZoomButton.png"
+import prime_climb_icon from "../assets/PrimeClimbIcon.png"
 
 export const ASSETS = {
     BLUE_GRADIENT: blue_gradient,
@@ -16,8 +17,7 @@ export const ASSETS = {
     FRACTION_BAR_ICON: fraction_bar_icon,
     FRACTION_BAR_PIN: fraction_bar_pin,
     ZOOM_BUTTION: zoom_button,
-    
-    
+    PRIME_CLIMB_ICON: prime_climb_icon,
 }
 
 export const CUISENAIRE_COLORS = {

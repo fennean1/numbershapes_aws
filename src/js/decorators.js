@@ -20,6 +20,7 @@ export const init = (app, setup) => {
   const FRACTION_BAR_ICON_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.FRACTION_BAR_ICON)
   const STRIP_ICON_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.STRIP_ICON)
   const ARROW_ICON_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.ARROW_ICON)
+  const PRIME_CHIP_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.PRIME_CLIMB_ICON)
   const MOVER_DOT_TEXTURE = new PIXI.Texture.from(MagnifyingGlass)
   const ZOOM_BUTTON_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.ZOOM_BUTTION)
   
@@ -29,9 +30,11 @@ export const init = (app, setup) => {
   let numberline;
   let backGround;
   let strips = [];
+  let chips = [];
   let activeStrip = null
   let stripGeneratorBtn;
   let fractionBarGeneratorBtn;
+  let chipGeneratorBtn;
   let arrowGeneratorBtn;
   let zoomWindowBtn;
   let magnifyingPin;
@@ -81,7 +84,7 @@ export const init = (app, setup) => {
     chip.y = 200
     chip.drawWhisker()
     chip.synch()
-    strips.push(chip)
+    chips.push(chip)
     app.stage.addChild(chip)
 
   }
@@ -218,7 +221,8 @@ export const init = (app, setup) => {
       numberline.draw(_min, _max);
 
 
-      strips.forEach(s=> {s.synch()})
+      [...strips,...chips].forEach(s=> {s.synch()})
+  
       magnifyingPin.synch()
       drawWhiskers()
     } 
@@ -348,7 +352,7 @@ export const init = (app, setup) => {
 
 
     numberline.onUpdate = () => {
-      strips.forEach(s=> {s.synch()})
+      [...strips,...chips].forEach(s=> {s.synch()})
       magnifyingPin.synch()
       drawWhiskers()
     } 
@@ -381,9 +385,18 @@ export const init = (app, setup) => {
     fractionBarGeneratorBtn.on('pointerdown',createFractionStrip)
     app.stage.addChild(fractionBarGeneratorBtn)
 
+    chipGeneratorBtn = new PIXI.Sprite(PRIME_CHIP_TEXTURE)
+    chipGeneratorBtn.interactive = true 
+    chipGeneratorBtn.x = VIEW_WIDTH - (BTN_DIM/3 + 4*BTN_DIM)
+    chipGeneratorBtn.y = BTN_DIM/8
+    chipGeneratorBtn.height = BTN_DIM
+    chipGeneratorBtn.width = chipGeneratorBtn.height
+    chipGeneratorBtn.on('pointerdown',createPrimeChip)
+    app.stage.addChild(chipGeneratorBtn)
+
     zoomWindowBtn = new PIXI.Sprite(ZOOM_BUTTON_TEXTURE)
     zoomWindowBtn.interactive = true 
-    zoomWindowBtn.x = VIEW_WIDTH - (BTN_DIM/3 + 4*BTN_DIM)
+    zoomWindowBtn.x = VIEW_WIDTH - (BTN_DIM/3 + 5*BTN_DIM)
     zoomWindowBtn.y = BTN_DIM/8
     zoomWindowBtn.height = BTN_DIM
     zoomWindowBtn.width = zoomWindowBtn.height

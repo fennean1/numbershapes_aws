@@ -142,6 +142,8 @@ export class PrimeChip extends PIXI.Container {
       7: 0x887CB6,
     }
 
+    this.primeColor = 0xD3604F
+
     this.holePercentage = 0.50
 
     this.graphics = new PIXI.Graphics()
@@ -163,7 +165,7 @@ export class PrimeChip extends PIXI.Container {
   
   draw(num){
 
-    let digits = digitCount(num)
+    let digits = digitCount(Math.abs(num))
 
 
     this.primeFactorArray = getPrimeFactorization(num)
@@ -203,10 +205,7 @@ export class PrimeChip extends PIXI.Container {
 
         let color;
   
-        console.log("f",this.colors[f])
-  
         if (this.colors[f]){
-          console.log('fffff',f)
           color = this.colors[f]
         } else {
           color = 0xD3604F
@@ -225,6 +224,9 @@ export class PrimeChip extends PIXI.Container {
 
     this.graphics.beginFill(0xffffff)
     this.graphics.drawCircle(0,0,ri)
+    this.graphics.endFill()
+    this.graphics.lineStyle(ri/10,0xffffff)
+    this.graphics.drawCircle(0,0,ro)
 
   }
 }
@@ -3574,7 +3576,7 @@ export class Chip extends PIXI.Container {
   }
 
   redraw(newFrame){
-    
+
   }
 
   pointerDown(event) {
