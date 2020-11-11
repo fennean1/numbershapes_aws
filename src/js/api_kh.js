@@ -161,10 +161,17 @@ export class PrimeChip extends PIXI.Container {
 
   }
 
+  redraw(newFrame){
+    this.state.radius = Math.min(newFrame.width,newFrame.height)/20
+
+    this.draw(this.state.num)
+
+  }
 
   
   draw(num){
 
+    this.state.num = num
     let digits = digitCount(Math.abs(num))
 
 
@@ -200,8 +207,8 @@ export class PrimeChip extends PIXI.Container {
 
       if (this.state.blank){
         color = 0xffffff
+        this.graphics.lineStyle(ri/15,0x000000)
         this.graphics.beginFill(color)
-        this.graphics._fillStyle.alpha = 0.5
       } 
      
       this.graphics.drawCircle(0,0,ro)
@@ -224,8 +231,8 @@ export class PrimeChip extends PIXI.Container {
 
         if (this.state.blank){
           color = 0xffffff
+          this.graphics.lineStyle(ri/15,0x000000)
           this.graphics.beginFill(color)
-          this.graphics._fillStyle.alpha = 0.5
         } 
   
         this.graphics.moveTo(ri*Math.cos(theta*i-d),ri*Math.sin(theta*i-d))
@@ -241,7 +248,6 @@ export class PrimeChip extends PIXI.Container {
     this.graphics.beginFill(0xffffff)
     this.graphics.drawCircle(0,0,ri)
     this.graphics.endFill()
-    this.graphics.lineStyle(ri/10,0xffffff)
     this.graphics.drawCircle(0,0,ro)
 
   }
@@ -561,14 +567,14 @@ export class MultiplicationStrip extends PIXI.Container {
     this.draggerSpriteB.on("pointerupoutside", this.onPointerUp);
     this.addChild(this.draggerSpriteB);
 
+    this.state.blockWidth = this.numberline.getDistanceFromZeroFromValue(this.state.blockValue)
     this.draggerSpriteA.x = this.numberline.getNumberLinePositionFromFloatValue(this.state.minValue) - this.x;
-    this.draggerSpriteB.x = this.numberline.getNumberLinePositionFromFloatValue(this.state.blockValue*this.state.numberOfBlocks); - this.x;
-    this.state.blockWidth = (this.draggerSpriteB.x - this.draggerSpriteA.x)/this.state.numberOfBlocks
+    this.draggerSpriteB.x = this.draggerSpriteA.x + this.state.blockWidth*this.state.numberOfBlocks
+    this.adjusterSprite.x = this.draggerSpriteA.x + this.state.blockWidth 
 
 
     this.draw()
 
-    this.adjusterSprite.x = this.minDragger.x + this.state.blockWidth 
 
     this.interactive = true;
     this.on("pointerdown", this.pointerDown);
@@ -810,13 +816,15 @@ export class FractionStrip extends PIXI.Container {
     super();
 
 
+    this.HEIGHT_RATIO = 1/20
     this.TYPE = 'fs'
     this.state = state
 
     // Access _height this through 'state' in the future.
-    this._height = this.state.height;
+    this._height = this.state.frame.height*this.HEIGHT_RATIO
+    console.log("this._height",this._height)
     this.numberline = numberline;
-    this.color = this.state.color
+    this.color = this.state.fillColor
     this.denominator = this.state.denominator
     this.app = app
     
@@ -878,7 +886,7 @@ export class FractionStrip extends PIXI.Container {
     this.draggerSpriteA.x = this.numberline.getNumberLinePositionFromFloatValue(
       numberline.minorStep * 10
     );
-    this.draggerSpriteA.height = this.state.height;
+    this.draggerSpriteA.height = this._height;
     this.draggerSpriteA.on("pointerdown", this.onPointerDown);
     this.draggerSpriteA.on("pointermove", this.onPointerMove);
     this.draggerSpriteA.on("pointerup", this.onPointerUp);
@@ -891,7 +899,7 @@ export class FractionStrip extends PIXI.Container {
     this.draggerSpriteB.texture = this.draggerTexture;
     this.draggerSpriteB.anchor.set(0.5, 0);
     this.draggerSpriteB.width = 1;
-    this.draggerSpriteB.height = this.state.height;
+    this.draggerSpriteB.height = this._height;
     this.draggerSpriteB.alpha = 0;
     this.draggerSpriteB.x = this.numberline.getNumberLinePositionFromFloatValue(
       0
@@ -3590,7 +3598,8 @@ export class Chip extends PIXI.Container {
   }
 
   redraw(newFrame){
-
+    this.primeChip.redraw(newFrame)
+    this.drawWhisker()
   }
 
   pointerDown(event) {

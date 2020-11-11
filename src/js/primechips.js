@@ -52,11 +52,13 @@ export const init = (app, setup) => {
     const initialState = {
       xMin: x1,
       xMax: x2,
-      height: VIEW_HEIGHT/20,
       denominator: 2,
       numerators: [1,0,0,0,0,0,0,0,0,0,0,0],
-      color: 0xffffff,
+      fillColor: 0xffffff,
+      strokeColor: 0x000000,
+      frame: {width: VIEW_WIDTH,height: VIEW_HEIGHT},
     }
+
 
     let strip = new FractionStrip(app,numberline,initialState)
     strip.x =  0
@@ -79,6 +81,7 @@ export const init = (app, setup) => {
     const state = {
       radius: VIEW_HEIGHT/20,
       value: 20,
+      frame: {width: VIEW_WIDTH,height: VIEW_HEIGHT}
     }
 
     let chip = new Chip(numberline,state)
@@ -124,7 +127,6 @@ export const init = (app, setup) => {
 
     const initialState = {
       minValue: v1,
-      xMax: v2,
       numberOfBlocks: 3,
       blockValue: numberline.majorStep,
       heightRatio: 1/20,
@@ -300,6 +302,7 @@ export const init = (app, setup) => {
 
     if (chips.length != 0){
       chips.forEach(c=>{
+        c.redraw(newFrame)
         c.synch()
       })
     }

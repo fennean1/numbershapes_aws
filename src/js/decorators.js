@@ -51,9 +51,11 @@ export const init = (app, setup) => {
     const initialState = {
       xMin: x1,
       xMax: x2,
-      height: VIEW_HEIGHT/20,
       denominator: 2,
-      numerators: [1,0,0,0,0,0,0,0,0,0,0,0]
+      numerators: [1,0,0,0,0,0,0,0,0,0,0,0],
+      fillColor: 0xffffff,
+      strokeColor: 0x000000,
+      frame: {width: VIEW_WIDTH,height: VIEW_HEIGHT},
     }
 
     let strip = new FractionStrip(app,numberline,initialState)
@@ -75,8 +77,8 @@ export const init = (app, setup) => {
   function createPrimeChip(){
 
     const state = {
-      radius: VIEW_HEIGHT/20,
       value: 20,
+      frame: {width: VIEW_WIDTH,height: VIEW_HEIGHT},
     }
 
     let chip = new Chip(numberline,state)
@@ -103,6 +105,8 @@ export const init = (app, setup) => {
       numberOfBlocks: 3,
       blockValue: numberline.majorStep,
       heightRatio: 1/20,
+      fillColor: 0xffffff,
+      strokeColor: 0x000000,
       frame: {width: VIEW_WIDTH,height: VIEW_HEIGHT},
     }
 
@@ -392,11 +396,11 @@ export const init = (app, setup) => {
     chipGeneratorBtn.height = BTN_DIM
     chipGeneratorBtn.width = chipGeneratorBtn.height
     chipGeneratorBtn.on('pointerdown',createPrimeChip)
-    app.stage.addChild(chipGeneratorBtn)
+    //app.stage.addChild(chipGeneratorBtn)
 
     zoomWindowBtn = new PIXI.Sprite(ZOOM_BUTTON_TEXTURE)
     zoomWindowBtn.interactive = true 
-    zoomWindowBtn.x = VIEW_WIDTH - (BTN_DIM/3 + 5*BTN_DIM)
+    zoomWindowBtn.x = VIEW_WIDTH - (BTN_DIM/3 + 4*BTN_DIM)
     zoomWindowBtn.y = BTN_DIM/8
     zoomWindowBtn.height = BTN_DIM
     zoomWindowBtn.width = zoomWindowBtn.height
