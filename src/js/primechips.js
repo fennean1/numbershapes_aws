@@ -6,6 +6,7 @@ import {
   TweenLite,
 } from "gsap";
 import {HorizontalNumberLine,AdjustableStrip,Chip,FractionStrip, Pin, MultiplicationStrip} from "./api_kh.js";
+import { Tween } from "jquery";
 
 export const init = (app, setup) => {
   let features = {}
@@ -78,41 +79,58 @@ export const init = (app, setup) => {
 
   function createPrimeChip(){
 
+    let val = Math.round(numberline.getNumberLineFloatValueFromPosition(VIEW_WIDTH/2))
+
     const state = {
       radius: VIEW_HEIGHT/20,
-      value: 20,
+      value: val,
+      blank: false,
       frame: {width: VIEW_WIDTH,height: VIEW_HEIGHT}
+
     }
 
     let chip = new Chip(numberline,state)
     chip.on("pointerup",checkForDeletion)
     chip.on("pointerupoutside",checkForDeletion)
-    chip.x = 200 
-    chip.y = 200
-    chip.drawWhisker()
+    chip.y = VIEW_HEIGHT
     chip.synch()
     chips.push(chip)
     app.stage.addChild(chip)
+
+    const onUpdate = ()=>{
+      chip.drawWhisker()
+    }
+
+    TweenLite.to(chip,{y: VIEW_HEIGHT/4,onUpdate: onUpdate})
 
   }
 
   function createBlankPrimeChip(){
 
+    let val = Math.round(numberline.getNumberLineFloatValueFromPosition(VIEW_WIDTH/2))
+
     const state = {
       radius: VIEW_HEIGHT/20,
-      value: 20,
+      value: val,
+      frame: {width: VIEW_WIDTH,height: VIEW_HEIGHT},
       blank: true,
     }
 
     let chip = new Chip(numberline,state)
-    chip.x = 200 
-    chip.y = 200
+    chip.y = VIEW_HEIGHT
     chip.on("pointerup",checkForDeletion)
     chip.on("pointerupoutside",checkForDeletion)
     chip.drawWhisker()
     chip.synch()
     chips.push(chip)
     app.stage.addChild(chip)
+
+
+    const onUpdate = ()=>{
+      chip.drawWhisker()
+    }
+
+    TweenLite.to(chip,{y: VIEW_HEIGHT/4,onUpdate: onUpdate})
 
   }
 
@@ -122,8 +140,6 @@ export const init = (app, setup) => {
   function createMultiplicationStrip(){
 
     const v1 = numberline.getNumberLineFloatValueFromPosition(VIEW_WIDTH/4)
-    const v2 = numberline.getNumberLineFloatValueFromPosition(3*VIEW_WIDTH/4)
-
 
     const initialState = {
       minValue: v1,
@@ -138,7 +154,11 @@ export const init = (app, setup) => {
     let strip = new MultiplicationStrip(app,numberline,initialState)
     strip.x =  0
     strip.y = 1.1*VIEW_HEIGHT
-    strip.onUpdate = ()=> {
+    strip.onUpdate = ()=> {    if (magnifyingPin.x < 0){
+      magnifyingPin.x = 0
+    } else if (magnifyingPin.x > VIEW_WIDTH){
+      magnifyingPin.x = VIEW_HEIGHT
+    }
       drawWhiskers()
     }
     //strip.alpha = 0.75
@@ -249,6 +269,13 @@ export const init = (app, setup) => {
 
   function backgroundPointerUp(e){
     this.touching = false
+    if (magnifyingPin.x <= 0 ){
+      magnifyingPin.x = 0.1*VIEW_WIDTH
+    } else if (magnifyingPin.x >= VIEW_WIDTH){
+      magnifyingPin.x = 0.9*VIEW_WIDTH
+    }
+    magnifyingPin.value =  numberline.getNumberLineFloatValueFromPosition(magnifyingPin.x)
+    numberline.flexPoint = magnifyingPin.value
   }
 
 

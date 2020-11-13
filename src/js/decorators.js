@@ -234,6 +234,13 @@ export const init = (app, setup) => {
 
   function backgroundPointerUp(e){
     this.touching = false
+    if (magnifyingPin.x <= 0 ){
+      magnifyingPin.x = 0.1*VIEW_WIDTH
+    } else if (magnifyingPin.x >= VIEW_WIDTH){
+      magnifyingPin.x = 0.9*VIEW_WIDTH
+    }
+    magnifyingPin.value =  numberline.getNumberLineFloatValueFromPosition(magnifyingPin.x)
+    numberline.flexPoint = magnifyingPin.value
   }
 
 

@@ -2,6 +2,7 @@ import * as PIXI from "pixi.js-legacy";
 import blueGradient from "../assets/blue-gradient.png";
 import plusButton from "../assets/PlusButton.png";
 import minusButton from "../assets/MinusButton.png";
+import {Axis,Axis2D} from "./axisApi.js"
 import * as CONST from "./const.js";
 import {
   Draggable,
@@ -49,7 +50,7 @@ export const init = (app, setup) => {
   let HOME_BUTTON_WIDTH = WINDOW_WIDTH / 15;
   let H_W_RATIO = setup.height / setup.width;
   let NUMBER_LINE_WIDTH = Math.max(WINDOW_WIDTH, WINDOW_HEIGHT) * 0.8;
-  let SLIDER_DIM = NUMBER_LINE_WIDTH / 8;
+  let SLIDER_DIM = NUMBER_LINE_WIDTH / 30;
   let SELECTOR_Y = (2 / 3) * WINDOW_HEIGHT;
 
 
@@ -63,7 +64,6 @@ export const init = (app, setup) => {
   // VARS
 
   // OBJECTS
-  let prompt;
   let rangeBubbleSelector;
   let slider;
   let vnumberline;
@@ -143,40 +143,8 @@ export const init = (app, setup) => {
     vnumberline.draw(minFloat,maxFloat)
 
 
-    /*
-
-    let xParts = brickGrid.config.xNumerator%brickGrid.config.xDenominator
-    let wholeXs = (brickGrid.config.xNumerator - xParts)/brickGrid.config.xDenominator
-
-    let yParts = brickGrid.config.yNumerator%brickGrid.config.yDenominator
-    let wholeYs = (brickGrid.config.yNumerator - yParts)/brickGrid.config.yDenominator
-
-    let newXNumerator = wholeXs*hnumberline.denominator + xParts 
-    let newYNumerator = wholeYs*vnumberline.denominator + yParts 
-
-    const config = {
-      xNumerator: newXNumerator,
-      xDenominator: hnumberline.denominator,
-      yNumerator: newYNumerator,
-      yDenominator: vnumberline.denominator,
-      oneDim: brickGrid.config.oneDim,
-    };
-
-    //brickGrid.draw(config)
-    //brickGrid.resize(config.oneDim)
-
-    slider.x = hnumberline.x + brickGrid.width
-    slider.y = vnumberline.y - brickGrid.height
-
-    */
   }
 
-  // Called on resize
-  function resize(newFrame, flex) {
-    // Make sure all layout parameters are up to date.
-    updateLayoutParams(newFrame);
-    app.renderer.resize(WINDOW_WIDTH, WINDOW_HEIGHT);
-  }
 
 
   function updateLayoutParams(newFrame) {
@@ -186,6 +154,7 @@ export const init = (app, setup) => {
     } else {
       frame = { width: WINDOW_WIDTH, height: WINDOW_HEIGHT };
     }
+    SLIDER_DIM = Math.min(newFrame.width,newFrame.height)/30
   }
 
 
@@ -247,6 +216,61 @@ export const init = (app, setup) => {
   }
 
 
+    // Called on resize
+    function resize(newFrame) {
+      // Make sure all layout parameters are up to date.
+      updateLayoutParams(newFrame);
+      backGround.width = newFrame.width
+      backGround.height = newFrame.height
+      app.renderer.resize(newFrame.width, newFrame.height);
+  
+      let frameDim  = 0.8*Math.min(newFrame.width,newFrame.height)
+  
+      let adjustedNewFrame = {width: frameDim,height: frameDim}
+      vnumberline.redraw(adjustedNewFrame )
+      hnumberline.redraw(adjustedNewFrame )
+
+      const numberlineX = newFrame.width/ 2 - frameDim / 2;
+      const numberlineY = newFrame.height / 2 + frameDim / 2;
+  
+      hnumberline.x = numberlineX
+      hnumberline.y = numberlineY
+
+      vnumberline.x = numberlineX
+      vnumberline.y = numberlineY
+
+      let one = vnumberline.getOne()
+      brickGrid.resize(one)
+      brickGrid.x = hnumberline.x 
+      brickGrid.y = hnumberline.y
+
+      slider.x = hnumberline.x + brickGrid.width;
+      slider.y = vnumberline.y - brickGrid.height;
+      slider.width = SLIDER_DIM
+      slider.height = SLIDER_DIM
+
+      incYDenominator.width = SLIDER_DIM
+      incYDenominator.height = SLIDER_DIM
+      incYDenominator.x = vnumberline.x 
+      incYDenominator.y = vnumberline.y - vnumberline.length - SLIDER_DIM
+
+      decYDenominator.width = SLIDER_DIM
+      decYDenominator.height = SLIDER_DIM
+      decYDenominator.x = vnumberline.x - SLIDER_DIM
+      decYDenominator.y = vnumberline.y - vnumberline.length - SLIDER_DIM
+  
+      incXDenominator.width = SLIDER_DIM
+      incXDenominator.height = SLIDER_DIM
+      incXDenominator.x = hnumberline.x + hnumberline.length
+      incXDenominator.y = hnumberline.y - SLIDER_DIM
+  
+      decXDenominator.width = SLIDER_DIM
+      decXDenominator.height = SLIDER_DIM
+      decXDenominator.x = hnumberline.x + hnumberline.length 
+      decXDenominator.y = hnumberline.y
+  
+    }
+
   // Loading Script
   function load() {
     if (setup.props.features) {
@@ -296,7 +320,7 @@ export const init = (app, setup) => {
     slider.minX = rangeBubbleSelector.x;
     slider.interactive = true;
 
-    slider.width = SLIDER_DIM / 4;
+    slider.width = SLIDER_DIM;
     slider.height = slider.width;
     slider.y = rangeBubbleSelector.y + 2 * slider.height;
     slider.x = rangeBubbleSelector.x + rangeBubbleSelector._width / 2;
@@ -318,11 +342,6 @@ export const init = (app, setup) => {
       width: SLIDER_DIM,
     };
 
-    prompt = new NumberBubble(numberBubbleConfig);
-    prompt.x = WINDOW_WIDTH / 2 - prompt.width / 2;
-    prompt.y = (1 / 4) * WINDOW_HEIGHT;
-    prompt.lblText = currentProblem.TARGET;
-    //app.stage.addChild(prompt);
 
     let width = 0.8 * Math.min(WINDOW_WIDTH, WINDOW_HEIGHT);
 
@@ -337,6 +356,7 @@ export const init = (app, setup) => {
     vnumberline.x = WINDOW_WIDTH / 2 - width / 2;
     vnumberline.y = WINDOW_HEIGHT / 2 + width / 2;
     app.stage.addChild(vnumberline);
+
 
     vnumberline.onUpdate = () => {
       let { min, max } = vnumberline;
@@ -398,7 +418,7 @@ export const init = (app, setup) => {
     slider.x = hnumberline.x + brickGrid.width;
     slider.y = vnumberline.y - brickGrid.height;
 
-    let incDim = SLIDER_DIM/3.5
+    let incDim = SLIDER_DIM
 
     incYDenominator.width = incDim
     incYDenominator.height = incDim

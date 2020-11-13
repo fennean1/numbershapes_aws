@@ -3,8 +3,14 @@ import {
   TimelineLite,
   TweenLite,
 } from "gsap";
+import {Axis,Axis2D} from "./axisApi.js"
 import * as CONST from "./const.js";
 import { extend } from "jquery";
+
+
+
+
+
 
 // CLASSES
 // Helpers
@@ -25,107 +31,6 @@ export function digitCount(n) {
     }
     return count - 1;
   }
-}
-
-
-export function getOptimalMarkings(min, max, width) {
-  let majorSteps = [
-    0.00001,
-    0.00005,
-    0.0001,
-    0.0005,
-    0.001,
-    0.005,
-    0.01,
-    0.05,
-    0.1,
-    0.5,
-    1,
-    5,
-    10,
-    50,
-    100,
-    500,
-    1000,
-    5000,
-    10000,
-    50000,
-    100000,
-  ];
-  let minorSteps = [
-    0.00001,
-    0.00005,
-    0.0001,
-    0.0005,
-    0.001,
-    0.005,
-    0.01,
-    0.1,
-    1,
-    5,
-    10,
-    50,
-    100,
-    500,
-    1000,
-    5000,
-    10000,
-    50000,
-    100000,
-  ];
-  let minorStepIndex = 0;
-  let majorStepIndex = -1;
-  let digitHeight = 0;
-  let ticksNeeded = (max - min) / minorSteps[minorStepIndex];
-  let majorStep = 0.0001;
-  let minorStep = 0.0001;
-
-  while (digitHeight < width / 50) {
-    majorStepIndex += 1;
-    let numberOfIncrements = Math.round(
-      (max - min) / majorSteps[majorStepIndex]
-    );
-    let maxDigits = 1;
-    if (majorSteps[majorStepIndex] >= 1) {
-      if (min < 0) {
-        maxDigits = digitCount(Math.floor(Math.abs(min))) + 1;
-      } else {
-        maxDigits = digitCount(Math.ceil(max));
-      }
-    } else {
-      if (min < 0) {
-        maxDigits =
-          digitCount(Math.abs(Math.floor(min))) +
-          digitCount(majorSteps[majorStepIndex]) +
-          1;
-      } else {
-        maxDigits =
-          digitCount(Math.ceil(max)) + digitCount(majorSteps[majorStepIndex]);
-      }
-    }
-
-    let numberOfDigitWidths = (maxDigits + 1) * (numberOfIncrements - 1);
-
-    let digitWidth = width / numberOfDigitWidths;
-    digitHeight = (6 / 5) * digitWidth;
-    minorStep = minorSteps[majorStepIndex - 1];
-    majorStep = majorSteps[majorStepIndex];
-  }
-
-  while (ticksNeeded >= 100) {
-    minorStepIndex += 1;
-    ticksNeeded = (max - min) / minorSteps[minorStepIndex];
-    minorStep = minorSteps[minorStepIndex];
-  }
-
-  digitHeight = width / 50;
-
-  const params = {
-    MAJOR_STEP: majorStep,
-    MINOR_STEP: minorStep,
-    DIGIT_HEIGHT: digitHeight,
-  };
-  return params;
 }
 
 export class PrimeChip extends PIXI.Container {
@@ -279,203 +184,25 @@ export function getPrimeFactorization(num) {
   return result;
 }
 
-export class BasicAxis  {
 
-  constructor(){
+function getNumbersNeeded(min, max, step) {
+  let numbersNeeded = {};
+  let start = Math.ceil(min / step) * step;
+  let currentNumber = start;
+  let digits = digitCount(step);
 
-  }
-
-  test(){
-
-
-
-    let axis;
-
-    const onUpdate = ()=>{
-      axis.updateSubscribers()
+  while (currentNumber <= max && currentNumber >= start) {
+    let cleanNumber = Math.round(currentNumber / step) * step;
+    if (cleanNumber % 1 != 0) {
+      cleanNumber = currentNumber.toFixed(digits - 1);
     }
-
-    TweenLite.to(axis,{minorStep: 5,onUpdate: onUpdate})
-
-
+    // Add this number to the list of numbers needed.
+    numbersNeeded[cleanNumber] = true;
+    currentNumber += step;
   }
-
+  return numbersNeeded;
 }
 
-// In Progress
-export class Axis {
-  constructor(state) {
-
-    this.state = {
-      min: 0,
-      max: 10,
-      minorStep: 1,
-      majorStep: 1,
-      length: 100,
-    }
-
-    this.state = state
-
-  }
-
-  // Helpers
-
-  getOne() {
-    return this.length / (this.max - this.min);
-  }
-
-  getDistanceFromZeroFromValue(val) {
-    return (
-      this.getNumberLinePositionFromFloatValue(val) -
-      this.getNumberLinePositionFromFloatValue(0)
-    );
-  }
-
-  getDistanceFromZeroFromPosition(pos) {
-    return pos - this.getNumberLinePositionFromFloatValue(0);
-  }
-
-  getFloatValueFromPosition(pos) {
-    return (pos * this.minorStep) / this.minorDX + this.minFloat;
-  }
-
-  getMaxFromAnchor(anchor, position) {
-    let max =
-      this.minFloat + ((anchor - this.minFloat) / position) * this._width;
-    return max;
-  }
-
-  getNumberLineMinFromAnchor(anchor, position) {
-    let min =
-      this.maxFloat - (this.maxFloat - anchor) / (1 - position / this._width);
-    return min;
-  }
-
-  getNumberLinePositionFromFloatValue(val) {
-    let pos1 =
-      ((val - this.minFloat) / (this.maxFloat - this.minFloat)) * this._width;
-    return pos1;
-  }
-
-  getBoundsFrom(x, value) {
-    let pM = this._width;
-    let pm = 0;
-    let pC = this.getNumberLinePositionFromFloatValue(this.flexPoint);
-    let vC = this.flexPoint;
-    let pA = x;
-    let vA = value;
-    let vM = vC + ((pM - pC) / (pA - pC)) * (vA - vC);
-    let vMin = vM - ((pM - pm) / (pM - pC)) * (vM - vC);
-
-    return { min: vMin, max: vM };
-  }
-
-  roundPositionToNearestTick(xPos) {
-    let val = this.getNumberLineFloatValueFromPosition(xPos);
-    let roundedVal = Math.round(val / this.minorStep) * this.minorStep;
-    return this.getNumberLinePositionFromFloatValue(roundedVal);
-  }
-
-  roundPositionDownToNearestTick(xPos) {
-    let val = this.getNumberLineFloatValueFromPosition(xPos);
-    let roundedVal = Math.floor(val / this.minorStep) * this.minorStep;
-    return this.getNumberLinePositionFromFloatValue(roundedVal);
-  }
-
-  roundPositionUpToNearestTick(xPos) {
-    let val = this.getNumberLineFloatValueFromPosition(xPos);
-    let roundedVal = Math.ceil(val / this.minorStep) * this.minorStep;
-    return this.getNumberLinePositionFromFloatValue(roundedVal);
-  }
-
-  roundValueToNearestTick(xVal) {
-    let roundedVal = Math.round(xVal / this.minorStep) * this.minorStep;
-    return roundedVal;
-  }
-
-  roundValueDownToNearestTick(xVal) {
-    let roundedVal = Math.floor(xVal / this.minorStep) * this.minorStep;
-    return roundedVal;
-  }
-
-  roundValueUpToNearestTick(xVal) {
-    let roundedVal = Math.ceil(xVal / this.minorStep) * this.minorStep;
-    return roundedVal;
-  }
-
-// "Setters"
-
-  setBoundaries(lowerLimit, upperLimit, lowerRange) {
-    this.lowerLimit = lowerLimit;
-    this.upperLimit = upperLimit;
-    this.upperRange = this.upperLimit - this.lowerLimit;
-    this.lowerRange = lowerRange;
-  }
-
-  centerZero() {
-    return {
-      x: this.x + this.getNumberLinePositionFromFloatValue(0),
-      y: this.y,
-    };
-  }
-
-
-  updateSubscribers(){
-    this.subscribers.forEach(s=>{
-        s.update()
-    })
-  }
-
-  setLayoutParams(min, max) {
-    this.params = this.numberLineParameters(min, max, this._width);
-
-    this.min = min;
-    this.max = max;
-    this.minFloat = min;
-    this.maxFloat = max;
-
-    if (this.fractionTicks) {
-      this.params.MINOR_STEP = 1 / this.denominator;
-      this.params.MAJOR_STEP = 1;
-    }
-
-    this.majorStep = this.params.MAJOR_STEP;
-    this.minorStep = this.params.MINOR_STEP;
-    this.digitHeight = this.params.DIGIT_HEIGHT;
-
-    this.majorDX =
-      (this._width / (this.maxFloat - this.minFloat)) * this.majorStep;
-    this.minorDX =
-      (this._width / (this.maxFloat - this.minFloat)) * this.minorStep;
-
-    this.dx = this._width / (this.maxFloat - this.minFloat);
-
-    this.minorTickHeight = this._width / 60;
-    this.majorTickHeight = 1.5 * this.minorTickHeight;
-
-    this.minorTickThickness = Math.min(this.majorDX / 3, this.lineThickness);
-    this.majorTickThickness = this.minorTickThickness * 1.25;
-  }
-
-  getNumbersNeeded(min, max, step) {
-    let numbersNeeded = {};
-    let start = Math.ceil(min / step) * step;
-    let currentNumber = start;
-    let digits = digitCount(step);
-
-    while (currentNumber <= max && currentNumber >= start) {
-      let cleanNumber = Math.round(currentNumber / step) * step;
-      if (cleanNumber % 1 != 0) {
-        cleanNumber = currentNumber.toFixed(digits - 1);
-      }
-      // Add this number to the list of numbers needed.
-      numbersNeeded[cleanNumber] = true;
-      currentNumber += step;
-    }
-    return numbersNeeded;
-  }
-
-}
 
 
 export class MultiplicationStrip extends PIXI.Container {
@@ -541,11 +268,6 @@ export class MultiplicationStrip extends PIXI.Container {
     this.draggerSpriteA.width = 1;
     this.draggerSpriteA.alpha = 0;
     this.draggerSpriteA.height = this.state.height;
-    //this.draggerSpriteA.on("pointerdown", this.onPointerDown);
-    //this.draggerSpriteA.on("pointermove", this.onPointerMove);
-    //this.draggerSpriteA.on("pointerup", this.onPointerUp);
-    //this.draggerSpriteA.on("pointerupoutside", this.onPointerUp);
-    this.draggerSpriteA.interactive = false
     this.addChild(this.draggerSpriteA);
 
     this.draggerSpriteB = new Draggable();
@@ -573,14 +295,14 @@ export class MultiplicationStrip extends PIXI.Container {
     this.adjusterSprite.x = this.draggerSpriteA.x + this.state.blockWidth 
 
 
-    this.draw()
-
-
     this.interactive = true;
     this.on("pointerdown", this.pointerDown);
     this.on("pointermove", this.pointerMove);
     this.on("pointerup", this.pointerUp);
     this.on("pointerupoutside", this.pointerUp);
+
+    this.draw()
+
   }
 
   redraw(newFrame){
@@ -822,7 +544,6 @@ export class FractionStrip extends PIXI.Container {
 
     // Access _height this through 'state' in the future.
     this._height = this.state.frame.height*this.HEIGHT_RATIO
-    console.log("this._height",this._height)
     this.numberline = numberline;
     this.color = this.state.fillColor
     this.denominator = this.state.denominator
@@ -1018,24 +739,6 @@ export class FractionStrip extends PIXI.Container {
 
   }
 
-  onStripPointerDown(){
-   
-  }
- 
-  onStripPointerMove(){
-
- }
- 
- onStripPointerUp(){
-  if (this.parent.dragged == false){
-   if (this.texture == this.parent.openStripTexture){
-     this.texture = this.parent.stripTexture
-   } else {
-    this.texture = this.parent.openStripTexture
-   }
-  }
- }
-
 onAdjustPointerDown(){
 
 }
@@ -1145,7 +848,8 @@ onAdjustPointerDown(){
 
       let x = event.data.getLocalPosition(this).x;
 
-      let n = (this.minDragger.x - x)/(this.draggerSpriteA.x - this.draggerSpriteB.x)*this.denominator
+      let n = Math.abs((this.minDragger.x - x)/(this.draggerSpriteA.x - this.draggerSpriteB.x)*this.denominator)
+      
       n = Math.floor(n)
 
 
@@ -2260,6 +1964,7 @@ export class HorizontalNumberLine extends PIXI.Container {
 
   redraw(newFrame){
      this._width = newFrame.width 
+     this.length = newFrame.width
      this.line.width = this._width
      this.lineThickness = this._width/300
      this.line.height = this.lineThickness
@@ -2379,6 +2084,7 @@ export class VerticalNumberLine extends PIXI.Container {
     //this.hitArea = new PIXI.Rectangle(0,0,-1.5*this._width/10,-this._width)
     this.hitArea = new PIXI.Rectangle(-50, -length, 50, length);
   }
+
 
   hideLabels(){
     this.labels.forEach(l=>{l.visible = false})
@@ -2570,6 +2276,7 @@ export class VerticalNumberLine extends PIXI.Container {
       if (needsToBeSet) {
         l.text = l.value;
         l.y = -(l.value - this.min) * this.dx;
+        l.x = -1.1 * this.majorTickHeight;
         l.style.fontSize = this.digitHeight;
         l.alpha = 1;
 
@@ -2613,8 +2320,12 @@ export class VerticalNumberLine extends PIXI.Container {
         let mod = Math.abs((l.value % majorStep) / majorStep);
         if (mod < 0.01 || mod > 0.99) {
           l.texture = this.majorTickTexture;
+          l.width = this.majorTickHeight
+          l.height = this.majorTickThickness
         } else {
           l.texture = this.minorTickTexture;
+          l.width = this.minorTickHeight
+          l.height = this.minorTickThickness
         }
 
         // If it's active, but not part of the new active labels, remove it and set value null.
@@ -2636,8 +2347,12 @@ export class VerticalNumberLine extends PIXI.Container {
         let mod = Math.abs((newActiveTick.value % majorStep) / majorStep);
         if (mod < 0.01 || mod > 0.99) {
           newActiveTick.texture = this.majorTickTexture;
+          newActiveTick.width = this.majorTickHeight
+          newActiveTick.height = this.majorTickThickness
         } else {
           newActiveTick.texture = this.minorTickTexture;
+          newActiveTick.width = this.minorTickHeight
+          newActiveTick.height= this.minorTickThickness
         }
         newActiveTick.y = -dx * (newActiveTick.value - this.min);
         newActiveTick.alpha = 1;
@@ -2716,7 +2431,14 @@ export class VerticalNumberLine extends PIXI.Container {
   }
 
   setLayoutParams(min, max) {
-    this.params = this.numberLineParameters(min, max, this._width);
+    this.params = this.numberLineParameters(min, max, this.length);
+
+    this.min = min;
+    this.max = max;
+    this.minFloat = min;
+    this.maxFloat = max;
+
+    this.lineThickness = this._width/300
 
     if (this.fractionTicks) {
       this.params.MINOR_STEP = 1 / this.denominator;
@@ -2732,9 +2454,9 @@ export class VerticalNumberLine extends PIXI.Container {
     this.minorDX =
       (this._width / (this.maxFloat - this.minFloat)) * this.minorStep;
 
-    this.dx = this._width / (this.maxFloat - this.minFloat);
+    this.dx = this.length/ (this.maxFloat - this.minFloat);
 
-    this.minorTickHeight = this._width / 60;
+    this.minorTickHeight = this.length / 60;
     this.majorTickHeight = 1.5 * this.minorTickHeight;
 
     this.minorTickThickness = Math.min(this.majorDX / 3, this.lineThickness);
@@ -2759,8 +2481,20 @@ export class VerticalNumberLine extends PIXI.Container {
     return numbersNeeded;
   }
 
+  redraw(newFrame){
+    this._width = Math.min(newFrame.width,newFrame.height)
+    this.length = Math.min(newFrame.width,newFrame.height)
+    this.lineThickness = this._width/300
+    this.line.width = this.lineThickness
+    this.line.height = this.length
+    this.hitArea.height = this._width 
+    this.hitArea.width = 50
+    this.draw()
+ }
+
+
   // NLD_DRAW
-  draw(min, max) {
+  draw(min = this.min, max = this.max) {
     let range = max - min;
 
     if (
