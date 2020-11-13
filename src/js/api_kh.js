@@ -10,8 +10,6 @@ import { extend } from "jquery";
 
 
 
-
-
 // CLASSES
 // Helpers
 export function digitCount(n) {
@@ -3194,7 +3192,7 @@ export class VPAdditionStrips extends PIXI.Container {
 }
 
 
-export class Pin extends PIXI.Container {
+export class MagnifyingPin extends PIXI.Container {
   constructor(numberline,state){
     super()
     this.state = state
@@ -3281,6 +3279,104 @@ export class Pin extends PIXI.Container {
       this.numberline.zoomTo(this.value - this.numberline.majorStep,this.value+this.numberline.majorStep,1)
       TweenLite.to(this,{y: this.numberline.y + 3*this.grabber.height,onUpdate: onUpdate})
     }
+  }
+
+
+
+  synch(){
+    this.x = this.numberline.getNumberLinePositionFromFloatValue(this.value)
+  }
+
+  drawWhisker(){
+      this.whisker.clear()
+      this.whisker.lineStyle(this.stroke,0x000000)
+      this.whisker.moveTo(0,0)
+      this.whisker.lineTo(0,this.numberline.y -this.y)
+  }
+
+}
+
+
+
+export class Pin extends PIXI.Container {
+  constructor(numberline,state){
+    super()
+    this.state = state
+
+    this.grabber = new PIXI.Sprite()
+    this.grabber.anchor.set(0.5)
+    this.grabber.texture = this.state.texture
+    this.grabber.width = this.state.width
+    this.grabber.height = this.state.height
+    this.numberline = numberline
+    this.whisker = new PIXI.Graphics()
+
+    this.stroke = this.state.width/20
+
+    this.addChild(this.whisker)
+    this.addChild(this.grabber)
+
+    this.dragged = false;
+    this.touching = false;
+    this.interactive = true;
+    this.lockX = false;
+    this.lockY = false;
+    this.minX = null;
+    this.maxX = null;
+    this.minY = null;
+    this.maxY = null;
+    this.on("pointerdown", this.pointerDown);
+    this.on("pointermove", this.pointerMove);
+    this.on("pointerup", this.pointerUp);
+    this.on("pointerupoutside", this.pointerUp);
+  }
+
+  pointerDown(event) {
+    this.touching = true;
+    this.dragged = false;
+    this.deltaTouch = {
+      x: this.x - event.data.global.x,
+      y: this.y - event.data.global.y,
+    };
+  }
+
+  pointerMove(event) {
+    if (this.touching) {
+      if (!this.lockX) {
+        this.x = event.data.global.x + this.deltaTouch.x;
+
+        let xMaxOut = this.maxX && this.x > this.maxX;
+        let xMinOut = this.minX && this.x < this.minX;
+
+        if (xMaxOut) {
+          this.x = this.maxX;
+        } else if (xMinOut) {
+          this.x = this.minX;
+        }
+      }
+
+      if (!this.lockY) {
+        this.y = event.data.global.y + this.deltaTouch.y;
+
+        let yMaxOut = this.maxY && this.y > this.yMax;
+        let yMinOut = this.minY && this.y < this.yMin;
+
+        if (yMaxOut) {
+          this.y = this.yMax;
+        } else if (yMinOut) {
+          this.y = this.yMin;
+        }
+      }
+      this.drawWhisker()
+      this.dragged = true;
+    }
+  }
+
+  pointerUp(event) {
+    this.value = this.numberline.getNumberLineFloatValueFromPosition(this.x)
+    this.touching = false;
+    this.numberline.flexPoint = this.value
+
   }
 
 

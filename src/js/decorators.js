@@ -5,7 +5,7 @@ import * as CONST from "./const.js";
 import {
   TweenLite,
 } from "gsap";
-import {HorizontalNumberLine,AdjustableStrip,Chip,FractionStrip, Pin, MultiplicationStrip} from "./api_kh.js";
+import {HorizontalNumberLine,AdjustableStrip,Chip,FractionStrip, MagnifyingPin, MultiplicationStrip} from "./api_kh.js";
 
 export const init = (app, setup) => {
   let features = {}
@@ -423,7 +423,7 @@ export const init = (app, setup) => {
       texture: MOVER_DOT_TEXTURE,
     }
 
-    magnifyingPin = new Pin(numberline,pinState)
+    magnifyingPin = new MagnifyingPin(numberline,pinState)
     magnifyingPin.x = numberline.getNumberLinePositionFromFloatValue(0)
     magnifyingPin.y = numberline.y + VIEW_HEIGHT/4
     magnifyingPin.drawWhisker()
