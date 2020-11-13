@@ -47,6 +47,16 @@ export const ARROWS = {
 };
 
 
+export const DUAL_NUMBER_LINE = {
+  shortText: "For Studying Proportions and Multiplication",
+  title: "Dual Number Line",
+  previewImg: "DualNumberLine.png",
+  tool: "/dualnumberline",
+  gameShow: 'https://app.knowledgehook.com/app/Activity/0fbd9f59-0e21-eb11-974c-0050568c42b6',
+  coreSkillDescription:
+    "Here is a lotere is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
+};
+
 export const DECORATORS = {
   shortText: "Decorative Math Objects",
   title: "Decorators",

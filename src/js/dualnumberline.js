@@ -107,6 +107,7 @@ export const init = (app, setup) => {
       } else {
         magnifyingPin.alpha = 1
         magnifyingPin.x = VIEW_WIDTH/2
+        magnifyingPin.value = numberlineA.getNumberLineFloatValueFromPosition(magnifyingPin.x)
         numberlineA.flexPoint = numberlineA.getNumberLineFloatValueFromPosition(magnifyingPin.x)
         numberlineB.flexPoint = numberlineB.getNumberLineFloatValueFromPosition(magnifyingPin.x)
       }
@@ -149,6 +150,7 @@ export const init = (app, setup) => {
       
       numberlineA.draw(_min, _max);
       numberlineB.draw(_minB, _maxB);
+      magnifyingPin.synch()
 
     }
   }
