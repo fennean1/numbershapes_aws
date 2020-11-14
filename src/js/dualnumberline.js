@@ -330,7 +330,7 @@ export const init = (app, setup) => {
       0,
       0,
       WINDOW_WIDTH,
-      WINDOW_HEIGHT - NUMBER_LINE_Y
+      1/4*(WINDOW_HEIGHT - NUMBER_LINE_Y)
     );
 
 
@@ -371,6 +371,7 @@ export const init = (app, setup) => {
     magnifyingPin = new Pin(numberlineA,pinState)
     magnifyingPin.x = numberlineA.getNumberLinePositionFromFloatValue(0)
     magnifyingPin.y = numberlineA.y + VIEW_HEIGHT/4
+    magnifyingPin.lockY = true
     magnifyingPin.on('pointerup',magnifyinPinPointerUp)
     magnifyingPin.on('pointerupoutside',magnifyinPinPointerUp)
     magnifyingPin.drawWhisker()
