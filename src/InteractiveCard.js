@@ -76,8 +76,8 @@ export default function InteractiveCard(props) {
         <Link style={{ textDecoration: 'none' }} target = "_blank"  to={""+props.data.tool + "/"}>
           <Button variant = "outlined" >Tool</Button>
         </Link>
-
-        <a style={{ textDecoration: 'none' }} target = "_blank"  href={""+props.data.gameShow}>
+  
+        <a style={{ textDecoration: 'none',padding: 5 }} target = "_blank"  href={""+props.data.gameShow}>
           <Button variant = "outlined" >Game Show</Button>
         </a>
       </CardActions>

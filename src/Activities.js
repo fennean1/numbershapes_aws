@@ -48,7 +48,7 @@ export const ARROWS = {
 
 
 export const DUAL_NUMBER_LINE = {
-  shortText: "For Studying Proportions and Multiplication",
+  shortText: "Proportions & Multiplication",
   title: "Dual Number Line",
   previewImg: "DualNumberLine.png",
   tool: "/dualnumberline",
