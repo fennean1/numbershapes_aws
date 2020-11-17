@@ -19,10 +19,10 @@ class Arena extends Component {
 
   componentWillMount() {
 
-    PIXI.settings.RESOLUTION = 2;
+    PIXI.settings.RESOLUTION = 2
     this.app = new PIXI.Application({forceCanvas: true});
     this.app.renderer.backgroundColor = 0xffffff;
-    this.app.renderer.resolution = 2;
+    this.app.renderer.resolution = 2
     this.app.renderer.autoDensity = true;
   }
 

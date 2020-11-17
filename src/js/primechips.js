@@ -5,7 +5,7 @@ import * as CONST from "./const.js";
 import {
   TweenLite,
 } from "gsap";
-import {HorizontalNumberLine,AdjustableStrip,Chip,FractionStrip, Pin, MultiplicationStrip} from "./api_kh.js";
+import {HorizontalNumberLine,AdjustableStrip,Chip,FractionStrip, MagnifyingPin, MultiplicationStrip} from "./api_kh.js";
 import { Tween } from "jquery";
 
 export const init = (app, setup) => {
@@ -22,6 +22,7 @@ export const init = (app, setup) => {
   const STRIP_ICON_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.STRIP_ICON)
   const ARROW_ICON_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.ARROW_ICON)
   const PRIME_CHIP_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.PRIME_CLIMB_ICON)
+  const NO_DESC_CHIP_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.NO_DESC_PRIME_CLIMB_ICON)
   const CLEAR_PRIME_CHIP_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.CLEAR_PRIME_CLIMB_ICON)
   const MOVER_DOT_TEXTURE = new PIXI.Texture.from(MagnifyingGlass)
   const ZOOM_BUTTON_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.ZOOM_BUTTION)
@@ -36,6 +37,7 @@ export const init = (app, setup) => {
   let activeStrip = null
   let stripGeneratorBtn;
   let fractionBarGeneratorBtn;
+  let noDescChipGeneratorBtn
   let chipGeneratorBtn;
   let blankchipGeneratorBtn;
   let zoomWindowBtn;
@@ -135,6 +137,35 @@ export const init = (app, setup) => {
   }
 
 
+
+  function createNoDescPrimeChip(){
+
+    let val = Math.round(numberline.getNumberLineFloatValueFromPosition(VIEW_WIDTH/2))
+
+    const state = {
+      radius: VIEW_HEIGHT/20,
+      value: val,
+      frame: {width: VIEW_WIDTH,height: VIEW_HEIGHT},
+    }
+
+    let chip = new Chip(numberline,state)
+    chip.primeChip.descriptor.alpha = 0
+    chip.y = VIEW_HEIGHT
+    chip.on("pointerup",checkForDeletion)
+    chip.on("pointerupoutside",checkForDeletion)
+    chip.drawWhisker()
+    chip.synch()
+    chips.push(chip)
+    app.stage.addChild(chip)
+
+
+    const onUpdate = ()=>{
+      chip.drawWhisker()
+    }
+
+    TweenLite.to(chip,{y: VIEW_HEIGHT/4,onUpdate: onUpdate})
+
+  }
 
 
   function createMultiplicationStrip(){
@@ -449,16 +480,25 @@ export const init = (app, setup) => {
 
     chipGeneratorBtn = new PIXI.Sprite(PRIME_CHIP_TEXTURE)
     chipGeneratorBtn.interactive = true 
-    chipGeneratorBtn.x = VIEW_WIDTH - (BTN_DIM/3 + 4*BTN_DIM)
+    chipGeneratorBtn.x = VIEW_WIDTH - (BTN_DIM/3 + 3*BTN_DIM)
     chipGeneratorBtn.y = BTN_DIM/8
     chipGeneratorBtn.height = BTN_DIM
     chipGeneratorBtn.width = chipGeneratorBtn.height
     chipGeneratorBtn.on('pointerdown',createPrimeChip)
     app.stage.addChild(chipGeneratorBtn)
 
+    noDescChipGeneratorBtn = new PIXI.Sprite(NO_DESC_CHIP_TEXTURE)
+    noDescChipGeneratorBtn.interactive = true 
+    noDescChipGeneratorBtn.x = VIEW_WIDTH - (BTN_DIM/3 + 4*BTN_DIM)
+    noDescChipGeneratorBtn.y = BTN_DIM/8
+    noDescChipGeneratorBtn.height = BTN_DIM
+    noDescChipGeneratorBtn.width = noDescChipGeneratorBtn.height
+    noDescChipGeneratorBtn.on('pointerdown',createNoDescPrimeChip)
+    app.stage.addChild(noDescChipGeneratorBtn)
+
     blankchipGeneratorBtn = new PIXI.Sprite(CLEAR_PRIME_CHIP_TEXTURE)
     blankchipGeneratorBtn.interactive = true 
-    blankchipGeneratorBtn.x = VIEW_WIDTH - (BTN_DIM/3 + 3*BTN_DIM)
+    blankchipGeneratorBtn.x = VIEW_WIDTH - (BTN_DIM/3 + 5*BTN_DIM)
     blankchipGeneratorBtn.y = BTN_DIM/8
     blankchipGeneratorBtn.height = BTN_DIM
     blankchipGeneratorBtn.width = blankchipGeneratorBtn.height
@@ -467,7 +507,7 @@ export const init = (app, setup) => {
 
     zoomWindowBtn = new PIXI.Sprite(ZOOM_BUTTON_TEXTURE)
     zoomWindowBtn.interactive = true 
-    zoomWindowBtn.x = VIEW_WIDTH - (BTN_DIM/3 + 5*BTN_DIM)
+    zoomWindowBtn.x = VIEW_WIDTH - (BTN_DIM/3 + 6*BTN_DIM)
     zoomWindowBtn.y = BTN_DIM/8
     zoomWindowBtn.height = BTN_DIM
     zoomWindowBtn.width = zoomWindowBtn.height
@@ -483,7 +523,7 @@ export const init = (app, setup) => {
       texture: MOVER_DOT_TEXTURE,
     }
 
-    magnifyingPin = new Pin(numberline,pinState)
+    magnifyingPin = new MagnifyingPin(numberline,pinState)
     magnifyingPin.x = numberline.getNumberLinePositionFromFloatValue(0)
     magnifyingPin.y = numberline.y + VIEW_HEIGHT/4
     magnifyingPin.drawWhisker()

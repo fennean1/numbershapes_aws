@@ -14,6 +14,7 @@ const Main = () => (
     <Route path="/multiplicationgrid" render={()=><Arena fullscreen = {true} script = {multiplicationgrid.init}/>} />
     <Route path="/decorators" render={()=><Arena fullscreen = {true} script = {decorators.init}/>} />
     <Route path="/primechips" render={()=><Arena fullscreen = {true} features = {{chip: true}} script = {primechips.init}/>} />
+    <Route path="/primeline" render={()=><Arena fullscreen = {true} features = {{chip: true}} script = {primechips.init}/>} />
     <Route path="/dualnumberline" render={()=><Arena fullscreen = {true} features = {{chip: true}} script = {dualnumberline.init}/>} />
     <Route path="/multiplicationgridk2" render={()=><Arena fullscreen = {true} features = {{type: "k2"}} script = {multiplicationgrid.init}/>} />
     <Route path="/" component={Manipulatives} />
