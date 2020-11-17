@@ -137,7 +137,6 @@ export const init = (app, setup) => {
   }
 
 
-
   function createNoDescPrimeChip(){
 
     let val = Math.round(numberline.getNumberLineFloatValueFromPosition(VIEW_WIDTH/2))
@@ -200,7 +199,6 @@ export const init = (app, setup) => {
     TweenLite.to(strip,{y: NEW_OBJ_Y})
     app.stage.addChild(strip)
         activeStrip = strip
-        console.log("strips",strips)
   }
 
 
