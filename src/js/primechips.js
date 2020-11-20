@@ -4,11 +4,14 @@ import MagnifyingGlass from "../assets/MagnifyingGlass.png";
 import * as CONST from "./const.js";
 import {
   TweenLite,
+  TimelineLite
 } from "gsap";
-import {HorizontalNumberLine,AdjustableStrip,Chip,FractionStrip, MagnifyingPin, MultiplicationStrip} from "./api_kh.js";
+import {HorizontalNumberLine,AdjustableStrip,Chip,FractionStrip, MagnifyingPin, MultiplicationStrip, EditableTextField} from "./api_kh.js";
 import { Tween } from "jquery";
 
 export const init = (app, setup) => {
+
+  
   let features = {}
   let state;
 
@@ -16,16 +19,18 @@ export const init = (app, setup) => {
   let VIEW_WIDTH = setup.width
   let VIEW_HEIGHT = setup.height
   let BTN_DIM = Math.min(VIEW_WIDTH,VIEW_HEIGHT)/10
+  let DELETE_ZONE = {x: 0,y:VIEW_HEIGHT,width:2*BTN_DIM,height: 2*BTN_DIM}
+  let LEAVE_Y = -2*BTN_DIM
 
   const NEW_OBJ_Y = VIEW_HEIGHT/4
   const FRACTION_BAR_ICON_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.FRACTION_BAR_ICON)
   const STRIP_ICON_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.STRIP_ICON)
-  const ARROW_ICON_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.ARROW_ICON)
   const PRIME_CHIP_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.PRIME_CLIMB_ICON)
   const NO_DESC_CHIP_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.NO_DESC_PRIME_CLIMB_ICON)
   const CLEAR_PRIME_CHIP_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.CLEAR_PRIME_CLIMB_ICON)
   const MOVER_DOT_TEXTURE = new PIXI.Texture.from(MagnifyingGlass)
   const ZOOM_BUTTON_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.ZOOM_BUTTION)
+  const TRASH_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.TRASH)
   
   const BLUE_GRADIENT_TEXTURE = new PIXI.Texture.from(blueGradient)
 
@@ -34,14 +39,23 @@ export const init = (app, setup) => {
   let backGround;
   let strips = [];
   let chips = [];
+  let textFields = []
+  let activeObject;
+  let objects = []
   let activeStrip = null
   let stripGeneratorBtn;
   let fractionBarGeneratorBtn;
   let noDescChipGeneratorBtn
+  let editableTextGeneratorBtn
   let chipGeneratorBtn;
   let blankchipGeneratorBtn;
   let zoomWindowBtn;
   let magnifyingPin;
+  let activeTextBox;
+  let trash;
+  let menu = new PIXI.Container()
+  let xButtonTimeline = new TimelineLite({paused: true})
+
 
   let whiskerMin = new PIXI.Graphics()
   let whiskerMax = new PIXI.Graphics()
@@ -69,11 +83,10 @@ export const init = (app, setup) => {
     strip.onUpdate = ()=> {
       drawWhiskers()
     }
-    //strip.alpha = 0.75
-    strip.on("pointerdown",onStripDown)
-    strip.on("pointerup",checkForDeletion)
-    strip.on("pointerupoutside",checkForDeletion)
-    strips.push(strip)
+    objects.push(strip)
+    strip.on('pointerdown',onObjectDown)
+    strip.on('pointerup',onObjectUp)
+    strip.on('pointeroutside',onObjectUp)
     TweenLite.to(strip,{y: NEW_OBJ_Y})
     app.stage.addChild(strip)
         activeStrip = strip
@@ -92,11 +105,11 @@ export const init = (app, setup) => {
     }
 
     let chip = new Chip(numberline,state)
-    chip.on("pointerup",checkForDeletion)
-    chip.on("pointerupoutside",checkForDeletion)
+    chip.on("pointerdown",onObjectDown)
+    chip.on("pointerup",onObjectUp)
     chip.y = VIEW_HEIGHT
     chip.synch()
-    chips.push(chip)
+    objects.push(chip)
     app.stage.addChild(chip)
 
     const onUpdate = ()=>{
@@ -120,11 +133,11 @@ export const init = (app, setup) => {
 
     let chip = new Chip(numberline,state)
     chip.y = VIEW_HEIGHT
-    chip.on("pointerup",checkForDeletion)
-    chip.on("pointerupoutside",checkForDeletion)
+    chip.on("pointerdown",onObjectDown)
+    chip.on("pointerup",onObjectUp)
     chip.drawWhisker()
     chip.synch()
-    chips.push(chip)
+    objects.push(chip)
     app.stage.addChild(chip)
 
 
@@ -150,11 +163,11 @@ export const init = (app, setup) => {
     let chip = new Chip(numberline,state)
     chip.primeChip.descriptor.alpha = 0
     chip.y = VIEW_HEIGHT
-    chip.on("pointerup",checkForDeletion)
-    chip.on("pointerupoutside",checkForDeletion)
+    chip.on("pointerdown",onObjectDown)
+    chip.on("pointerup",onObjectUp)
     chip.drawWhisker()
     chip.synch()
-    chips.push(chip)
+    objects.push(chip)
     app.stage.addChild(chip)
 
 
@@ -166,6 +179,22 @@ export const init = (app, setup) => {
 
   }
 
+  function createEditableTextField(){
+
+    let newField = new EditableTextField("Text")
+    newField.textField.alpha = 1
+    newField.x = VIEW_WIDTH/2 
+    newField.y = VIEW_HEIGHT/4
+    newField.on("pointerdown",onObjectDown)
+    newField.on("pointerup",onObjectUp)
+    newField.on("pointerupoutside",onObjectUp)
+    newField.editButton.on("pointerdown",openDialog)
+    objects.push(newField)
+    app.stage.addChild(newField)
+
+    activeTextBox = newField
+
+  }
 
   function createMultiplicationStrip(){
 
@@ -184,82 +213,128 @@ export const init = (app, setup) => {
     let strip = new MultiplicationStrip(app,numberline,initialState)
     strip.x =  0
     strip.y = 1.1*VIEW_HEIGHT
-    strip.onUpdate = ()=> {    if (magnifyingPin.x < 0){
+    strip.on('pointerdown',onObjectDown)
+    strip.on('pointerup',onObjectUp)
+    strip.on('pointeroutside',onObjectUp)
+    strip.onUpdate = ()=> { if (magnifyingPin.x < 0){
       magnifyingPin.x = 0
     } else if (magnifyingPin.x > VIEW_WIDTH){
       magnifyingPin.x = VIEW_HEIGHT
     }
       drawWhiskers()
     }
-    //strip.alpha = 0.75
-    strip.on("pointerdown",onStripDown)
-    strip.on("pointerup",checkForDeletion)
-    strip.on("pointerupoutside",checkForDeletion)
-    strips.push(strip)
+    objects.push(strip)
     TweenLite.to(strip,{y: NEW_OBJ_Y})
     app.stage.addChild(strip)
         activeStrip = strip
   }
 
 
-  function checkForDeletion(){
-    if (this.y < BTN_DIM){
-      if (this.TYPE == 'c'){
-        deleteChip(this)
-      } else {
-        deleteStrip(this)
-      }
+  function placeXButton(obj){
+  
+    if (obj.TYPE == 'c'){
+      trash.x = obj.x 
+      trash.y = (obj.y + numberline.y)/2
+    } else if (obj.TYPE == 'et'){
+      trash.x = obj.x - trash.width/2
+      trash.y = obj.y - trash.height/2
+    }else {
+      trash.x = obj.minDragger.getGlobalPosition().x
+      trash.y = (obj.y + numberline.y)/2
     }
+
+    trash.value = numberline.getNumberLineFloatValueFromPosition(trash.x)
+    xButtonTimeline.restart()
+  
   }
+
+
+  function onObjectUp(){
+    placeXButton(this)
+  }
+
+  function onObjectDown(){
+    activeObject = this
+    trash.alpha = 0
+    xButtonTimeline.kill()
+    app.stage.addChild(this)
+    app.stage.addChild(trash)
+    drawWhiskers()
+  }
+
+  function deleteActiveObject(){
+  
+    trash.alpha = 0
+    xButtonTimeline.kill()
+
+    if (activeObject.TYPE == 'c'){
+      deleteChip(activeObject)
+    } else if (activeObject.TYPE == 'et'){
+      deleteTextField(activeObject)
+    }else if (activeObject.TYPE == 's') {
+      deleteStrip(activeObject)
+    }
+
+    if (objects.length == 0){
+      activeObject = null
+    }
+}
 
   function deleteStrip(obj){
     activeStrip = null
     whiskerMax.clear()
     whiskerMin.clear()
-    let i = strips.indexOf(obj)
-    strips.splice(i,1)
+    let i = objects.indexOf(obj)
+    objects.splice(i,1)
 
     const onComplete = () => {
       app.stage.removeChild(obj)
       obj.destroy()
     } 
-    TweenLite.to(obj,{y: -VIEW_HEIGHT/2,onComplete: onComplete})
+    TweenLite.to(obj,{y: LEAVE_Y,onComplete: onComplete})
+  }
+
+  function deleteTextField(obj){
+    activeObject = null
+    let i = objects.indexOf(obj)
+    objects.splice(i,1)
+
+    const onComplete = () => {
+      app.stage.removeChild(obj)
+      obj.destroy()
+    } 
+    TweenLite.to(obj,{y: LEAVE_Y,onComplete: onComplete})
   }
 
   function deleteChip(obj){
     activeStrip = null
     whiskerMax.clear()
     whiskerMin.clear()
-    let i = chips.indexOf(obj)
-    chips.splice(i,1)
+    let i = objects.indexOf(obj)
+    objects.splice(i,1)
 
     const onComplete = () => {
       app.stage.removeChild(obj)
       obj.destroy()
     } 
-    TweenLite.to(obj,{y: -VIEW_HEIGHT/2,onComplete: onComplete})
-  }
-
-  function onStripDown(){
-    activeStrip = this 
-    app.stage.addChild(this)
+    TweenLite.to(obj,{y: LEAVE_Y,onComplete: onComplete})
   }
 
 
   function drawWhiskers(){
 
-    if (activeStrip != null){
+    if (activeObject != null){
 
       whiskerMax.clear()
       whiskerMin.clear()
       whiskerMax.lineStyle(2,0xffffff)
-      whiskerMax.moveTo(activeStrip.max-1,activeStrip.y)
-      whiskerMax.lineTo(activeStrip.max-1,numberline.y)
+      whiskerMax.moveTo(activeObject.max-1,activeObject.y)
+      whiskerMax.lineTo(activeObject.max-1,numberline.y)
       whiskerMax.alpha = 0.75
 
       whiskerMin.lineStyle(2,0xffffff)
-      whiskerMin.moveTo(activeStrip.min+1,activeStrip.y)
-      whiskerMin.lineTo(activeStrip.min+1,numberline.y)
+      whiskerMin.moveTo(activeObject.min+1,activeObject.y)
+      whiskerMin.lineTo(activeObject.min+1,numberline.y)
       whiskerMin.alpha = 0.75
     }
 
@@ -274,6 +349,8 @@ export const init = (app, setup) => {
     this.anchorPoint = e.data.global.x;
     this.initialNumberlineMin = numberline.minFloat;
     this.initialNumberlineMax = numberline.maxFloat;
+    trash.alpha = 0
+    xButtonTimeline.kill()
   }
 
   function backgroundPointerMove(e) {
@@ -288,9 +365,13 @@ export const init = (app, setup) => {
       let _max = this.initialNumberlineMax + delta;
       numberline.draw(_min, _max);
 
+      objects.forEach(o=>{
+        if (o.TYPE == "c" || o.TYPE == 's'){
+          o.synch()
+        }
+      })
 
-      [...strips,...chips].forEach(s=> {s.synch()})
-  
+
       magnifyingPin.synch()
       drawWhiskers()
     } 
@@ -340,68 +421,46 @@ export const init = (app, setup) => {
   }
 
 
-  // Called on resize
-  let execute;
-  function resize(newFrame) {
-  clearTimeout(execute);
-  
-  execute = setTimeout(()=>{
+  function layoutView(newFrame){
     updateLayoutParams(newFrame)
     backGround.width = newFrame.width 
     backGround.height = newFrame.height
     numberline.redraw(newFrame)
     numberline.y = VIEW_HEIGHT/2
-    if (strips.length != 0) {
-      strips.forEach(s=>s.redraw(newFrame))
-      drawWhiskers()
-    } 
-
-    if (chips.length != 0){
-      chips.forEach(c=>{
-        c.redraw(newFrame)
-        c.synch()
-      })
-    }
 
 
-    chipGeneratorBtn.x = VIEW_WIDTH - (BTN_DIM/3 + 4*BTN_DIM)
-    chipGeneratorBtn.y = BTN_DIM/8
-    chipGeneratorBtn.height = BTN_DIM
-    chipGeneratorBtn.width = chipGeneratorBtn.height
+    objects.forEach(o=>{
+      if (o.TYPE == "c"){
+        o.redraw(newFrame)
+        o.synch()
+      } else if (o.TYPE == "s"){
+        o.redraw(newFrame)
+        drawWhiskers()
+      } 
+    })
 
 
-    blankchipGeneratorBtn.x = VIEW_WIDTH - (BTN_DIM/3 + 3*BTN_DIM)
-    blankchipGeneratorBtn.y = BTN_DIM/8
-    blankchipGeneratorBtn.height = BTN_DIM
-    blankchipGeneratorBtn.width = blankchipGeneratorBtn.height
+    menu.width = BTN_DIM*7
+    menu.height = BTN_DIM
+    menu.x = VIEW_WIDTH-menu.width
+    menu.y = menu.height 
 
-
-
-    stripGeneratorBtn.x = VIEW_WIDTH - (BTN_DIM/3 + BTN_DIM)
-    stripGeneratorBtn.y = BTN_DIM/8
-    stripGeneratorBtn.height = BTN_DIM
-    stripGeneratorBtn.width = stripGeneratorBtn.height
-
-    fractionBarGeneratorBtn.x = VIEW_WIDTH - (BTN_DIM/3 + 2*BTN_DIM)
-    fractionBarGeneratorBtn.y = BTN_DIM/8
-    fractionBarGeneratorBtn.height = BTN_DIM
-    fractionBarGeneratorBtn.width = fractionBarGeneratorBtn.height
-
-    zoomWindowBtn.x = VIEW_WIDTH - (BTN_DIM/3 + 5*BTN_DIM)
-    zoomWindowBtn.y = BTN_DIM/8
-    zoomWindowBtn.height = BTN_DIM
-    zoomWindowBtn.width = zoomWindowBtn.height
-
-    magnifyingPin.grabber.width = BTN_DIM/1.5
-    magnifyingPin.grabber.height = BTN_DIM/1.5
+    magnifyingPin.grabber.width = BTN_DIM
+    magnifyingPin.grabber.height = BTN_DIM
     magnifyingPin.y = numberline.y + VIEW_HEIGHT/4
     magnifyingPin.drawWhisker()
 
     app.renderer.resize(newFrame.width,newFrame.height)
+  }
 
+
+  // Called on resize
+  let execute;
+  function resize(newFrame) {
+  clearTimeout(execute);
+  execute = setTimeout(()=>{
+      layoutView(newFrame)
     },500);
-
-
   }
 
 
@@ -415,7 +474,14 @@ export const init = (app, setup) => {
 
     VIEW_WIDTH = frame.width
     VIEW_HEIGHT = frame.height
-    BTN_DIM =  Math.min(VIEW_WIDTH,VIEW_HEIGHT)/10
+    BTN_DIM =  Math.min(VIEW_WIDTH,VIEW_HEIGHT)/15
+    DELETE_ZONE = {x: 0,y:0,width:2*BTN_DIM,height: 2*BTN_DIM}
+    LEAVE_Y = -2*BTN_DIM
+  }
+
+  function openDialog(){
+    setup.arena.setState({text: activeTextBox.textField.text})
+    setup.arena.handleClickOpen()
   }
 
   // Loading Script
@@ -434,7 +500,6 @@ export const init = (app, setup) => {
     app.stage.addChild(backGround)
 
 
-    
     setTimeout(()=>{
       backGround.texture = BLUE_GRADIENT_TEXTURE
       backGround.width = VIEW_WIDTH
@@ -451,67 +516,111 @@ export const init = (app, setup) => {
     app.stage.addChild(numberline)
 
 
+    app.updateActiveTextBox = (text)=>{
+      activeTextBox.updateText(text)
+    }
+
     numberline.onUpdate = () => {
-      [...strips,...chips].forEach(s=> {s.synch()})
+      
+
+      objects.forEach(o=>{
+        if (o.TYPE == "c"){
+          o.synch()
+        } else if (o.TYPE == "s"){
+          o.synch()
+          drawWhiskers()
+        } 
+      })
       magnifyingPin.synch()
+      trash.alpha = 0
+      xButtonTimeline.kill()
       drawWhiskers()
     } 
 
 
     stripGeneratorBtn = new PIXI.Sprite(STRIP_ICON_TEXTURE)
+    stripGeneratorBtn.anchor.set(0.5)
     stripGeneratorBtn.interactive = true 
-    stripGeneratorBtn.x = VIEW_WIDTH - (BTN_DIM/3 + BTN_DIM)
-    stripGeneratorBtn.y = BTN_DIM/8
+    stripGeneratorBtn.x = 0
+    stripGeneratorBtn.y = 0
     stripGeneratorBtn.height = BTN_DIM
     stripGeneratorBtn.width = stripGeneratorBtn.height
     stripGeneratorBtn.on('pointerdown',createMultiplicationStrip)
-    app.stage.addChild(stripGeneratorBtn)
+    menu.addChild(stripGeneratorBtn)
+
+
+    editableTextGeneratorBtn = new PIXI.Sprite.from(CONST.ASSETS.EDIT_BUTTON)
+    editableTextGeneratorBtn.anchor.set(0.5)
+    editableTextGeneratorBtn.interactive = true 
+    editableTextGeneratorBtn.x = 5*BTN_DIM
+    editableTextGeneratorBtn.y = 0
+    editableTextGeneratorBtn.height = BTN_DIM
+    editableTextGeneratorBtn.width = stripGeneratorBtn.height
+    editableTextGeneratorBtn.on('pointerdown',createEditableTextField)
+    menu.addChild(editableTextGeneratorBtn)
 
     fractionBarGeneratorBtn = new PIXI.Sprite(FRACTION_BAR_ICON_TEXTURE)
+    fractionBarGeneratorBtn.anchor.set(0.5)
     fractionBarGeneratorBtn.interactive = true 
-    fractionBarGeneratorBtn.x = VIEW_WIDTH - (BTN_DIM/3 + 2*BTN_DIM)
-    fractionBarGeneratorBtn.y = BTN_DIM/8
+    fractionBarGeneratorBtn.x = BTN_DIM
+    fractionBarGeneratorBtn.y = 0
     fractionBarGeneratorBtn.height = BTN_DIM
     fractionBarGeneratorBtn.width = fractionBarGeneratorBtn.height
     fractionBarGeneratorBtn.on('pointerdown',createFractionStrip)
-    app.stage.addChild(fractionBarGeneratorBtn)
+    menu.addChild(fractionBarGeneratorBtn)
 
     chipGeneratorBtn = new PIXI.Sprite(PRIME_CHIP_TEXTURE)
+    chipGeneratorBtn.anchor.set(0.5)
     chipGeneratorBtn.interactive = true 
-    chipGeneratorBtn.x = VIEW_WIDTH - (BTN_DIM/3 + 3*BTN_DIM)
-    chipGeneratorBtn.y = BTN_DIM/8
+    chipGeneratorBtn.x = 2*BTN_DIM
+    chipGeneratorBtn.y = 0
     chipGeneratorBtn.height = BTN_DIM
     chipGeneratorBtn.width = chipGeneratorBtn.height
     chipGeneratorBtn.on('pointerdown',createPrimeChip)
-    app.stage.addChild(chipGeneratorBtn)
+    menu.addChild(chipGeneratorBtn)
 
     noDescChipGeneratorBtn = new PIXI.Sprite(NO_DESC_CHIP_TEXTURE)
+    noDescChipGeneratorBtn.anchor.set(0.5)
     noDescChipGeneratorBtn.interactive = true 
-    noDescChipGeneratorBtn.x = VIEW_WIDTH - (BTN_DIM/3 + 4*BTN_DIM)
-    noDescChipGeneratorBtn.y = BTN_DIM/8
+    noDescChipGeneratorBtn.x = 3*BTN_DIM
+    noDescChipGeneratorBtn.y = 0
     noDescChipGeneratorBtn.height = BTN_DIM
     noDescChipGeneratorBtn.width = noDescChipGeneratorBtn.height
     noDescChipGeneratorBtn.on('pointerdown',createNoDescPrimeChip)
-    app.stage.addChild(noDescChipGeneratorBtn)
+    menu.addChild(noDescChipGeneratorBtn)
 
     blankchipGeneratorBtn = new PIXI.Sprite(CLEAR_PRIME_CHIP_TEXTURE)
+    blankchipGeneratorBtn.anchor.set(0.5)
     blankchipGeneratorBtn.interactive = true 
-    blankchipGeneratorBtn.x = VIEW_WIDTH - (BTN_DIM/3 + 5*BTN_DIM)
-    blankchipGeneratorBtn.y = BTN_DIM/8
+    blankchipGeneratorBtn.x = 4*BTN_DIM
+    blankchipGeneratorBtn.y = 0
     blankchipGeneratorBtn.height = BTN_DIM
     blankchipGeneratorBtn.width = blankchipGeneratorBtn.height
     blankchipGeneratorBtn.on('pointerdown',createBlankPrimeChip)
-    app.stage.addChild(blankchipGeneratorBtn)
+    menu.addChild(blankchipGeneratorBtn)
 
     zoomWindowBtn = new PIXI.Sprite(ZOOM_BUTTON_TEXTURE)
+    zoomWindowBtn.anchor.set(0.5)
     zoomWindowBtn.interactive = true 
-    zoomWindowBtn.x = VIEW_WIDTH - (BTN_DIM/3 + 6*BTN_DIM)
-    zoomWindowBtn.y = BTN_DIM/8
+    zoomWindowBtn.x = 6*BTN_DIM
+    zoomWindowBtn.y = 0
     zoomWindowBtn.height = BTN_DIM
     zoomWindowBtn.width = zoomWindowBtn.height
     zoomWindowBtn.on('pointerdown',zoomFit)
-    app.stage.addChild(zoomWindowBtn)
+    menu.addChild(zoomWindowBtn)
 
+    trash = new PIXI.Sprite(TRASH_TEXTURE)
+    trash.anchor.set(0.5)
+    trash.interactive = true
+    trash.x = DELETE_ZONE.x 
+    trash.y = DELETE_ZONE.y
+    trash.width = DELETE_ZONE.width/4
+    trash.height = DELETE_ZONE.height/4
+    trash.on('pointerdown',deleteActiveObject)
+    app.stage.addChild(trash)
+
+
+    app.stage.addChild(menu)
     app.stage.addChild(whiskerMin)
     app.stage.addChild(whiskerMax)
 
@@ -522,11 +631,16 @@ export const init = (app, setup) => {
     }
 
     magnifyingPin = new MagnifyingPin(numberline,pinState)
-    magnifyingPin.x = numberline.getNumberLinePositionFromFloatValue(0)
-    magnifyingPin.y = numberline.y + VIEW_HEIGHT/4
+    magnifyingPin.x = VIEW_WIDTH/2
     magnifyingPin.drawWhisker()
-    magnifyingPin.value = 0
+    magnifyingPin.value = numberline.getNumberLineFloatValueFromPosition(magnifyingPin.x)
     app.stage.addChild(magnifyingPin)
+
+    xButtonTimeline.to(trash,{alpha: 1, duration: 0})
+    xButtonTimeline.to(trash,{alpha: 1, duration: 1})
+    xButtonTimeline.to(trash,{alpha: 0,duration: 0.5})
+
+    layoutView({width: setup.width,height: setup.height})
 
   }
 

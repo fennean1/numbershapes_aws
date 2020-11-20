@@ -1,5 +1,4 @@
 import blue_gradient from "../assets/blue-gradient.png";
-import pure_glass_bubble from "../assets/PureGlassBubble.png"
 import fraction_bar_icon from "../assets/FractionBarIcon.png"
 import strip_icon from "../assets/StripIcon.png"
 import arrow_icon from "../assets/ArrowIcon.png"
@@ -9,10 +8,15 @@ import zoom_button from "../assets/ZoomButton.png"
 import prime_climb_icon from "../assets/PrimeClimbIcon.png"
 import clear_prime_climb_icon from "../assets/ClearPrimeClimbIcon.png"
 import no_desc_prime_climb_icon from "../assets/PrimeChipNoDescriptor.png"
+import edit_button from "../assets/EditButton.png"
+import seven from "../assets/Seven.png"
+import two from "../assets/Two.png"
+import five from "../assets/Five.png"
+import three from "../assets/Three.png"
+import trash from "../assets/Trash.png"
 
 export const ASSETS = {
     BLUE_GRADIENT: blue_gradient,
-    PURE_GLASS_BUBBLE: pure_glass_bubble,
     PIN: pin,
     STRIP_ICON: strip_icon,
     ARROW_ICON: arrow_icon,
@@ -22,6 +26,12 @@ export const ASSETS = {
     PRIME_CLIMB_ICON: prime_climb_icon,
     NO_DESC_PRIME_CLIMB_ICON: no_desc_prime_climb_icon,
     CLEAR_PRIME_CLIMB_ICON: clear_prime_climb_icon,
+    EDIT_BUTTON: edit_button,
+    SEVEN: seven,
+    TWO: two,
+    THREE: three,
+    FIVE: five,
+    TRASH: trash,
 }
 
 export const CUISENAIRE_COLORS = {

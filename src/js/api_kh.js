@@ -46,6 +46,7 @@ export class PrimeChip extends PIXI.Container {
     }
 
     this.primeColor = 0xD3604F
+    this.orbitals = []
 
     this.holePercentage = 0.50
 
@@ -55,9 +56,26 @@ export class PrimeChip extends PIXI.Container {
     this.descriptor.style.fontSize = this.radius*this.holePercentage
     this.descriptor.anchor.set(0.5)
 
+    const SEVEN = new PIXI.Texture.from(CONST.ASSETS.SEVEN)
+    const FIVE = new PIXI.Texture.from(CONST.ASSETS.FIVE)
+    const TWO = new PIXI.Texture.from(CONST.ASSETS.TWO)
+    const THREE = new PIXI.Texture.from(CONST.ASSETS.THREE)
+
+    this.orbitalTextures = {
+      2: TWO,
+      3: THREE,
+      5: FIVE,
+      7: SEVEN,
+    }
 
     this.addChild(this.graphics)
     this.addChild(this.descriptor)
+
+    for (let i = 0;i<20;i++){
+      let orb = new PIXI.Sprite()
+      orb.anchor.set(0.5)
+      this.orbitals.push(orb)
+    }
 
     this.draw(this.state.value)
 
@@ -77,6 +95,7 @@ export class PrimeChip extends PIXI.Container {
     this.state.num = num
     let digits = digitCount(Math.abs(num))
 
+    this.orbitals.forEach(o=>this.removeChild(o))
 
     this.primeFactorArray = getPrimeFactorization(num)
     let theta = (2*Math.PI)/this.primeFactorArray.length
@@ -91,7 +110,6 @@ export class PrimeChip extends PIXI.Container {
     this.descriptor.style.fontSize = ri/Math.sqrt(digits)  
     this.descriptor.text = num
 
-
     this.graphics.clear()
     this.graphics.lineStyle(ri/15,0xffffff)
 
@@ -99,6 +117,19 @@ export class PrimeChip extends PIXI.Container {
       
       let pF = this.primeFactorArray[0]
       let color;
+
+
+     if (this.orbitalTextures[pF]){
+      let rm = (ri+ro)/2
+      let point = {x: rm*Math.cos(-d),y: rm*Math.sin(-d)}
+      let orb = this.orbitals[0]
+      orb.texture = this.orbitalTextures[pF]
+      orb.width = 0.8*(ro-ri)
+      orb.height = 0.8*(ro-ri)
+      orb.x = point.x 
+      orb.y = point.y
+      this.addChild(orb)
+     } 
 
     if (this.colors[pF]){
         color = this.colors[pF]
@@ -138,6 +169,25 @@ export class PrimeChip extends PIXI.Container {
           this.graphics.beginFill(color)
         } 
   
+
+        let rm = (ri+ro)/2
+
+        let point = {x: rm*Math.cos(theta*(i+0.5)-d),y: rm*Math.sin(theta*(i+0.5)-d)}
+        let orb = this.orbitals[i]
+        orb.width = 0.8*(ro-ri)
+        orb.height = 0.8*(ro-ri)
+        orb.x = point.x 
+        orb.y = point.y
+        // Check 
+
+        if (this.orbitalTextures[f]) {
+          orb.texture = this.orbitalTextures[f]
+          this.addChild(orb)
+        } else {
+  
+        }
+
+
         this.graphics.moveTo(ri*Math.cos(theta*i-d),ri*Math.sin(theta*i-d))
         this.graphics.lineTo(ro*Math.cos(theta*i-d),ro*Math.sin(theta*i-d))
         this.graphics.arc(0,0,ro,theta*i-d,theta*(i+1)-d)
@@ -210,7 +260,7 @@ export class MultiplicationStrip extends PIXI.Container {
 
     this.state = state
 
-    this.TYPE = 'ms'
+    this.TYPE = 's'
     // Access _height this through 'state' in the future.
     this._height = this.state.frame.height*this.state.heightRatio;
     this.numberline = numberline;
@@ -537,7 +587,7 @@ export class FractionStrip extends PIXI.Container {
 
 
     this.HEIGHT_RATIO = 1/20
-    this.TYPE = 'fs'
+    this.TYPE = 's'
     this.state = state
 
     // Access _height this through 'state' in the future.
@@ -1508,6 +1558,7 @@ export class HorizontalNumberLine extends PIXI.Container {
     this.lineThickness = width / 300;
     this.interactive = true;
     this.length = width;
+    this.app = app
 
     this.flexPoint = 0;
 
@@ -1961,14 +2012,32 @@ export class HorizontalNumberLine extends PIXI.Container {
   }
 
   redraw(newFrame){
+
      this._width = newFrame.width 
      this.length = newFrame.width
-     this.line.width = this._width
-     this.lineThickness = this._width/300
-     this.line.height = this.lineThickness
-     this.line.y = 0
+
+     this.setLayoutParams(this.min,this.max)
+
      this.hitArea.width = this._width 
      this.hitArea.height = this.height
+
+
+     this.line.clear()
+     this.line.lineStyle(this.lineThickness, 0x000000);
+     this.line.lineTo(this._width, 0);
+     this.line.y = 0
+
+     this.majorTick.clear()
+     this.majorTick.lineStyle(this.majorTickThickness, 0x000000);
+     this.majorTick.lineTo(0, this.majorTickHeight);
+     this.majorTickTexture = this.app.renderer.generateTexture(this.majorTick);
+ 
+     this.minorTick.clear()
+     this.minorTick.lineStyle(this.minorTickThickness, 0x000000);
+     this.minorTick.lineTo(0, this.minorTickHeight);
+     this.minorTickTexture = this.app.renderer.generateTexture(this.minorTick);
+
+
      this.draw()
   }
 
@@ -3493,4 +3562,84 @@ export class Chip extends PIXI.Container {
       this.whisker.lineTo(0,this.numberline.y -this.y)
   }
 
+}
+
+
+
+
+export class EditableTextField extends PIXI.Container {
+  constructor(text){
+    super()
+
+
+    this.editButton = new PIXI.Sprite.from(CONST.ASSETS.EDIT_BUTTON)
+    this.editButton.interactive = true
+
+    this.textField = new PIXI.Text()
+    this.updateText(text)
+    this.editButton.alpha = 1
+    this.dragged = false
+    this.touching = false
+    this.interactive = true
+    this.lockX = false 
+    this.lockY = false
+
+    this.TYPE = 'et'
+
+    this.fadeAnimation = new TimelineLite({paused: true})
+    this.fadeAnimation.to(this.editButton,{alpha: 1,duration:1})
+    this.fadeAnimation.to(this.editButton,{alpha: 0,duration:0.25})
+
+    this.on('pointerdown',this.pointerDown)
+    this.on('pointermove',this.pointerMove)
+    this.on('pointerup',this.pointerUp)
+    this.on('pointerupoutside',this.pointerUpOutside)
+    this.addChild(this.editButton)
+    this.addChild(this.textField)
+
+  }
+
+
+  updateText(text){
+   this.textField.text = text
+   this.editButton.alpha = 0
+   this.editButton.height = this.textField.height 
+   this.editButton.width = this.textField.height
+   this.editButton.x = this.textField.width 
+   this.editButton.y = -this.textField.height
+  }
+ 
+
+  pointerDown(event){
+    this.fadeAnimation.kill()
+    this.editButton.alpha = 1
+    this.touching = true
+    this.dragged = false
+    this.deltaTouch = {
+      x: this.x - event.data.global.x,
+      y: this.y - event.data.global.y
+    }
+  }
+
+  
+  pointerMove(event){
+    if (this.touching){
+      if (!this.lockX){
+        this.x = event.data.global.x + this.deltaTouch.x
+      } 
+      if (!this.lockY){
+        this.y = event.data.global.y + this.deltaTouch.y
+      }
+      this.dragged = true
+    }
+  }
+
+  pointerUp(event){
+    this.touching = false
+    this.fadeAnimation.restart()
+  }
+  
+  pointerUpOutside(event){
+    this.touching = false
+  }
 }

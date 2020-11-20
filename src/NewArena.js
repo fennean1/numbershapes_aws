@@ -7,16 +7,17 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import "./App.css";
 
-import * as PIXI from "pixi.js-legacy";
-
 class Arena extends Component {
   constructor() {
     super();
     this.app = {};
+    this.dialog = React.createRef()
     this.state = {
       open: false,
+      text: "Balls"
     };
   }
+
 
   handleClickOpen(){
     this.setState({open: true})
@@ -35,31 +36,22 @@ class Arena extends Component {
     this.setState({open: false})
   };
 
-
   componentWillUnmount() {
     this.app.destroy(true);
-  }
-
-  componentWillMount() {
-
-    PIXI.settings.RESOLUTION = 2
-    this.app = new PIXI.Application({forceCanvas: true});
-    this.app.renderer.backgroundColor = 0xffffff;
-    this.app.renderer.resolution = 2
-    this.app.renderer.autoDensity = true;
   }
 
   loadInstructions() {
     this.setState({ open: true });
   }
 
-  resize(){
-    this.app.resize({width: this.gameCanvas.clientWidth,height: this.gameCanvas.clientHeight})
+  resize() {
+    this.app.resize({
+      width: this.gameCanvas.clientWidth,
+      height: this.gameCanvas.clientHeight,
+    });
   }
 
   componentDidMount() {
-    this.gameCanvas.appendChild(this.app.view);
-
     const setup = {
       height: this.gameCanvas.clientHeight,
       width: this.gameCanvas.clientWidth,
@@ -67,20 +59,14 @@ class Arena extends Component {
       arena: this,
     };
 
-    this.app.renderer.resize(
-      this.gameCanvas.clientWidth,
-      this.gameCanvas.clientHeight
-    );
+    this.app = this.props.script(this.gameCanvas, setup);
 
-    this.props.script(this.app, setup);
-
-
-    window.addEventListener('resize',()=>this.resize())
+    window.addEventListener("resize", () => this.resize());
   }
 
   // Need fullscreen prop
   render() {
-    let styleType = this.props.fullscreen ? { height: "100vh"} : null;
+    let styleType = this.props.fullscreen ? { height: "100vh" } : null;
     return (
       <div>
         <div
@@ -89,7 +75,7 @@ class Arena extends Component {
             this.gameCanvas = me;
           }}
         />
-                <Dialog
+        <Dialog
           ref={this.dialog}
           open={this.state.open}
           onClose={this.handleClose.bind(this)}
