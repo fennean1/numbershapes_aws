@@ -66,3 +66,14 @@ export const DECORATORS = {
   coreSkillDescription:
     "Here is a lotere is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
 };
+
+
+export const PRIME_LINE = {
+  shortText: "Manipulative Based On The Popular Board Game ",
+  title: "Prime Line",
+  previewImg: "PrimeLine.png",
+  tool: "/primeline",
+  gameShow: 'https://app.knowledgehook.com/app/Activity/0fbd9f59-0e21-eb11-974c-0050568c42b6',
+  coreSkillDescription:
+    "Here is a lotere is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
+};

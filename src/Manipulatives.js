@@ -35,7 +35,7 @@ export default class Interactives extends Component {
             <div style={{ flexDirection: "column", display: "flex", flex: 1 }}>
             <div style={{ margin: 5, flex: 1 }}>
                 {" "}
-                <InteractiveCard  data={ACTIVITIES.DUAL_NUMBER_LINE} />
+                <InteractiveCard  data={ACTIVITIES.PRIME_LINE} />
               </div>
             </div>
             </Grid>

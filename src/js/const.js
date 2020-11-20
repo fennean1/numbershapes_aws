@@ -14,6 +14,7 @@ import two from "../assets/Two.png"
 import five from "../assets/Five.png"
 import three from "../assets/Three.png"
 import trash from "../assets/Trash.png"
+import question_mark from "../assets/QuestionMark.png"
 
 export const ASSETS = {
     BLUE_GRADIENT: blue_gradient,
@@ -32,6 +33,7 @@ export const ASSETS = {
     THREE: three,
     FIVE: five,
     TRASH: trash,
+    QUESTION_MARK: question_mark,
 }
 
 export const CUISENAIRE_COLORS = {

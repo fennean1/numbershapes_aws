@@ -6,8 +6,7 @@ import {
   TweenLite,
   TimelineLite
 } from "gsap";
-import {HorizontalNumberLine,AdjustableStrip,Chip,FractionStrip, MagnifyingPin, MultiplicationStrip, EditableTextField} from "./api_kh.js";
-import { Tween } from "jquery";
+import {HorizontalNumberLine,Chip,FractionStrip, MagnifyingPin, MultiplicationStrip, EditableTextField} from "./api_kh.js";
 
 export const init = (app, setup) => {
 
@@ -31,7 +30,6 @@ export const init = (app, setup) => {
   const MOVER_DOT_TEXTURE = new PIXI.Texture.from(MagnifyingGlass)
   const ZOOM_BUTTON_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.ZOOM_BUTTION)
   const TRASH_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.TRASH)
-  
   const BLUE_GRADIENT_TEXTURE = new PIXI.Texture.from(blueGradient)
 
   // Objects
@@ -49,6 +47,7 @@ export const init = (app, setup) => {
   let zoomWindowBtn;
   let magnifyingPin;
   let activeTextBox;
+  let learnMoreBtn;
   let trash;
   let menu = new PIXI.Container()
   let xButtonTimeline = new TimelineLite({paused: true})
@@ -445,6 +444,11 @@ export const init = (app, setup) => {
     menu.x = VIEW_WIDTH-menu.width
     menu.y = menu.height 
 
+    learnMoreBtn.x = BTN_DIM/2
+    learnMoreBtn.y = BTN_DIM/2
+    learnMoreBtn.width = BTN_DIM/2
+    learnMoreBtn.height = BTN_DIM/2
+
     magnifyingPin.grabber.width = BTN_DIM
     magnifyingPin.grabber.height = BTN_DIM
     magnifyingPin.y = numberline.y + VIEW_HEIGHT/4
@@ -482,6 +486,10 @@ export const init = (app, setup) => {
   function openDialog(){
     setup.arena.setState({text: activeTextBox.textField.text})
     setup.arena.handleClickOpen()
+  }
+
+  function openInfo(){
+    setup.arena.handleInfoOpen()
   }
 
   // Loading Script
@@ -536,6 +544,17 @@ export const init = (app, setup) => {
       xButtonTimeline.kill()
       drawWhiskers()
     } 
+
+
+    learnMoreBtn = new PIXI.Sprite.from(CONST.ASSETS.QUESTION_MARK)
+    learnMoreBtn.interactive = true 
+    learnMoreBtn.anchor.set(0.5)
+    learnMoreBtn.x = BTN_DIM/2
+    learnMoreBtn.y = BTN_DIM/2
+    learnMoreBtn.width = BTN_DIM/2
+    learnMoreBtn.height = BTN_DIM/2
+    learnMoreBtn.on('pointerdown',openInfo) 
+    app.stage.addChild(learnMoreBtn)
 
 
     stripGeneratorBtn = new PIXI.Sprite(STRIP_ICON_TEXTURE)
