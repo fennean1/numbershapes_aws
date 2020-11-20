@@ -37,9 +37,6 @@ export const init = (app, setup) => {
   // Objects
   let numberline;
   let backGround;
-  let strips = [];
-  let chips = [];
-  let textFields = []
   let activeObject;
   let objects = []
   let activeStrip = null
@@ -323,7 +320,7 @@ export const init = (app, setup) => {
 
   function drawWhiskers(){
 
-    if (activeObject != null){
+    if (activeObject != null && activeObject.TYPE == "s"){
 
       whiskerMax.clear()
       whiskerMin.clear()
@@ -390,6 +387,9 @@ export const init = (app, setup) => {
 
 
   function zoomFit(){
+
+    let strips = objects.filter(o=>o.TYPE == 's')
+    let chips = objects.filter(o=>o.TYPE == 'c')
 
     if (strips.length !=0 || chips.length > 1){
 
