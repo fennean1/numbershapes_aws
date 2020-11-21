@@ -46,7 +46,6 @@ export const ARROWS = {
     "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
 };
 
-
 export const DUAL_NUMBER_LINE = {
   shortText: "Proportions & Multiplication",
   title: "Dual Number Line",

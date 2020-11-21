@@ -653,11 +653,21 @@ export const init = (app, setup) => {
     magnifyingPin.x = VIEW_WIDTH/2
     magnifyingPin.drawWhisker()
     magnifyingPin.value = numberline.getNumberLineFloatValueFromPosition(magnifyingPin.x)
+    numberline.flexPoint = magnifyingPin.value
     app.stage.addChild(magnifyingPin)
 
-    xButtonTimeline.to(trash,{alpha: 1, duration: 0})
+
+    const onComplete1 = ()=>{
+      trash.interactive = true
+    }
+
+    const onComplete2 = ()=>{
+      trash.interactive = false
+    }
+
+    xButtonTimeline.to(trash,{alpha: 1, duration: 0,onComplete: onComplete1})
     xButtonTimeline.to(trash,{alpha: 1, duration: 1})
-    xButtonTimeline.to(trash,{alpha: 0,duration: 0.5})
+    xButtonTimeline.to(trash,{alpha: 0,duration: 0.5,onComplete: onComplete2})
 
     layoutView({width: setup.width,height: setup.height})
 

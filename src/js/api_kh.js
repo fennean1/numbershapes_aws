@@ -45,23 +45,30 @@ export class PrimeChip extends PIXI.Container {
       7: 0x887CB6,
     }
 
+
     this.primeColor = 0xD3604F
     this.orbitals = []
 
     this.holePercentage = 0.50
 
+
+    this.rainbowSprite = new PIXI.Sprite.from(CONST.ASSETS.RAINBOW)
+
+    this.rainbowSprite.anchor.set(0.5)
     this.graphics = new PIXI.Graphics()
     this.descriptor = new PIXI.Text()
     this.descriptor.style.fontFamily = "Chalkboard SE"
     this.descriptor.style.fontSize = this.radius*this.holePercentage
     this.descriptor.anchor.set(0.5)
 
-    const SEVEN = new PIXI.Texture.from(CONST.ASSETS.SEVEN)
-    const FIVE = new PIXI.Texture.from(CONST.ASSETS.FIVE)
+    const ONE = new PIXI.Texture.from(CONST.ASSETS.ONE)
     const TWO = new PIXI.Texture.from(CONST.ASSETS.TWO)
     const THREE = new PIXI.Texture.from(CONST.ASSETS.THREE)
+    const FIVE = new PIXI.Texture.from(CONST.ASSETS.FIVE)
+    const SEVEN = new PIXI.Texture.from(CONST.ASSETS.SEVEN)
 
     this.orbitalTextures = {
+      1: ONE,
       2: TWO,
       3: THREE,
       5: FIVE,
@@ -113,6 +120,7 @@ export class PrimeChip extends PIXI.Container {
     this.graphics.clear()
     this.graphics.lineStyle(ri/15,0xffffff)
 
+
     if (this.primeFactorArray.length == 1){
       
       let pF = this.primeFactorArray[0]
@@ -139,14 +147,23 @@ export class PrimeChip extends PIXI.Container {
 
       this.graphics.beginFill(color)
 
+
+
       if (this.state.blank){
         color = 0xffffff
         this.graphics.lineStyle(ri/15,0x000000)
         this.graphics.beginFill(color)
       } 
-     
-      this.graphics.drawCircle(0,0,ro)
 
+      if (this.state.num == 0 && !this.state.blank){
+        this.addChild(this.rainbowSprite)
+        this.rainbowSprite.width = 2*ro
+        this.rainbowSprite.height = 2*ro
+        this.addChild(this.graphics)
+      } else {
+        this.removeChild(this.rainbowSprite)
+        this.graphics.drawCircle(0,0,ro)
+      }
 
     } else {
 
@@ -196,7 +213,6 @@ export class PrimeChip extends PIXI.Container {
       })
 
     }
-
 
     this.graphics.beginFill(0xffffff)
     this.graphics.drawCircle(0,0,ri)
@@ -292,7 +308,7 @@ export class MultiplicationStrip extends PIXI.Container {
     this.adjusterSprite.anchor.set(0.5, 0);
     this.adjusterSprite.width = this._height
     this.adjusterSprite.rotation = Math.PI
-    this.adjusterSprite.height = 1/0.75*this._height
+    this.adjusterSprite.height = 1/0.72*this._height
     this.adjusterSprite.lockY = true
     this.adjusterSprite.y = -this.height/2
 
@@ -628,7 +644,7 @@ export class FractionStrip extends PIXI.Container {
     this.adjusterSprite.anchor.set(0.5, 0);
     this.adjusterSprite.width = this._height
     this.adjusterSprite.rotation = Math.PI
-    this.adjusterSprite.height = 1/0.75*this._height
+    this.adjusterSprite.height = 1/0.72*this._height
     this.adjusterSprite.lockY = true
     this.adjusterSprite.y = -this.height/2
 
@@ -902,10 +918,8 @@ onAdjustPointerDown(){
 
 
       if (this.state.numerators[n] == 1){
-        console.log("n 1 to 0",n)
         this.state.numerators[n] = 0
       } else {
-        console.log("n 0 to 1",n)
         this.state.numerators[n] = 1
       }
   
