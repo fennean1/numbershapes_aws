@@ -37,7 +37,6 @@ export const init = (app, setup) => {
   let backGround;
   let activeObject;
   let objects = []
-  let activeStrip = null
   let stripGeneratorBtn;
   let fractionBarGeneratorBtn;
   let noDescChipGeneratorBtn
@@ -85,7 +84,7 @@ export const init = (app, setup) => {
     strip.on('pointeroutside',onObjectUp)
     TweenLite.to(strip,{y: NEW_OBJ_Y})
     app.stage.addChild(strip)
-        activeStrip = strip
+        activeObject = strip
   }
 
   function createPrimeChip(){
@@ -222,7 +221,7 @@ export const init = (app, setup) => {
     objects.push(strip)
     TweenLite.to(strip,{y: NEW_OBJ_Y})
     app.stage.addChild(strip)
-        activeStrip = strip
+        activeObject = strip
   }
 
 
@@ -277,7 +276,7 @@ export const init = (app, setup) => {
 }
 
   function deleteStrip(obj){
-    activeStrip = null
+    activeObject = null
     whiskerMax.clear()
     whiskerMin.clear()
     let i = objects.indexOf(obj)
@@ -303,7 +302,7 @@ export const init = (app, setup) => {
   }
 
   function deleteChip(obj){
-    activeStrip = null
+    activeObject = null
     whiskerMax.clear()
     whiskerMin.clear()
     let i = objects.indexOf(obj)
