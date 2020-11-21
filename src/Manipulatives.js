@@ -11,38 +11,36 @@ export default class Interactives extends Component {
 
   render() {
     return (
-      <div className = "clouds">
-      <div className = "container" style = {{paddingTop: 20}} >
-        <div style = {{display: "flex",flexDirection: 'column'}} >
-        <Grid  container>
-          <Grid xs = {12} item = {true}  sm = {4} >
-            <div style={{ flexDirection: "column", display: "flex", flex: 1 }}>
-            <div style={{ margin: 5, flex: 1 }}>
-                {" "}
-                <InteractiveCard  data={ACTIVITIES.MULTIPLICATION_GRID} />
-              </div>
-            </div>
+      <div className="clouds">
+        <div className="container" style={{ paddingTop: 20 }}>
+        <a href = "https://www.knowledgehook.com/">
+            <img className = "header" src={require("./assets/KnowledgehookLogo.png")} />
+          </a>
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <Grid container>
+              <Grid xs={12} item={true} sm={6}>
+                <div
+                  style={{ flexDirection: "column", display: "flex", flex: 1 }}
+                >
+                  <div style={{ margin: 5, flex: 1 }}>
+                    {" "}
+                    <InteractiveCard data={ACTIVITIES.MULTIPLICATION_GRID} />
+                  </div>
+                </div>
+              </Grid>
+              <Grid xs={12} item={true} sm={6}>
+                <div
+                  style={{ flexDirection: "column", display: "flex", flex: 1 }}
+                >
+                  <div style={{ margin: 5, flex: 1 }}>
+                    <InteractiveCard data={ACTIVITIES.PRIME_LINE} />
+                  </div>
+                </div>
+              </Grid>
             </Grid>
-            <Grid xs = {12} item = {true}  sm = {4} >
-            <div style={{ flexDirection: "column", display: "flex", flex: 1 }}>
-            <div style={{ margin: 5, flex: 1 }}>
-                {" "}
-                <InteractiveCard  data={ACTIVITIES.DECORATORS} />
-              </div>
-            </div>
-            </Grid>
-            <Grid xs = {12} item = {true} sm = {4} >
-            <div style={{ flexDirection: "column", display: "flex", flex: 1 }}>
-            <div style={{ margin: 5, flex: 1 }}>
-                <InteractiveCard  data={ACTIVITIES.PRIME_LINE} />
-              </div>
-            </div>
-            </Grid>
-          </Grid>
+          </div>
         </div>
-      </div>
       </div>
     );
   }
 }
-
