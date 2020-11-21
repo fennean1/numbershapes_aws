@@ -3,6 +3,9 @@ import "./App.css";
 import Grid from "@material-ui/core/Grid";
 import InteractiveCard from "./InteractiveCard";
 import * as ACTIVITIES from "./Activities.js";
+import Feedback from "feeder-react-feedback"; // import Feedback component
+import "feeder-react-feedback/dist/feeder-react-feedback.css"; // import stylesheet
+
 
 export default class Interactives extends Component {
   constructor(props) {
@@ -39,6 +42,7 @@ export default class Interactives extends Component {
               </Grid>
             </Grid>
           </div>
+          <Feedback style = {{height: 1000}}email = {true} projectId="5f183e5515d6510004b665ea" />
         </div>
       </div>
     );

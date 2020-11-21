@@ -133,6 +133,9 @@ class Arena extends Component {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
+          <Button className = "red" target = "_blank" href = "https://manipulatives.knowledgehook.com/">
+             More Manipulatives
+            </Button>
             <Button className = "red" target = "_blank" href = "https://www.knowledgehook.com/" color="primary">
               Knowledgehook
             </Button>

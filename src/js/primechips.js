@@ -635,6 +635,7 @@ export const init = (app, setup) => {
     trash.y = DELETE_ZONE.y
     trash.width = DELETE_ZONE.width/4
     trash.height = DELETE_ZONE.height/4
+    trash.alpha = 0
     trash.on('pointerdown',deleteActiveObject)
     app.stage.addChild(trash)
 
