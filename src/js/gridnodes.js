@@ -201,7 +201,6 @@ export const init = (app, setup) => {
         } else {
           n.activated = true 
           let hw = BIG_CIRCLE_RADIUS
-          console.log("BIG CIRCLE RADIOUS",BIG_CIRCLE_RADIUS)
           TweenLite.to(n,{width: hw,height: hw,ease: 'bounce'})
         }
       }
