@@ -96,7 +96,6 @@ export const init = (app, setup) => {
       value: val,
       blank: false,
       frame: {width: VIEW_WIDTH,height: VIEW_HEIGHT}
-
     }
 
     let chip = new Chip(numberline,state)
@@ -179,7 +178,7 @@ export const init = (app, setup) => {
     let newField = new EditableTextField("Text")
     newField.textField.alpha = 1
     newField.x = VIEW_WIDTH/2 
-    newField.y = VIEW_HEIGHT/4
+    newField.y = VIEW_HEIGHT
     newField.on("pointerdown",onObjectDown)
     newField.on("pointerup",onObjectUp)
     newField.on("pointerupoutside",onObjectUp)
@@ -188,6 +187,9 @@ export const init = (app, setup) => {
     app.stage.addChild(newField)
 
     activeTextBox = newField
+
+    TweenLite.to(newField,{y: VIEW_HEIGHT/4})
+
 
   }
 

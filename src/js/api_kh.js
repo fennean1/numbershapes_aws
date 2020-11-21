@@ -160,6 +160,7 @@ export class PrimeChip extends PIXI.Container {
         this.rainbowSprite.width = 2*ro
         this.rainbowSprite.height = 2*ro
         this.addChild(this.graphics)
+        this.addChild(this.descriptor)
       } else {
         this.removeChild(this.rainbowSprite)
         this.graphics.drawCircle(0,0,ro)
