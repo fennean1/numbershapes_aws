@@ -18,7 +18,7 @@ export const BUBBLE_TARGET= {
 };
 
 export const MULTIPLICATION_GRID = {
-  shortText: "Partial Products and Number Lines",
+  shortText: "Decimals, Fractions, Area and Partial Products.",
   title: "Multiplication Grid",
   previewImg: "MultiplicationGrid.png",
   tool: "/multiplicationgrid",
@@ -72,7 +72,7 @@ export const PRIME_LINE = {
   title: "Prime Line",
   previewImg: "PrimeLine.png",
   tool: "/primeline",
-  gameShow: 'https://app.knowledgehook.com/app/Activity/0fbd9f59-0e21-eb11-974c-0050568c42b6',
+  gameShow: 'https://app.knowledgehook.com/app/Activity/51cbf304-062c-eb11-974d-0050568c42b6',
   coreSkillDescription:
     "Here is a lotere is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
 };
