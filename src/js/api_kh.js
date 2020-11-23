@@ -3,9 +3,7 @@ import {
   TimelineLite,
   TweenLite,
 } from "gsap";
-import {Axis,Axis2D} from "./axisApi.js"
 import * as CONST from "./const.js";
-import { extend } from "jquery";
 
 
 
@@ -368,6 +366,9 @@ export class MultiplicationStrip extends PIXI.Container {
     this.on("pointerup", this.pointerUp);
     this.on("pointerupoutside", this.pointerUp);
 
+    this.minY = 0 
+    this.maxY = this.state.frame.height
+
     this.draw()
 
   }
@@ -513,7 +514,6 @@ onAdjustPointerDown(){
   onAdjustPointerUp(){
     this.parent.draw();
     this.touching = false;
-    // this.x = this.parent.draggerSpriteA.x + this.parent.blockWidth 
   }
 
   onPointerDown() {
@@ -561,17 +561,16 @@ onAdjustPointerDown(){
           this.x = this.minX;
         }
       }
-
       if (!this.lockY) {
         this.y = event.data.global.y + this.deltaTouch.y;
 
-        let yMaxOut = this.maxY && this.y > this.yMax;
-        let yMinOut = this.minY && this.y < this.yMin;
+        let yMaxOut = (this.maxY != null) && this.y > this.maxY;
+        let yMinOut = (this.minY != null) && this.y < this.minY;
 
         if (yMaxOut) {
-          this.y = this.yMax;
+          this.y = this.maxY;
         } else if (yMinOut) {
-          this.y = this.yMin;
+          this.y = this.minY;
         }
       }
       this.updateLayoutParams();

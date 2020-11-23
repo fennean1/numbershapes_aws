@@ -57,6 +57,39 @@ export const init = (app, setup) => {
   let whiskerMax = new PIXI.Graphics()
 
 
+  function createMultiplicationStrip(){
+
+    const v1 = numberline.getNumberLineFloatValueFromPosition(VIEW_WIDTH/4)
+
+    const initialState = {
+      minValue: v1,
+      numberOfBlocks: 3,
+      blockValue: numberline.majorStep,
+      heightRatio: 1/20,
+      fillColor: 0xffffff,
+      strokeColor: 0x000000,
+      frame: {width: VIEW_WIDTH,height: VIEW_HEIGHT},
+    }
+
+    let strip = new MultiplicationStrip(app,numberline,initialState)
+    strip.x =  0
+    strip.y = 1.1*VIEW_HEIGHT
+    strip.on('pointerdown',onObjectDown)
+    strip.on('pointerup',onObjectUp)
+    strip.on('pointeroutside',onObjectUp)
+    strip.onUpdate = ()=> { if (magnifyingPin.x < 0){
+      magnifyingPin.x = 0
+    } else if (magnifyingPin.x > VIEW_WIDTH){
+      magnifyingPin.x = VIEW_HEIGHT
+    }
+      drawWhiskers()
+    }
+    objects.push(strip)
+    TweenLite.to(strip,{y: NEW_OBJ_Y})
+    app.stage.addChild(strip)
+        activeObject = strip
+  }
+
   function createFractionStrip(){
 
     const x1 = numberline.getNumberLineFloatValueFromPosition(VIEW_HEIGHT/4)
@@ -194,38 +227,6 @@ export const init = (app, setup) => {
 
   }
 
-  function createMultiplicationStrip(){
-
-    const v1 = numberline.getNumberLineFloatValueFromPosition(VIEW_WIDTH/4)
-
-    const initialState = {
-      minValue: v1,
-      numberOfBlocks: 3,
-      blockValue: numberline.majorStep,
-      heightRatio: 1/20,
-      fillColor: 0xffffff,
-      strokeColor: 0x000000,
-      frame: {width: VIEW_WIDTH,height: VIEW_HEIGHT},
-    }
-
-    let strip = new MultiplicationStrip(app,numberline,initialState)
-    strip.x =  0
-    strip.y = 1.1*VIEW_HEIGHT
-    strip.on('pointerdown',onObjectDown)
-    strip.on('pointerup',onObjectUp)
-    strip.on('pointeroutside',onObjectUp)
-    strip.onUpdate = ()=> { if (magnifyingPin.x < 0){
-      magnifyingPin.x = 0
-    } else if (magnifyingPin.x > VIEW_WIDTH){
-      magnifyingPin.x = VIEW_HEIGHT
-    }
-      drawWhiskers()
-    }
-    objects.push(strip)
-    TweenLite.to(strip,{y: NEW_OBJ_Y})
-    app.stage.addChild(strip)
-        activeObject = strip
-  }
 
 
   function placeXButton(obj){
@@ -445,6 +446,11 @@ export const init = (app, setup) => {
         drawWhiskers()
       } 
     })
+
+  
+    trash.width = BTN_DIM
+    trash.height = BTN_DIM 
+    trash.x = numberline.getNumberLinePositionFromFloatValue(trash.value)
 
 
     menu.width = BTN_DIM*7
