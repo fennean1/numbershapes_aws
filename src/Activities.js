@@ -72,7 +72,7 @@ export const PRIME_LINE = {
   title: "Prime Line",
   previewImg: "PrimeLine.png",
   tool: "/primeline",
-  gameShow: 'https://app.knowledgehook.com/app/Activity/51cbf304-062c-eb11-974d-0050568c42b6',
+  gameShow: 'https://khlink.net/33dlSj0',
   coreSkillDescription:
     "Here is a lotere is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
 };

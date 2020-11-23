@@ -151,6 +151,7 @@ export class PrimeChip extends PIXI.Container {
 
       if (this.state.blank){
         color = 0xffffff
+        this.descriptor.alpha = 0
         this.graphics.lineStyle(ri/15,0x000000)
         this.graphics.beginFill(color)
       } 
@@ -183,6 +184,7 @@ export class PrimeChip extends PIXI.Container {
 
         if (this.state.blank){
           color = 0xffffff
+          this.descriptor.alpha = 0
           this.graphics.lineStyle(ri/15,0x000000)
           this.graphics.beginFill(color)
         } 
@@ -716,6 +718,11 @@ export class FractionStrip extends PIXI.Container {
     this.on("pointerup", this.pointerUp);
     this.on("pointerupoutside", this.pointerUp);
 
+    this.minX = null;
+    this.maxX = null;
+    this.minY = 0;
+    this.maxY = this.state.frame.height;
+
     this.addChild(this.stripGraphic)
 
   }
@@ -847,15 +854,6 @@ onAdjustPointerDown(){
 
   onPointerUp() {
     this.touching = false;
-    /*
-    if (this == this.parent.minDragger) {
-      this.x = this.parent.min - this.parent.x
-      this.parent.draw();
-    } else {
-      this.x = this.parent.max - this.parent.x
-      this.parent.draw();
-    }
-    */
     this.parent.onUpdate && this.parent.onUpdate();
   }
 
@@ -887,13 +885,14 @@ onAdjustPointerDown(){
       if (!this.lockY) {
         this.y = event.data.global.y + this.deltaTouch.y;
 
-        let yMaxOut = this.maxY && this.y > this.yMax;
-        let yMinOut = this.minY && this.y < this.yMin;
+        let yMaxOut = (this.maxY != null) && this.y > this.maxY;
+        let yMinOut = (this.minY != null) && this.y < this.minY;
 
+  
         if (yMaxOut) {
-          this.y = this.yMax;
+          this.y = this.maxY;
         } else if (yMinOut) {
-          this.y = this.yMin;
+          this.y = this.minY;
         }
       }
       this.updateLayoutParams();
@@ -2033,10 +2032,6 @@ export class HorizontalNumberLine extends PIXI.Container {
 
      this.setLayoutParams(this.min,this.max)
 
-     this.hitArea.width = this._width 
-     this.hitArea.height = this.height
-
-
      this.line.clear()
      this.line.lineStyle(this.lineThickness, 0x000000);
      this.line.lineTo(this._width, 0);
@@ -2054,6 +2049,10 @@ export class HorizontalNumberLine extends PIXI.Container {
 
 
      this.draw()
+
+     this.hitArea.width = this._width 
+     this.hitArea.height = this.height
+
   }
 
   // NLD_DRAW
@@ -3301,8 +3300,8 @@ export class MagnifyingPin extends PIXI.Container {
     this.lockY = false;
     this.minX = null;
     this.maxX = null;
-    this.minY = null;
-    this.maxY = null;
+    this.minY = numberline.y;
+    this.maxY = this.state.frame.height;
     this.on("pointerdown", this.pointerDown);
     this.on("pointermove", this.pointerMove);
     this.on("pointerup", this.pointerUp);
@@ -3336,13 +3335,13 @@ export class MagnifyingPin extends PIXI.Container {
       if (!this.lockY) {
         this.y = event.data.global.y + this.deltaTouch.y;
 
-        let yMaxOut = this.maxY && this.y > this.yMax;
-        let yMinOut = this.minY && this.y < this.yMin;
+        let yMaxOut = this.maxY && this.y > this.maxY;
+        let yMinOut = this.minY && this.y < this.minY;
 
         if (yMaxOut) {
-          this.y = this.yMax;
+          this.y = this.maxY;
         } else if (yMinOut) {
-          this.y = this.yMin;
+          this.y = this.minY;
         }
       }
       this.drawWhisker()
@@ -3362,6 +3361,8 @@ export class MagnifyingPin extends PIXI.Container {
     if (Math.abs(this.y - this.numberline.y) < 2*this.grabber.height) {
       this.numberline.zoomTo(this.value - this.numberline.majorStep,this.value+this.numberline.majorStep,1)
       TweenLite.to(this,{y: this.numberline.y + 3*this.grabber.height,onUpdate: onUpdate})
+    } else if (this.y < 0){
+      TweenLite.to(this,{})
     }
   }
 
@@ -3369,6 +3370,7 @@ export class MagnifyingPin extends PIXI.Container {
 
   synch(){
     this.x = this.numberline.getNumberLinePositionFromFloatValue(this.value)
+    this.minY = this.numberline.y
   }
 
   drawWhisker(){

@@ -17,6 +17,7 @@ export const init = (app, setup) => {
     // Layout Params
   let VIEW_WIDTH = setup.width
   let VIEW_HEIGHT = setup.height
+  let VIEW_FRAME = {width: setup.width,height: setup.height}
   let BTN_DIM = Math.min(VIEW_WIDTH,VIEW_HEIGHT)/10
   let DELETE_ZONE = {x: 0,y:VIEW_HEIGHT,width:2*BTN_DIM,height: 2*BTN_DIM}
   let LEAVE_Y = -2*BTN_DIM
@@ -391,21 +392,19 @@ export const init = (app, setup) => {
     let strips = objects.filter(o=>o.TYPE == 's')
     let chips = objects.filter(o=>o.TYPE == 'c')
 
-    if (strips.length !=0 || chips.length > 1){
-
     let minXs = strips.map(s=>{
-        return s.minDragger.getGlobalPosition().x
-      })
-      let maxXs = strips.map(s=>{
-        return s.maxDragger.getGlobalPosition().x
-      })
+      return s.minDragger.getGlobalPosition().x
+    })
+    let maxXs = strips.map(s=>{
+      return s.maxDragger.getGlobalPosition().x
+    })
 
-    let chipVals = chips.map(c=>c.x)
+  let chipVals = chips.map(c=>c.x)
 
-    let xMax = Math.max(...maxXs,...chipVals)
-    let xMin = Math.min(...minXs,...chipVals)
+  let xMax = Math.max(...maxXs,...chipVals)
+  let xMin = Math.min(...minXs,...chipVals)
 
-
+    if (strips.length !=0 || chips.length > 1){
 
     xMin = xMin > 0 ? 0.8*xMin : 1.2*xMin
     let vMin = numberline.getNumberLineFloatValueFromPosition(xMin+0.1*xMin)
@@ -414,9 +413,16 @@ export const init = (app, setup) => {
     numberline.flexPoint = centerVal 
     magnifyingPin.value = centerVal
     numberline.zoomTo(vMin,vMax,2)
-    } 
-
-
+    } else if (chips.length == 1) {
+      const xMaxVal = numberline.getNumberLineFloatValueFromPosition(xMax)
+      if (xMax < 0){
+        numberline.zoomTo(xMaxVal,0.01*xMaxVal,2)
+      } else {
+        numberline.zoomTo(-0.01*xMaxVal,xMaxVal,2)
+      }
+    } else {
+      numberline.zoomTo(-10,100,2)
+    }
 
   }
 
@@ -430,6 +436,7 @@ export const init = (app, setup) => {
 
 
     objects.forEach(o=>{
+      o.maxY = VIEW_HEIGHT
       if (o.TYPE == "c"){
         o.redraw(newFrame)
         o.synch()
@@ -452,8 +459,12 @@ export const init = (app, setup) => {
 
     magnifyingPin.grabber.width = BTN_DIM
     magnifyingPin.grabber.height = BTN_DIM
+    magnifyingPin.x = numberline.getNumberLinePositionFromFloatValue(magnifyingPin.value)
+    magnifyingPin.minY = numberline.y 
+    magnifyingPin.maxY = VIEW_HEIGHT
     magnifyingPin.y = numberline.y + VIEW_HEIGHT/4
     magnifyingPin.drawWhisker()
+
 
     app.renderer.resize(newFrame.width,newFrame.height)
   }
@@ -479,8 +490,8 @@ export const init = (app, setup) => {
 
     VIEW_WIDTH = frame.width
     VIEW_HEIGHT = frame.height
+    VIEW_FRAME = frame
     BTN_DIM =  Math.min(VIEW_WIDTH,VIEW_HEIGHT)/15
-    DELETE_ZONE = {x: 0,y:0,width:2*BTN_DIM,height: 2*BTN_DIM}
     LEAVE_Y = -2*BTN_DIM
   }
 
@@ -649,6 +660,7 @@ export const init = (app, setup) => {
       height: BTN_DIM/1.5,
       width: BTN_DIM/1.5,
       texture: MOVER_DOT_TEXTURE,
+      frame: VIEW_FRAME
     }
 
     magnifyingPin = new MagnifyingPin(numberline,pinState)

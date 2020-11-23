@@ -16,7 +16,7 @@ export default class Interactives extends Component {
     return (
       <div className="clouds">
         <div className="container" style={{ paddingTop: 20 }}>
-        <a href = "https://www.knowledgehook.com/">
+        <a target = "_blank" href = "https://khlink.net/3nOmZ0f">
             <img className = "header" src={require("./assets/KnowledgehookLogo.png")} />
           </a>
           <div style={{ display: "flex", flexDirection: "column" }}>
