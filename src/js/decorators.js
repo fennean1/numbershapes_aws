@@ -14,6 +14,7 @@ export const init = (app, setup) => {
     // Layout Params
   let VIEW_WIDTH = setup.width
   let VIEW_HEIGHT = setup.height
+  let VIEW_FRAME = {width: VIEW_WIDTH,height: VIEW_HEIGHT}
   let BTN_DIM = Math.min(VIEW_WIDTH,VIEW_HEIGHT)/10
 
   const NEW_OBJ_Y = VIEW_HEIGHT/4
@@ -421,6 +422,7 @@ export const init = (app, setup) => {
       height: BTN_DIM/1.5,
       width: BTN_DIM/1.5,
       texture: MOVER_DOT_TEXTURE,
+      frame: VIEW_FRAME,
     }
 
     magnifyingPin = new MagnifyingPin(numberline,pinState)
