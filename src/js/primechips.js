@@ -263,20 +263,25 @@ export const init = (app, setup) => {
 
   function deleteActiveObject(){
   
+
     trash.alpha = 0
     xButtonTimeline.kill()
 
-    if (activeObject.TYPE == 'c'){
-      deleteChip(activeObject)
-    } else if (activeObject.TYPE == 'et'){
-      deleteTextField(activeObject)
-    }else if (activeObject.TYPE == 's') {
-      deleteStrip(activeObject)
-    }
 
-    if (objects.length == 0){
-      activeObject = null
-    }
+if (activeObject != null){
+  if (activeObject.TYPE == 'c'){
+    deleteChip(activeObject)
+  } else if (activeObject.TYPE == 'et'){
+    deleteTextField(activeObject)
+  }else if (activeObject.TYPE == 's') {
+    deleteStrip(activeObject)
+  }
+}
+
+if (objects.length == 0){
+  activeObject = null
+}
+
 }
 
   function deleteStrip(obj){
