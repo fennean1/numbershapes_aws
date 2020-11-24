@@ -326,11 +326,10 @@ if (objects.length == 0){
 
 
   function drawWhiskers(){
-
+    whiskerMax.clear()
+    whiskerMin.clear()
     if (activeObject != null && activeObject.TYPE == "s"){
 
-      whiskerMax.clear()
-      whiskerMin.clear()
       whiskerMax.lineStyle(2,0xffffff)
       whiskerMax.moveTo(activeObject.max-1,activeObject.y)
       whiskerMax.lineTo(activeObject.max-1,numberline.y)
@@ -340,8 +339,7 @@ if (objects.length == 0){
       whiskerMin.moveTo(activeObject.min+1,activeObject.y)
       whiskerMin.lineTo(activeObject.min+1,numberline.y)
       whiskerMin.alpha = 0.75
-    }
-
+    } 
 
   }
 
@@ -563,7 +561,6 @@ if (objects.length == 0){
 
     numberline.onUpdate = () => {
       
-
       objects.forEach(o=>{
         if (o.TYPE == "c"){
           o.synch()
@@ -575,7 +572,6 @@ if (objects.length == 0){
       magnifyingPin.synch()
       trash.alpha = 0
       xButtonTimeline.kill()
-      drawWhiskers()
     } 
 
 

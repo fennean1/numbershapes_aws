@@ -344,6 +344,24 @@ export class MultiplicationStrip extends PIXI.Container {
     this.stripTexture;
     this.openStripTexture;
 
+
+    // Adjuster Sprite
+    this.adjusterTexture = new PIXI.Texture.from(CONST.ASSETS.FRACTION_BAR_PIN)
+    this.adjusterSprite= new Draggable()
+    this.adjusterSprite.texture = this.adjusterTexture;
+    this.adjusterSprite.anchor.set(0.5, 0);
+    this.adjusterSprite.width = this._height
+    this.adjusterSprite.rotation = Math.PI
+    this.adjusterSprite.height = 1/0.72*this._height
+    this.adjusterSprite.lockY = true
+    this.adjusterSprite.y = -this._height/3
+    this.adjusterSprite.on("pointerdown", this.onAdjustPointerDown);
+    this.adjusterSprite.on("pointermove", this.onAdjustPointerMove);
+    this.adjusterSprite.on("pointerup", this.onAdjustPointerUp);
+    this.adjusterSprite.on("pointerupoutside", this.onAdjustPointerUp);
+    this.addChild(this.adjusterSprite);
+
+
     this.stripGraphic = new PIXI.Graphics();
     this.stripGraphic.lineStyle(3,this.state.strokeColor)
     this.stripGraphic.drawRoundedRect(0,0,20,20,1)
@@ -358,24 +376,6 @@ export class MultiplicationStrip extends PIXI.Container {
     this.draggerGraphics.drawRoundedRect(0, 0, 1, this._height, 0);
     this.draggerTexture = app.renderer.generateTexture(this.draggerGraphics);
 
-    this.adjusterTexture = new PIXI.Texture.from(CONST.ASSETS.FRACTION_BAR_PIN)
-
-    // Adjuster Sprite
-    this.adjusterSprite= new Draggable()
-    this.adjusterSprite.texture = this.adjusterTexture;
-    this.adjusterSprite.anchor.set(0.5, 0);
-    this.adjusterSprite.width = this._height
-    this.adjusterSprite.rotation = Math.PI
-    this.adjusterSprite.height = 1/0.72*this._height
-    this.adjusterSprite.lockY = true
-    this.adjusterSprite.y = -this.height/2
-
-
-    this.adjusterSprite.on("pointerdown", this.onAdjustPointerDown);
-    this.adjusterSprite.on("pointermove", this.onAdjustPointerMove);
-    this.adjusterSprite.on("pointerup", this.onAdjustPointerUp);
-    this.adjusterSprite.on("pointerupoutside", this.onAdjustPointerUp);
-    this.addChild(this.adjusterSprite);
 
     this.draggerSpriteA = new Draggable();
     this.draggerSpriteA.lockY = true;
@@ -705,7 +705,7 @@ export class FractionStrip extends PIXI.Container {
     this.adjusterSprite.rotation = Math.PI
     this.adjusterSprite.height = 1/0.72*this._height
     this.adjusterSprite.lockY = true
-    this.adjusterSprite.y = -this.height/2
+    this.adjusterSprite.y = -this._height/3
 
 
     this.adjusterSprite.on("pointerdown", this.onAdjustPointerDown);
