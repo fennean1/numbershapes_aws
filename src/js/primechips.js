@@ -68,7 +68,7 @@ export const init = (app, setup) => {
       heightRatio: 1/20,
       fillColor: 0xffffff,
       strokeColor: 0x000000,
-      frame: {width: VIEW_WIDTH,height: VIEW_HEIGHT},
+      frame: VIEW_FRAME
     }
 
     let strip = new MultiplicationStrip(app,numberline,initialState)
@@ -102,7 +102,7 @@ export const init = (app, setup) => {
       numerators: [1,0,0,0,0,0,0,0,0,0,0,0],
       fillColor: 0xffffff,
       strokeColor: 0x000000,
-      frame: {width: VIEW_WIDTH,height: VIEW_HEIGHT},
+      frame: VIEW_FRAME
     }
 
 
@@ -129,7 +129,7 @@ export const init = (app, setup) => {
       radius: VIEW_HEIGHT/20,
       value: val,
       blank: false,
-      frame: {width: VIEW_WIDTH,height: VIEW_HEIGHT}
+      frame: VIEW_FRAME
     }
 
     let chip = new Chip(numberline,state)
@@ -155,7 +155,7 @@ export const init = (app, setup) => {
     const state = {
       radius: VIEW_HEIGHT/20,
       value: val,
-      frame: {width: VIEW_WIDTH,height: VIEW_HEIGHT},
+      frame: VIEW_FRAME,
       blank: true,
     }
 
@@ -185,7 +185,7 @@ export const init = (app, setup) => {
     const state = {
       radius: VIEW_HEIGHT/20,
       value: val,
-      frame: {width: VIEW_WIDTH,height: VIEW_HEIGHT},
+      frame: VIEW_FRAME
     }
 
     let chip = new Chip(numberline,state)

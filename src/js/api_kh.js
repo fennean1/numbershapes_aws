@@ -29,6 +29,63 @@ export function digitCount(n) {
   }
 }
 
+export class ArrayModel extends PIXI.Container {
+  constructor(axis,state){
+    super()
+
+  }
+
+  pointerDown(event) {
+    this.touching = true;
+    this.dragged = false;
+    this.deltaTouch = {
+      x: this.x - event.data.global.x,
+      y: this.y - event.data.global.y,
+    };
+  }
+
+  pointerMove(event) {
+    if (this.touching) {
+      if (!this.lockX) {
+        this.x = event.data.global.x + this.deltaTouch.x;
+
+        let xMaxOut = this.maxX && this.x > this.maxX;
+        let xMinOut = this.minX && this.x < this.minX;
+
+        if (xMaxOut) {
+          this.x = this.maxX;
+        } else if (xMinOut) {
+          this.x = this.minX;
+        }
+      }
+      if (!this.lockY) {
+        this.y = event.data.global.y + this.deltaTouch.y;
+
+        let yMaxOut = (this.maxY==null) && this.y > this.maxY;
+        let yMinOut = (this.minY==null) && this.y < this.minY;
+
+        if (yMaxOut) {
+          this.y = this.maxY;
+        } else if (yMinOut) {
+          this.y = this.minY;
+        }
+      }
+      this.dragged = true;
+    }
+  }
+
+  pointerUp(event) {
+    this.touching = false;
+  }
+
+  pointerUpOutside(event) {
+    this.touching = false;
+  }
+
+
+}
+
+
 export class PrimeChip extends PIXI.Container {
   constructor(state){
     super()
@@ -55,7 +112,7 @@ export class PrimeChip extends PIXI.Container {
     this.rainbowSprite.anchor.set(0.5)
     this.graphics = new PIXI.Graphics()
     this.descriptor = new PIXI.Text()
-    this.descriptor.style.fontFamily = "Chalkboard SE"
+    this.descriptor.style.fontFamily = CONST.FONT
     this.descriptor.style.fontSize = this.radius*this.holePercentage
     this.descriptor.anchor.set(0.5)
 
@@ -1451,7 +1508,7 @@ export class MathFactPrompt extends PIXI.Text {
     this.problemIndex = 1;
     this.facts = facts;
     this.nextProblem(this.facts[1]);
-    this.style.fontFamily = "Chalkboard SE";
+    this.style.fontFamily = CONST.FONT;
   }
 
   set Height(height) {
@@ -1480,7 +1537,7 @@ export class MathFactPrompt extends PIXI.Text {
 export class Prompt extends PIXI.Text {
   constructor(text) {
     super();
-    this.style.fontFamily = "Chalkboard SE";
+    this.style.fontFamily = CONST.FONT;
   }
 
   set Height(height) {
@@ -1522,8 +1579,8 @@ export class Draggable extends PIXI.Sprite {
       if (!this.lockX) {
         this.x = event.data.global.x + this.deltaTouch.x;
 
-        let xMaxOut = this.maxX && this.x > this.maxX;
-        let xMinOut = this.minX && this.x < this.minX;
+        let xMaxOut = (this.maxX != null) && this.x > this.maxX;
+        let xMinOut = (this.minX != null) && this.x < this.minX;
 
         if (xMaxOut) {
           this.x = this.maxX;
@@ -1535,13 +1592,13 @@ export class Draggable extends PIXI.Sprite {
       if (!this.lockY) {
         this.y = event.data.global.y + this.deltaTouch.y;
 
-        let yMaxOut = this.maxY && this.y > this.yMax;
-        let yMinOut = this.minY && this.y < this.yMin;
+        let yMaxOut = (this.maxY !=null) && this.y > this.maxY;
+        let yMinOut = (this.minY !=null) && this.y < this.minY;
 
         if (yMaxOut) {
-          this.y = this.yMax;
+          this.y = this.maxY;
         } else if (yMinOut) {
-          this.y = this.yMin;
+          this.y = this.minY;
         }
       }
       this.dragged = true;
@@ -2089,7 +2146,7 @@ export class HorizontalNumberLine extends PIXI.Container {
     for (let i = 0; i <= 100; i++) {
       let newLabel = new PIXI.Text();
       newLabel.style.fontSize = this.digitHeight;
-      newLabel.style.fontFamily = "Chalkboard SE";
+      newLabel.style.fontFamily = "Courier";
       newLabel.style.fill = 0x000000;
       newLabel.anchor.set(0.5, 0);
       newLabel.text = i;
@@ -2617,7 +2674,7 @@ export class VerticalNumberLine extends PIXI.Container {
     for (let i = 0; i <= 100; i++) {
       let newLabel = new PIXI.Text();
       newLabel.style.fontSize = this.digitHeight;
-      newLabel.style.fontFamily = "Chalkboard SE";
+      newLabel.style.fontFamily = CONST.FONT;
       newLabel.style.fill = 0x000000;
       newLabel.anchor.set(1, 0.5);
       newLabel.text = i;
@@ -2818,7 +2875,7 @@ export class NumberLineEstimator extends PIXI.Container {
       l.text = (this.min + i * this.step).toFixed(0);
       l.y = this.tickHeight;
       l.alpha = 0;
-      l.style.fontFamily = "Chalkboard SE";
+      l.style.fontFamily = CONST.FONT;
       l.x = (this._width / this.partitions) * i - l.width / 2;
       if (i == 0 || i == this.partitions) {
         l.alpha = 1;
@@ -2924,7 +2981,7 @@ export class NumberBubble extends PIXI.Container {
     this.label.anchor.set(0.5);
     this.label.x = this.height / 2;
     this.label.y = this.height / 2;
-    this.label.style.fontFamily = "Chalkboard SE";
+    this.label.style.fontFamily = CONST.FONT;
 
     this.addChild(this.label);
     //this.lblText = config.text
@@ -2943,7 +3000,7 @@ export class Strip extends PIXI.Graphics {
     this.config = config;
     this.pixelRatio = this.config.pixelRatio;
     this.label = new PIXI.Text();
-    this.label.style.fontFamily = "Chalkboard SE";
+    this.label.style.fontFamily = CONST.FONT;
     this.label.style.fontSize = this.config.height / 2;
     this.label.text = 0;
     this.label.anchor.set(0.5);
@@ -3108,7 +3165,7 @@ export class RangeBubbleSelector extends PIXI.Container {
       l.text = (this.min + i * this.step).toFixed(0);
       l.y = this.tickHeight;
       l.alpha = 0;
-      l.style.fontFamily = "Chalkboard SE";
+      l.style.fontFamily = CONST.FONT;
       l.x = (this._width / this.partitions) * i - l.width / 2;
       if (i == 0 || i == this.partitions) {
         l.alpha = 1;
@@ -3504,8 +3561,8 @@ export class Chip extends PIXI.Container {
     this.lockY = false;
     this.minX = null;
     this.maxX = null;
-    this.minY = null;
-    this.maxY = null;
+    this.minY = 0;
+    this.maxY = this.state.frame.height;
     this.on("pointerdown", this.pointerDown);
     this.on("pointermove", this.pointerMove);
     this.on("pointerup", this.pointerUp);
@@ -3544,13 +3601,13 @@ export class Chip extends PIXI.Container {
       if (!this.lockY) {
         this.y = event.data.global.y + this.deltaTouch.y;
 
-        let yMaxOut = this.maxY && this.y > this.yMax;
-        let yMinOut = this.minY && this.y < this.yMin;
+        let yMaxOut = (this.maxY !=null) && this.y > this.maxY;
+        let yMinOut = (this.minY !=null) && this.y < this.minY;
 
         if (yMaxOut) {
-          this.y = this.yMax;
+          this.y = this.maxY;
         } else if (yMinOut) {
-          this.y = this.yMin;
+          this.y = this.minY;
         }
       }
       this.drawWhisker()

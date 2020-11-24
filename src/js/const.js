@@ -41,6 +41,8 @@ export const ASSETS = {
     ONE: one,
 }
 
+export const FONT = "Courier"
+
 export const CUISENAIRE_COLORS = {
   "1": 0xfff9fc,
   "2": 0xff385c,
