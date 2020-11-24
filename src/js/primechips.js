@@ -416,15 +416,25 @@ export const init = (app, setup) => {
     numberline.zoomTo(vMin,vMax,2)
     } else if (chips.length == 1) {
       const xMaxVal = numberline.getNumberLineFloatValueFromPosition(xMax)
-      if (xMax < 0){
-        numberline.zoomTo(xMaxVal,0.01*xMaxVal,2)
+      if (xMaxVal < 0){
+        const a = 1.1*xMaxVal
+        const b = -0.01*xMaxVal
+        magnifyingPin.value = (a+b)/2
+        numberline.zoomTo(a,b,2)
       } else {
-        numberline.zoomTo(-0.01*xMaxVal,xMaxVal,2)
+        const a = -0.01*xMaxVal
+        const b = xMaxVal*1.1
+        magnifyingPin.value = (a+b)/2
+        numberline.zoomTo(a,b,2)
       }
     } else {
-      numberline.zoomTo(-10,100,2)
+      // Default Zoom
+      const a = -10
+      const b = 100
+      magnifyingPin.value = (a+b)/2
+      numberline.zoomTo(a,b,2)
     }
-
+    numberline.flexPoint = magnifyingPin.value
   }
 
 
