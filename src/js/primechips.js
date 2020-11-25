@@ -258,6 +258,11 @@ export const init = (app, setup) => {
     xButtonTimeline.kill()
     app.stage.addChild(this)
     app.stage.addChild(trash)
+
+    if (this.TYPE == "et"){
+      activeTextBox = this
+    }
+
     drawWhiskers()
   }
 
