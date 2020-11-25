@@ -8,8 +8,7 @@ import * as CONST from "./const.js";
 
 
 
-// CLASSES
-// Helpers
+// CLASSES - 
 export function digitCount(n) {
   var count = 1;
 
@@ -81,8 +80,6 @@ export class ArrayModel extends PIXI.Container {
   pointerUpOutside(event) {
     this.touching = false;
   }
-
-
 }
 
 

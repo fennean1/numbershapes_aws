@@ -133,13 +133,13 @@ class Arena extends Component {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-          <Button className = "red" target = "_blank" href = "https://manipulatives.knowledgehook.com/">
+          <Button className = "red" target = "_blank" href = "https://khlink.net/2J8T1W7">
              More Manipulatives
             </Button>
-            <Button className = "red" target = "_blank" href = "https://www.knowledgehook.com/" color="primary">
+            <Button className = "red" target = "_blank" href = "https://khlink.net/3nOmZ0f" color="primary">
               Knowledgehook
             </Button>
-            <Button target = "_blank" href = "https://mathforlove.com/" color="secondary">
+            <Button target = "_blank" href = "https://khlink.net/3nVej8n" color="secondary">
               Math For Love
             </Button>
           </DialogActions>
