@@ -22,7 +22,7 @@ export const MULTIPLICATION_GRID = {
   title: "Multiplication Grid",
   previewImg: "MultiplicationGrid.png",
   tool: "/multiplicationgrid",
-  gameShow: 'https://app.knowledgehook.com/app/Activity/da2e0afc-ef20-eb11-974c-0050568c42b6',
+  gameShow: 'https://khlink.net/3nTiVvB',
   coreSkillDescription:
     "Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
 };
