@@ -1,9 +1,7 @@
 import React from "react";
 import "./App.css";
 import { Switch, Route} from "react-router-dom";
-
 import Arena from "./Arena"
-import NewArena from "./NewArena"
 import * as multiplicationgrid from "./js/multiplicationgrid.js"
 import * as decorators from "./js/decorators.js"
 import * as primechips from "./js/primechips.js"

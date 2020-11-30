@@ -2,9 +2,6 @@ import React, { Fragment, useEffect } from "react";
 import "./App.css";
 import {
   BrowserRouter,
-  Switch,
-  Route,
-  Link,
   withRouter,
 } from "react-router-dom";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";

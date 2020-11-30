@@ -264,6 +264,10 @@ export const init = (app, setup) => {
     }
 
     drawWhiskers()
+
+    objects.forEach(o=>{
+      (o.TYPE == 'et') && app.stage.addChild(o)
+    })
   }
 
   function deleteActiveObject(){
@@ -520,6 +524,7 @@ if (objects.length == 0){
   }
 
   function openDialog(){
+    activeTextBox = this.parent
     setup.arena.setState({text: activeTextBox.textField.text})
     setup.arena.handleClickOpen()
   }

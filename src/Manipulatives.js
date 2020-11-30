@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import "./App.css";
 import Grid from "@material-ui/core/Grid";
-import InteractiveCard from "./InteractiveCard";
+import ManipulativeCard from "./ManipulativeCard";
 import * as ACTIVITIES from "./Activities.js";
 import Feedback from "feeder-react-feedback"; // import Feedback component
 import "feeder-react-feedback/dist/feeder-react-feedback.css"; // import stylesheet
 
 
-export default class Interactives extends Component {
+export default class Manipulatives extends Component {
   constructor(props) {
     super(props);
   }
@@ -27,7 +27,7 @@ export default class Interactives extends Component {
                 >
                   <div style={{ margin: 5, flex: 1 }}>
                     {" "}
-                    <InteractiveCard data={ACTIVITIES.MULTIPLICATION_GRID} />
+                    <ManipulativeCard data={ACTIVITIES.MULTIPLICATION_GRID} />
                   </div>
                 </div>
               </Grid>
@@ -36,7 +36,7 @@ export default class Interactives extends Component {
                   style={{ flexDirection: "column", display: "flex", flex: 1 }}
                 >
                   <div style={{ margin: 5, flex: 1 }}>
-                    <InteractiveCard data={ACTIVITIES.PRIME_LINE} />
+                    <ManipulativeCard data={ACTIVITIES.PRIME_LINE} />
                   </div>
                 </div>
               </Grid>
