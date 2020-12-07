@@ -17,6 +17,11 @@ import one from "../assets/One.png"
 import trash from "../assets/Trash.png"
 import question_mark from "../assets/QuestionMark.png"
 import rainbow from "../assets/Rainbow.png"
+import red_square from "../assets/RedSquare.png"
+import blue_square from "../assets/BlueSquare.png"
+import yellow_square from "../assets/YellowSquare.png"
+import green_square from "../assets/GreenSquare.png"
+
 
 
 export const ASSETS = {
@@ -39,6 +44,10 @@ export const ASSETS = {
     QUESTION_MARK: question_mark,
     RAINBOW: rainbow,
     ONE: one,
+    GREEN_SQUARE: green_square,
+    RED_SQUARE: red_square,
+    YELLOW_SQUARE: yellow_square,
+    BLUE_SQUARE: blue_square,
 }
 
 export const FONT = "Courier"

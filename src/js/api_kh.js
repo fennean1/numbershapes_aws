@@ -28,10 +28,195 @@ export function digitCount(n) {
   }
 }
 
+export class Axis extends PIXI.Container {
+  constructor(app,state){
+    super()
+
+
+    // What's the max zoom here?
+    this.app = app
+    this.state = state
+    this.nodeGraphic = new PIXI.Graphics()
+    this.verticalAxis = new PIXI.Graphics()
+    this.horizontalAxis = new PIXI.Graphics()
+    this.strokeWidth = this.state.frame.width/1000
+
+
+    const {a,b,frame} = this.state
+
+    let minAB = Math.min(a,b)
+    let minDim = Math.min(frame.width,frame.height)
+
+    this.density = this.state.frame.height/(2*minAB)
+    this.density = 35
+
+    this.nodes = []
+
+    /* Parameters
+      density: 2*yMax/height should equal == 2*xMax/width
+
+      getIJFloatFromXY(x,y){
+        a = x/this.density
+        b = y/this.density
+
+      }
+
+      getIJRoundedFromXY(x,y){
+        a = x/this.density
+        b = y/this.density
+
+      }
+
+    */
+
+
+    this.addChild(this.horizontalAxis)
+    this.addChild(this.verticalAxis)
+
+
+    this.draw()
+  }
+
+  getXYfromAB(a,b){
+    let x = this.state.frame.width/2+a*this.density 
+    let y = this.state.frame.height/2+b*this.density 
+    return {x: x,y: y}
+  }
+
+
+  redrawNodes(){
+    this.nodeGraphic.clear()
+    this.nodeGraphic.beginFill(0x000000)
+    this.nodeGraphic.drawCircle(0,0,3*this.strokeWidth)
+    this.nodeTexture = this.app.renderer.generateTexture(this.nodeGraphic)
+    this.nodes.forEach(n=>{
+      n.texture.destroy()
+      n.texture = this.nodeTexture
+      
+    })
+  }
+
+  draw(){
+
+    const {width,height} = this.state.frame
+
+     this.horizontalAxis.clear()
+     this.horizontalAxis.lineStyle(this.strokeWidth,0x000000)
+     this.horizontalAxis.moveTo(0,height/2)
+     this.horizontalAxis.lineTo(width,height/2)
+     
+     this.verticalAxis.clear()
+     this.verticalAxis.lineStyle(this.strokeWidth,0x000000)
+     this.verticalAxis.moveTo(width/2,0)
+     this.verticalAxis.lineTo(width/2,height)
+     // Draw Dots Here
+  }
+
+}
+
 export class ArrayModel extends PIXI.Container {
   constructor(axis,state){
     super()
 
+    this.axis = axis
+    this.state = state 
+    this.blocks = []
+
+    // Pixels per unit whole.
+    this.dx = axis.density
+    this.dy = axis.density
+
+
+    this.interactive = true
+
+    this.BS = new PIXI.Texture.from(CONST.ASSETS.BLUE_SQUARE)
+    this.BC = new PIXI.Texture.from(CONST.ASSETS.BLUE_SQUARE)
+
+    this.RS = new PIXI.Texture.from(CONST.ASSETS.RED_SQUARE)
+    this.RC = new PIXI.Texture.from(CONST.ASSETS.RED_SQUARE)
+
+    this.YS = new PIXI.Texture.from(CONST.ASSETS.YELLOW_SQUARE)
+    this.YC = new PIXI.Texture.from(CONST.ASSETS.YELLOW_SQUARE)
+
+    this.GS = new PIXI.Texture.from(CONST.ASSETS.GREEN_SQUARE)
+    this.GC = new PIXI.Texture.from(CONST.ASSETS.GREEN_SQUARE)
+
+    this.TEXTURES = {
+      TOP_LEFT: this.BS,
+      BOTTOM_LEFT: this.GS,
+      TOP_RIGHT: this.YS,
+      BOTTOM_RIGHT: this.RS,
+    }
+    
+    for (let j = 0;j<this.state.height;j++){
+      let row = []
+      for (let i = 0;i<this.state.width;i++){
+        let s = new PIXI.Sprite()
+        this.addChild(s)
+        row.push(s)
+      }
+      this.blocks.push(row)
+    }
+
+    this.synchWithAxis()
+    this.draw()
+
+    this.on("pointerdown", this.pointerDown);
+    this.on("pointermove", this.pointerMove);
+    this.on("pointerup", this.pointerUp);
+    this.on("pointerupoutside", this.pointerUpOutside);
+
+  }
+
+  setCounterState(state){
+    if (state == 'circle'){
+      this.TEXTURES = {
+        TOP_LEFT: this.BC,
+        BOTTOM_LEFT: this.GC,
+        TOP_RIGHT: this.YC,
+        BOTTOM_RIGHT: this.RC,
+      }
+    } else {
+      this.TEXTURES = {
+        TOP_LEFT: this.BS,
+        BOTTOM_LEFT: this.GS,
+        TOP_RIGHT: this.YS,
+        BOTTOM_RIGHT: this.RS,
+      }
+    }
+  }
+
+  draw(state = this.state){ 
+
+    const {aCut,bCut,width,height} = state
+
+    let top = true 
+    let left = true 
+
+    this.blocks.forEach((row,j)=>{
+      top = j < bCut ? true : false
+      row.forEach((b,i)=>{
+      //console.log("iterating",i,j)
+        if (i<=width && j <= height){
+          b.width = this.dx
+          b.height = this.dy
+          b.x = i*this.dx
+          b.y = j*this.dy
+          left = i < aCut ? true : false
+          if (left && top){
+              b.texture = this.TEXTURES.TOP_LEFT
+            } else if (!left && top) {
+              b.texture = this.TEXTURES.TOP_RIGHT
+            } else if (left && !top){
+              b.texture = this.TEXTURES.BOTTOM_LEFT
+          } else if (!left && !top) {
+            b.texture = this.TEXTURES.BOTTOM_RIGHT
+          }
+        } else {
+          this.removeChild(b)
+        }
+      })
+    })
   }
 
   pointerDown(event) {
@@ -73,8 +258,48 @@ export class ArrayModel extends PIXI.Container {
     }
   }
 
+  synchWithAxis(_x,_y){
+
+    let dX = this.axis.state.frame.width/2 - this.x 
+    let dY = this.axis.state.frame.height/2 - this.y 
+
+    console.log('dX,dY',dX,dY)
+
+    let dA = dX/this.dx 
+    let dB = dY/this.dy
+
+    let roundedA = Math.round(dA)
+    let roundedB = Math.round(dB)
+
+    let aCut = 0
+    let bCut = 0
+
+    if (dA > 0){
+      aCut = roundedA
+    } 
+
+    if (dB > 0){
+      bCut = roundedB
+    }
+
+    this.state.aCut = aCut 
+    this.state.bCut = bCut
+
+    console.log("this.state",this.state)
+
+    let {x,y} = this.axis.getXYfromAB(-roundedA,-roundedB)
+    this.x = x 
+    this.y = y 
+
+    this.draw(this.state)
+  }
+
+  
   pointerUp(event) {
     this.touching = false;
+
+    this.synchWithAxis()
+
   }
 
   pointerUpOutside(event) {
@@ -149,7 +374,7 @@ export class PrimeChip extends PIXI.Container {
   }
 
   
-  draw(num){
+  draw(num){ 
 
     this.state.num = num
     let digits = digitCount(Math.abs(num))
@@ -3653,6 +3878,7 @@ export class EditableTextField extends PIXI.Container {
     this.interactive = true
     this.lockX = false 
     this.lockY = false
+    this.textField.style.fontFamily = CONST.FONT
 
     this.TYPE = 'et'
 

@@ -5,16 +5,29 @@ import * as CONST from "./const.js";
 import {
   TweenLite,
 } from "gsap";
-import {HorizontalNumberLine,AdjustableStrip,Chip,FractionStrip, Pin, MultiplicationStrip} from "./api_kh.js";
+import {ArrayModel, Axis} from "./api_kh.js";
 
 export const init = (app, setup) => {
   
 
+
+
+
   // Constants
   const BLUE_GRADIENT_TEXTURE = new PIXI.Texture.from(blueGradient)
 
-  // Should be updated any time a change is made on the screen.
-  let localState = {
+  // Layout Vars
+  let window_width = setup.width
+  let window_height = setup.height
+  let window_frame = {width: window_width,height: window_height}
+
+
+  // Should be updated any time a change is made on the screens
+
+  let objects = {}
+
+  let S = {
+    frame: {width: setup.width,height: setup.height},
     features: setup.features,
     backGround: true,
     grid: {
@@ -27,17 +40,15 @@ export const init = (app, setup) => {
       yState: {
         min: 0,
         max: 10,
-        length: 100,
       },
       xState: {
         min: 0,
         max: 10,
-        length: 100,
       }
     },
+    objects: objects
   }
 
-  let localObjects = {}
 
   // Objects
   let axis2D = {}
@@ -68,25 +79,37 @@ export const init = (app, setup) => {
   }
 
   function draw(newFrame){
-    localState.frame = newFrame
+    S.frame = newFrame
     app.renderer.resize(newFrame.width,newFrame.height)
   }
 
   // Loading Script
   function load() {
-    if (localState.backGround){
-      localObjects.backGround = new PIXI.Graphics(BLUE_GRADIENT_TEXTURE)
+    if (S.backGround){
+      S.objects.backGround = new PIXI.Sprite(BLUE_GRADIENT_TEXTURE)
+      app.stage.addChild(S.objects.backGround)
     }
 
-    if (localState.grid){
-      localObjects.grid = new PIXI.Container()
+    const initArrayState = {
+      width: 6,
+      height: 8,
+      aCut: 5,
+      bCut: 5,
     }
 
-    if (localState.axis){
-      localObjects.axis2D = new PIXI.Container()
+    const initAxisState = {
+      frame: window_frame,
+      a: 5,
+      b: 5,
     }
+
+    S.objects.axis = new Axis(app,initAxisState)
+    S.objects.array = new ArrayModel(S.objects.axis,initArrayState)
+  
+    app.stage.addChild(S.objects.axis)
+    app.stage.addChild(S.objects.array)
     
-    draw()
+    draw(S.frame)
   }
 
 

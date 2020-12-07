@@ -6,7 +6,9 @@ import * as multiplicationgrid from "./js/multiplicationgrid.js"
 import * as decorators from "./js/decorators.js"
 import * as primechips from "./js/primechips.js"
 import * as dualnumberline from "./js/dualnumberline.js"
+import * as partialproducts from "./js/partialproducts.js"
 import Manipulatives from "./Manipulatives"
+
 
 const Main = () => (
   <Switch>
@@ -15,6 +17,7 @@ const Main = () => (
     <Route path="/primechips" render={()=><Arena fullscreen = {true} features = {{chip: true}} script = {primechips.init}/>} />
     <Route path="/primeline" render={()=><Arena fullscreen = {true} features = {{chip: true}} script = {primechips.init}/>} />
     <Route path="/dualnumberline" render={()=><Arena fullscreen = {true} features = {{chip: true}} script = {dualnumberline.init}/>} />
+    <Route path="/rainbowarrays" render={()=><Arena fullscreen = {true} features = {{chip: true}} script = {partialproducts.init}/>} />
     <Route path="/multiplicationgridk2" render={()=><Arena fullscreen = {true} features = {{type: "k2"}} script = {multiplicationgrid.init}/>} />
     <Route path="/" component={Manipulatives} />
   </Switch>
