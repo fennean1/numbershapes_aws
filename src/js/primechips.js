@@ -23,6 +23,9 @@ export const init = (app, setup) => {
   let LEAVE_Y = -2*BTN_DIM
 
   const NEW_OBJ_Y = VIEW_HEIGHT/4
+  const COLOR_MONOLITH = 0xa8a8a8
+  const MONOLITH_LOCATION = 500000
+  const MONOLITH_WIDTH = 0.05
   const FRACTION_BAR_ICON_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.FRACTION_BAR_ICON)
   const STRIP_ICON_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.STRIP_ICON)
   const PRIME_CHIP_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.PRIME_CLIMB_ICON)
@@ -32,6 +35,7 @@ export const init = (app, setup) => {
   const ZOOM_BUTTON_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.ZOOM_BUTTION)
   const TRASH_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.TRASH)
   const BLUE_GRADIENT_TEXTURE = new PIXI.Texture.from(blueGradient)
+  const CTX = new PIXI.Graphics()
 
   // Objects
   let numberline;
@@ -51,7 +55,7 @@ export const init = (app, setup) => {
   let trash;
   let menu = new PIXI.Container()
   let xButtonTimeline = new TimelineLite({paused: true})
-
+  let monolith = new PIXI.Graphics()
 
   let whiskerMin = new PIXI.Graphics()
   let whiskerMax = new PIXI.Graphics()
@@ -382,6 +386,14 @@ if (objects.length == 0){
         }
       })
 
+      monolith.clear()
+      let mx = numberline.getNumberLinePositionFromFloatValue(50000)
+      let my = numberline.y
+      let mw = numberline.getDistanceFromZeroFromValue(0.05)
+      let mh = 2*mw
+      monolith.beginFill(COLOR_MONOLITH)
+      monolith.drawRect(mx,my-mh,mw,mh,1)
+
 
       magnifyingPin.synch()
       drawWhiskers()
@@ -582,6 +594,14 @@ if (objects.length == 0){
       magnifyingPin.synch()
       trash.alpha = 0
       xButtonTimeline.kill()
+      
+      let mx = numberline.getNumberLinePositionFromFloatValue(20)
+      let my = numberline.y
+      let mw = numberline.getDistanceFromZeroFromValue(0.05)
+      let mh = 3*mw
+      monolith.clear()
+      monolith.beginFill(COLOR_MONOLITH)
+      monolith.drawRect(mx-mw/2,my-mh,mw,mh,1)
     } 
 
 
@@ -696,6 +716,14 @@ if (objects.length == 0){
     magnifyingPin.value = numberline.getNumberLineFloatValueFromPosition(magnifyingPin.x)
     numberline.flexPoint = magnifyingPin.value
     app.stage.addChild(magnifyingPin)
+
+    //app.stage.addChild(monolith)
+    let mx = numberline.getNumberLinePositionFromFloatValue(20)
+    let my = numberline.y
+    let mw = numberline.getDistanceFromZeroFromValue(0.05)
+    let mh = 2*mw
+    monolith.beginFill(COLOR_MONOLITH)
+    monolith.drawRect(mx,my-mh,mw,mh,1)
 
 
     const onComplete1 = ()=>{

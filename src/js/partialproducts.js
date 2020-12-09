@@ -51,9 +51,7 @@ export const init = (app, setup) => {
 
 
   // Objects
-  let axis2D = {}
-  let whiskerMin = new PIXI.Graphics()
-  let whiskerMax = new PIXI.Graphics()
+
 
   function backgroundPointerDown(e) {
     this.touching = true 
@@ -91,21 +89,23 @@ export const init = (app, setup) => {
     }
 
     const initArrayState = {
-      width: 6,
-      height: 8,
+      width: 10,
+      height: 10,
       aCut: 5,
       bCut: 5,
     }
 
     const initAxisState = {
       frame: window_frame,
-      a: 5,
-      b: 5,
+      a: 15,
+      b: 15,
     }
 
     S.objects.axis = new Axis(app,initAxisState)
-    S.objects.array = new ArrayModel(S.objects.axis,initArrayState)
+    S.objects.array = new ArrayModel(app,S.objects.axis,initArrayState)
   
+    S.objects.array.setXY(-5,-5)
+
     app.stage.addChild(S.objects.axis)
     app.stage.addChild(S.objects.array)
     
