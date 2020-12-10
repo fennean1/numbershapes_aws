@@ -36,7 +36,7 @@ export class Axis extends PIXI.Container {
     // What's the max zoom here?
     this.app = app
     this.state = state
-    this.nodeGraphic = new PIXI.Graphics()
+    this.ctx = new PIXI.Graphics()
     this.verticalAxis = new PIXI.Graphics()
     this.horizontalAxis = new PIXI.Graphics()
     this.strokeWidth = this.state.frame.width/1000
@@ -45,41 +45,43 @@ export class Axis extends PIXI.Container {
     const {a,b,frame} = this.state
 
     let minAB = Math.min(a,b)
-    let minDim = Math.min(frame.width,frame.height)
-
     this.density = Math.min(this.state.frame.height,this.state.frame.width)/(2*minAB)
-    //this.density = 35
 
     this.nodes = []
 
-    /* Parameters
-      density: 2*yMax/height should equal == 2*xMax/width
-
-      getIJFloatFromXY(x,y){
-        a = x/this.density
-        b = y/this.density
-
-      }
-
-      getIJRoundedFromXY(x,y){
-        a = x/this.density
-        b = y/this.density
-
-      }
-
-    */
-
+    // Init Node Texture
+    this.ctx.clear()
+    this.ctx.lineStyle(4,0x000000,1,1)
+    this.ctx.beginFill(0x000000)
+    this.ctx.drawCircle(0,0,20*this.strokeWidth)
+    this.nodeTexture = this.app.renderer.generateTexture(this.ctx)
 
     this.addChild(this.horizontalAxis)
     this.addChild(this.verticalAxis)
 
+        // Init Nodes
+        for (let i=-10;i<10;i++){
+          for (let j=-10;j<10;j++){
+            let n = new PIXI.Sprite()
+            n.anchor.set(0.5)
+            n.texture = this.nodeTexture
+            n.width = 20
+            n.height = 20
+            n.j = j 
+            n.i = i 
+            n.x = this.state.frame.width/2 + this.density*(10*i)
+            n.y = this.state.frame.height/2 + this.density*(10*j)
+            this.nodes.push(n)
+            this.addChild(n)
+          }
+        }
 
     this.draw()
-  }
+  } 
 
   getXYfromAB(a,b){
     let x = this.state.frame.width/2+a*this.density 
-    let y = this.state.frame.height/2+b*this.density 
+    let y = this.state.frame.height/2-b*this.density 
     return {x: x,y: y}
   }
 
@@ -177,7 +179,7 @@ export class ArrayModel extends PIXI.Container {
       this.blocks.push(row)
     }
 
-    this.synchWithAxis()
+    this.snapToInt()
     this.draw()
 
     this.on("pointerdown", this.pointerDown);
@@ -213,7 +215,7 @@ export class ArrayModel extends PIXI.Container {
     this.parent.state.height = Math.round(this.y /this.parent.dy)
     this.x = (this.parent.state.width)*this.parent.dx
     this.y = (this.parent.state.height)*this.parent.dy
-    this.parent.synchWithAxis(this.x,this.y)
+    this.parent.snapToInt(this.x,this.y)
   }
 
   setCounterState(state){
@@ -238,7 +240,7 @@ export class ArrayModel extends PIXI.Container {
     let loc = this.axis.getXYfromAB(a,b)
     this.x = loc.x
     this.y = loc.y
-    this.synchWithAxis()
+    this.snapToInt()
   }
 
 
@@ -319,14 +321,17 @@ export class ArrayModel extends PIXI.Container {
     }
   }
 
-  synchWithAxis(_x,_y){
+  //What if I wanted to snap to the nearest ten?
+  snapToInt(_x,_y){
 
     let dX = this.axis.state.frame.width/2 - this.x 
     let dY = this.axis.state.frame.height/2 - this.y 
 
+ 
     let dA = dX/this.dx 
     let dB = dY/this.dy
 
+    //  Math.round(dA/10)x10
     let roundedA = Math.round(dA)
     let roundedB = Math.round(dB)
 
@@ -345,7 +350,7 @@ export class ArrayModel extends PIXI.Container {
     this.state.bCut = bCut
 
 
-    let {x,y} = this.axis.getXYfromAB(-roundedA,-roundedB)
+    let {x,y} = this.axis.getXYfromAB(-roundedA,roundedB)
     this.x = x 
     this.y = y 
 
@@ -356,7 +361,7 @@ export class ArrayModel extends PIXI.Container {
   pointerUp(event) {
     this.touching = false;
 
-    this.synchWithAxis()
+    this.snapToInt()
 
   }
 

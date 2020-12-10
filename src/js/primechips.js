@@ -24,8 +24,8 @@ export const init = (app, setup) => {
 
   const NEW_OBJ_Y = VIEW_HEIGHT/4
   const COLOR_MONOLITH = 0xa8a8a8
-  const MONOLITH_LOCATION = 500000
-  const MONOLITH_WIDTH = 0.05
+  const MONOLITH_LOCATION = -127.5
+  const MONOLITH_WIDTH = 0.025
   const FRACTION_BAR_ICON_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.FRACTION_BAR_ICON)
   const STRIP_ICON_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.STRIP_ICON)
   const PRIME_CHIP_TEXTURE = new PIXI.Texture.from(CONST.ASSETS.PRIME_CLIMB_ICON)
@@ -357,6 +357,17 @@ if (objects.length == 0){
   }
 
 
+  function drawMonolith() {
+    monolith.clear()
+    let mw = numberline.getDistanceFromZeroFromValue(MONOLITH_WIDTH)
+    let mh = 3*mw
+    let mx = numberline.getNumberLinePositionFromFloatValue(MONOLITH_LOCATION) + mw/16
+    let my = numberline.y  - numberline.lineThickness/2 - mw/16
+    monolith.lineStyle(mw/8,0x878787,1,0.5)
+    monolith.beginFill(COLOR_MONOLITH)
+    monolith.drawRect(mx,my-mh,mw,mh,1)
+  }
+
 
 
   function backgroundPointerDown(e) {
@@ -386,13 +397,7 @@ if (objects.length == 0){
         }
       })
 
-      monolith.clear()
-      let mx = numberline.getNumberLinePositionFromFloatValue(50000)
-      let my = numberline.y
-      let mw = numberline.getDistanceFromZeroFromValue(0.05)
-      let mh = 2*mw
-      monolith.beginFill(COLOR_MONOLITH)
-      monolith.drawRect(mx,my-mh,mw,mh,1)
+      drawMonolith()
 
 
       magnifyingPin.synch()
@@ -595,13 +600,7 @@ if (objects.length == 0){
       trash.alpha = 0
       xButtonTimeline.kill()
       
-      let mx = numberline.getNumberLinePositionFromFloatValue(20)
-      let my = numberline.y
-      let mw = numberline.getDistanceFromZeroFromValue(0.05)
-      let mh = 3*mw
-      monolith.clear()
-      monolith.beginFill(COLOR_MONOLITH)
-      monolith.drawRect(mx-mw/2,my-mh,mw,mh,1)
+      drawMonolith()
     } 
 
 
@@ -717,14 +716,8 @@ if (objects.length == 0){
     numberline.flexPoint = magnifyingPin.value
     app.stage.addChild(magnifyingPin)
 
-    //app.stage.addChild(monolith)
-    let mx = numberline.getNumberLinePositionFromFloatValue(20)
-    let my = numberline.y
-    let mw = numberline.getDistanceFromZeroFromValue(0.05)
-    let mh = 2*mw
-    monolith.beginFill(COLOR_MONOLITH)
-    monolith.drawRect(mx,my-mh,mw,mh,1)
-
+    app.stage.addChild(monolith)
+    drawMonolith()
 
     const onComplete1 = ()=>{
       trash.interactive = true

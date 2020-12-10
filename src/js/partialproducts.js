@@ -104,7 +104,7 @@ export const init = (app, setup) => {
     S.objects.axis = new Axis(app,initAxisState)
     S.objects.array = new ArrayModel(app,S.objects.axis,initArrayState)
   
-    S.objects.array.setXY(-5,-5)
+    S.objects.array.setXY(-5,5)
 
     app.stage.addChild(S.objects.axis)
     app.stage.addChild(S.objects.array)
