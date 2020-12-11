@@ -1,3 +1,5 @@
+import * as PIXI from "pixi.js-legacy";
+
 import blue_gradient from "../assets/blue-gradient.png";
 import fraction_bar_icon from "../assets/FractionBarIcon.png"
 import strip_icon from "../assets/StripIcon.png"

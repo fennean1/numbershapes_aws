@@ -8,6 +8,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import "./App.css";
 
+
 import * as PIXI from "pixi.js-legacy";
 
 class Arena extends Component {

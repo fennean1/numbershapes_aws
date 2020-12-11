@@ -6,15 +6,25 @@ import {
   TweenLite,
 } from "gsap";
 import {ArrayModel, Axis} from "./api_kh.js";
+import { blue } from "@material-ui/core/colors";
+
 
 export const init = (app, setup) => {
   
+const loader = PIXI.Loader.shared; // PixiJS exposes a premade instance for you to use.
+const sprites = {};
+
+// Chainable `add` to enqueue a resource
+loader.add('backGround', 'https://res.cloudinary.com/duim8wwno/image/upload/v1607622190/blue-gradient_un84kq.png')
+
+// The `load` method loads the queue of resources, and calls the passed in callback called once all
+// resources have loaded.
+loader.load((loader, resources) => {
+    sprites.backGround = resources.backGround.texture
+
+});
 
 
-
-
-  // Constants
-  const BLUE_GRADIENT_TEXTURE = new PIXI.Texture.from(blueGradient)
 
   // Layout Vars
   let window_width = setup.width
@@ -84,7 +94,11 @@ export const init = (app, setup) => {
   // Loading Script
   function load() {
     if (S.backGround){
-      S.objects.backGround = new PIXI.Sprite(BLUE_GRADIENT_TEXTURE)
+      console.log("setting up background")
+      S.objects.backGround = new PIXI.Sprite()
+      S.objects.backGround.width = window_frame.width
+      S.objects.backGround.height = window_frame.height
+      S.objects.backGround.texture = sprites.backGround
       app.stage.addChild(S.objects.backGround)
     }
 
@@ -116,7 +130,8 @@ export const init = (app, setup) => {
 
 
   // Call load script
-  load();
+  loader.onComplete.add(load); // called once when the queued resources all load.
+
   // Not sure where else to put this.
   app.resize = (frame) => resize(frame);
 
