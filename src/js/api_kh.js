@@ -4,6 +4,7 @@ import {
   TweenLite,
 } from "gsap";
 import * as CONST from "./const.js";
+import { TransferWithinAStationOutlined } from "@material-ui/icons";
 
 
 
@@ -44,17 +45,15 @@ export class Axis extends PIXI.Container {
 
     const {a,b,frame} = this.state
 
-    let minAB = Math.min(a,b)
-    this.density = Math.min(this.state.frame.height,this.state.frame.width)/(2*minAB)
-
     this.nodes = []
 
-    // Init Node Texture
+    // Init Node Texture  
     this.ctx.clear()
-    this.ctx.lineStyle(4,0x000000,1,1)
-    this.ctx.beginFill(0x000000)
+    this.ctx.lineStyle(4,0x4d4d4d,1,1)
+    this.ctx.beginFill(0x4d4d4d)
     this.ctx.drawCircle(0,0,20*this.strokeWidth)
     this.nodeTexture = this.app.renderer.generateTexture(this.ctx)
+  
 
     this.addChild(this.horizontalAxis)
     this.addChild(this.verticalAxis)
@@ -65,12 +64,14 @@ export class Axis extends PIXI.Container {
             let n = new PIXI.Sprite()
             n.anchor.set(0.5)
             n.texture = this.nodeTexture
-            n.width = 20
-            n.height = 20
             n.j = j 
             n.i = i 
-            n.x = this.state.frame.width/2 + this.density*(10*i)
-            n.y = this.state.frame.height/2 + this.density*(10*j)
+            n.x = this.state.frame.width/2 + this.density*(5*i)
+            n.y = this.state.frame.height/2 + this.density*(5*j)
+            if (true) {
+              n.width = n.width/1.5 
+              n.height = n.height/1.5
+            }
             this.nodes.push(n)
             this.addChild(n)
           }
@@ -85,6 +86,12 @@ export class Axis extends PIXI.Container {
     return {x: x,y: y}
   }
 
+  getABfromXY(x,y){
+    let a = (x - this.state.frame.width/2)/this.density 
+    let b = (this.state.frame.height/2-y)/this.density 
+    return {a: a,b: b}
+  }
+
 
   redrawNodes(){
     this.nodeGraphic.clear()
@@ -94,11 +101,14 @@ export class Axis extends PIXI.Container {
     this.nodes.forEach(n=>{
       n.texture.destroy()
       n.texture = this.nodeTexture
-      
     })
   }
 
-  draw(){
+  draw(frame = this.state.frame){
+
+    this.state.frame = frame
+    let minAB = Math.min(this.state.a,this.state.b)
+    this.density = Math.min(this.state.frame.height,this.state.frame.width)/(2*minAB)
 
     const {width,height} = this.state.frame
 
@@ -112,8 +122,14 @@ export class Axis extends PIXI.Container {
      this.verticalAxis.moveTo(width/2,0)
      this.verticalAxis.lineTo(width/2,height)
      // Draw Dots Here
-  }
 
+     this.nodes.forEach(n=>{
+      n.width = this.density/2 
+      n.height = this.density/2
+      n.x = this.state.frame.width/2 + this.density*(5*n.i)
+      n.y = this.state.frame.height/2 + this.density*(5*n.j)
+     })
+  }
 }
 
 export class ArrayModel extends PIXI.Container {
@@ -128,7 +144,6 @@ export class ArrayModel extends PIXI.Container {
     // Pixels per unit whole.
     this.dx = axis.density
     this.dy = axis.density
-
 
     this.interactive = true
 
@@ -159,8 +174,8 @@ export class ArrayModel extends PIXI.Container {
     this.adjuster.minY = this.dy 
     this.adjuster.maxX = this.dx*20
     this.adjuster.maxY = this.dy*20
-    this.adjuster.x = (this.state.width)*this.dx
-    this.adjuster.y = (this.state.height)*this.dy
+    this.adjuster.x = (this.state.a)*this.dx
+    this.adjuster.y = (this.state.b)*this.dy
 
     this.TEXTURES = {
       TOP_LEFT: this.BS,
@@ -179,7 +194,9 @@ export class ArrayModel extends PIXI.Container {
       this.blocks.push(row)
     }
 
-    this.snapToInt()
+    let origin = this.axis.getXYfromAB(this.state.origin.a,this.state.origin.b)
+    this.x = origin.x 
+    this.y = origin.y
     this.draw()
 
     this.on("pointerdown", this.pointerDown);
@@ -198,7 +215,6 @@ export class ArrayModel extends PIXI.Container {
   }
 
   adjusterPointerDown(){
-    console.log("adjusterpointerdown")
     this.parent.addChild(this)
     this.parent.touching = false
   }
@@ -211,10 +227,10 @@ export class ArrayModel extends PIXI.Container {
 
 
   adjusterPointerUp(){
-    this.parent.state.width = Math.round(this.x /this.parent.dx)
-    this.parent.state.height = Math.round(this.y /this.parent.dy)
-    this.x = (this.parent.state.width)*this.parent.dx
-    this.y = (this.parent.state.height)*this.parent.dy
+    this.parent.state.a = Math.round(this.x /this.parent.dx)
+    this.parent.state.b = Math.round(this.y /this.parent.dy)
+    this.x = (this.parent.state.a)*this.parent.dx
+    this.y = (this.parent.state.b)*this.parent.dy
     this.parent.snapToInt(this.x,this.y)
   }
 
@@ -236,22 +252,36 @@ export class ArrayModel extends PIXI.Container {
     }
   }
 
-  setXY(a,b){
-    let loc = this.axis.getXYfromAB(a,b)
+  setOrigin(origin = this.state.origin){
+    this.state.origin = origin
+    let loc = this.axis.getXYfromAB(origin.a,origin.b)
     this.x = loc.x
     this.y = loc.y
-    this.snapToInt()
   }
 
 
-  draw(state = this.state){ 
+  // Doesn't need a new frame because it's inherited from the axis.
+  draw(axis = this.axis){ 
 
-    const {aCut,bCut,width,height} = state
+    this.dx = axis.density
+    this.dy = axis.density
+
+    this.adjuster.x = this.dx*this.state.a
+    this.adjuster.y = this.dy*this.state.b
+    this.adjuster.minX = this.dx 
+    this.adjuster.minY = this.dy 
+    this.adjuster.maxX = this.dx*20
+    this.adjuster.maxY = this.dy*20
+
+    this.adjuster.x = this.dx*this.state.a
+
+    const {aCut,bCut,a,b} = this.state
+
+    const width = a 
+    const height = b
 
     let top = true 
     let left = true 
-
-    console.log(this.state)
 
     this.blocks.forEach((row,j)=>{
       top = j < bCut ? true : false
@@ -259,7 +289,6 @@ export class ArrayModel extends PIXI.Container {
         if (i<width && j < height){
           this.addChild(b)
           this.addChild(this.adjuster)
-          console.log("adding child")
           b.width = this.dx
           b.height = this.dy
           b.x = i*this.dx
@@ -279,10 +308,11 @@ export class ArrayModel extends PIXI.Container {
         }
       })
     })
+
+    this.setOrigin()
   }
 
   pointerDown(event) {
-    console.log("grid pointer down")
     this.touching = true;
     this.dragged = false;
     this.deltaTouch = {
@@ -354,7 +384,9 @@ export class ArrayModel extends PIXI.Container {
     this.x = x 
     this.y = y 
 
-    this.draw(this.state)
+    this.state.origin = this.axis.getABfromXY(this.x,this.y)
+
+    this.draw()
   }
 
   

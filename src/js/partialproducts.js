@@ -89,24 +89,20 @@ loader.load((loader, resources) => {
   function draw(newFrame){
     S.frame = newFrame
     app.renderer.resize(newFrame.width,newFrame.height)
+    S.objects.axis.draw(newFrame)
+    S.objects.backGround.width = newFrame.width
+    S.objects.backGround.height = newFrame.height
+    S.objects.array.draw(S.objects.axis)
   }
 
   // Loading Script
   function load() {
     if (S.backGround){
-      console.log("setting up background")
       S.objects.backGround = new PIXI.Sprite()
       S.objects.backGround.width = window_frame.width
       S.objects.backGround.height = window_frame.height
       S.objects.backGround.texture = sprites.backGround
       app.stage.addChild(S.objects.backGround)
-    }
-
-    const initArrayState = {
-      width: 10,
-      height: 10,
-      aCut: 5,
-      bCut: 5,
     }
 
     const initAxisState = {
@@ -115,13 +111,22 @@ loader.load((loader, resources) => {
       b: 15,
     }
 
+
+    const initArrayState = {
+      frame: window_frame,
+      origin: {a:-5,b: 5},
+      a: 10,
+      b: 10,
+      aCut: 5,
+      bCut: 5,
+    }
+
     S.objects.axis = new Axis(app,initAxisState)
     S.objects.array = new ArrayModel(app,S.objects.axis,initArrayState)
-  
-    S.objects.array.setXY(-5,5)
-
-    app.stage.addChild(S.objects.axis)
+    
     app.stage.addChild(S.objects.array)
+    app.stage.addChild(S.objects.axis)
+    S.objects.axis.alpha = 0.5
     
     draw(S.frame)
   }
