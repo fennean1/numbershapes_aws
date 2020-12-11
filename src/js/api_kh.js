@@ -4,8 +4,6 @@ import {
   TweenLite,
 } from "gsap";
 import * as CONST from "./const.js";
-import { TransferWithinAStationOutlined } from "@material-ui/icons";
-
 
 
 
