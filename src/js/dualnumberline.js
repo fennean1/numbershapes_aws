@@ -103,13 +103,15 @@ export const init = (app, setup) => {
       if (!this.locked){
         numberlineA.flexPoint = 0
         numberlineB.flexPoint = 0
-        magnifyingPin.alpha = 0
+        //magnifyingPin.alpha = 0
       } else {
-        magnifyingPin.alpha = 1
-        magnifyingPin.x = VIEW_WIDTH/2
-        magnifyingPin.value = numberlineA.getNumberLineFloatValueFromPosition(magnifyingPin.x)
-        numberlineA.flexPoint = numberlineA.getNumberLineFloatValueFromPosition(magnifyingPin.x)
-        numberlineB.flexPoint = numberlineB.getNumberLineFloatValueFromPosition(magnifyingPin.x)
+        /*
+          magnifyingPin.alpha = 1
+          magnifyingPin.x = VIEW_WIDTH/2
+          magnifyingPin.value = numberlineA.getNumberLineFloatValueFromPosition(magnifyingPin.x)
+          numberlineA.flexPoint = numberlineA.getNumberLineFloatValueFromPosition(magnifyingPin.x)
+          numberlineB.flexPoint = numberlineB.getNumberLineFloatValueFromPosition(magnifyingPin.x)
+        */
       }
     }
 
@@ -280,7 +282,7 @@ export const init = (app, setup) => {
 
   function magnifyinPinPointerUp(){
       if (lockButton.locked){
-        numberlineB.flexPoint = numberlineB.getNumberLineFloatValueFromPosition(this.x)
+        //numberlineB.flexPoint = numberlineB.getNumberLineFloatValueFromPosition(this.x)
       } else {
         numberlineB.flexPoint = 0
         numberlineA.flexPoint = 0
@@ -376,7 +378,7 @@ export const init = (app, setup) => {
     magnifyingPin.on('pointerupoutside',magnifyinPinPointerUp)
     magnifyingPin.drawWhisker()
     magnifyingPin.value = 0
-    app.stage.addChild(magnifyingPin)
+    //app.stage.addChild(magnifyingPin)
 
 
 

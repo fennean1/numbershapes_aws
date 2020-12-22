@@ -666,8 +666,8 @@ export class MultiplicationStrip extends PIXI.Container {
     this.adjusterSprite.texture = this.adjusterTexture;
     this.adjusterSprite.anchor.set(0.5, 0);
     this.adjusterSprite.width = this._height
-    this.adjusterSprite.rotation = Math.PI
     this.adjusterSprite.height = 1/0.72*this._height
+    this.adjusterSprite.rotation = Math.PI
     this.adjusterSprite.lockY = true
     this.adjusterSprite.y = -this._height/3
     this.adjusterSprite.on("pointerdown", this.onAdjustPointerDown);
@@ -746,7 +746,8 @@ export class MultiplicationStrip extends PIXI.Container {
   }
 
   redraw(newFrame){
-    this._height = newFrame.height
+    this.state.frame = newFrame
+    this._height = this.state.frame.height*this.state.heightRatio
     this.synch()
   }
 
@@ -764,10 +765,25 @@ export class MultiplicationStrip extends PIXI.Container {
 
     this.state.blockWidth = (this.draggerSpriteB.x - this.draggerSpriteA.x)/this.state.numberOfBlocks
 
+    this.adjusterSprite.x = this.draggerSpriteA.x + this.state.blockWidth
+    this.adjusterSprite.y = -this._height/3
+    this.adjusterSprite.width = this._height
+    this.adjusterSprite.height = 1/0.72*this._height
+
+    this.draggerSpriteA.hitArea = new PIXI.Circle(
+      0,
+      0,
+      this._height,
+      this._height
+    );
+    this.draggerSpriteB.hitArea = new PIXI.Circle(
+      0,
+      0,
+      this._height,
+      this._height
+    );
 
     this.draw();
-    this.adjusterSprite.x = this.draggerSpriteA.x + this.state.blockWidth
-
   }
 
   updateLayoutParams() {
@@ -795,9 +811,7 @@ export class MultiplicationStrip extends PIXI.Container {
     this.draggerSpriteB.maxX = null
     this.draggerSpriteB.minX = this.adjusterSprite.x
    }
-  
-
-   this._height = this.state.frame.height*this.state.heightRatio
+   
 
   }
 
@@ -1115,6 +1129,23 @@ export class FractionStrip extends PIXI.Container {
     this.maxDragger.x = this.max - this.x
     this.draw();
     this.adjusterSprite.x = this.minDragger.x + this.blockWidth
+    this.adjusterSprite.y = -this._height/3
+    this.adjusterSprite.width = this._height
+    this.adjusterSprite.height = 1/0.72*this._height
+
+    this.draggerSpriteA.hitArea = new PIXI.Circle(
+      0,
+      0,
+      this._height,
+      this._height
+    );
+
+    this.draggerSpriteB.hitArea = new PIXI.Circle(
+      0,
+      0,
+      this._height,
+      this._height
+    );
 
   }
 
@@ -1165,14 +1196,9 @@ export class FractionStrip extends PIXI.Container {
     this.state.numerators.forEach((b,i)=>{
     this.stripGraphic.lineStyle(stroke,0x000000,1,0)  
     this.stripGraphic.beginFill(this.color);
-
-
       if (b == 0){
         this.stripGraphic._fillStyle.alpha = 0.01
       }
-
-
-
       if (i < roundedDenominator) {
         this.stripGraphic.drawRoundedRect(this.blockWidth*i, -this._height/2, this.blockWidth, this._height, 1);
       } else if (i == roundedDenominator && remainderWidth != 0) {

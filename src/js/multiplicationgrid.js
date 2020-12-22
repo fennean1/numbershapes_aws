@@ -2,7 +2,6 @@ import * as PIXI from "pixi.js-legacy";
 import blueGradient from "../assets/blue-gradient.png";
 import plusButton from "../assets/PlusButton.png";
 import minusButton from "../assets/MinusButton.png";
-import {Axis,Axis2D} from "./axisApi.js"
 import * as CONST from "./const.js";
 import {
   Draggable,
