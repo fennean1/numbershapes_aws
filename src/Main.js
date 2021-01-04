@@ -8,6 +8,8 @@ import * as primechips from "./js/primechips.js"
 import * as dualnumberline from "./js/dualnumberline.js"
 import * as partialproducts from "./js/partialproducts.js"
 import Manipulatives from "./Manipulatives"
+import * as drawing from "./js/drawing.js"
+import * as spotlight from "./js/spotlight.js"
 
 
 const Main = () => (
@@ -18,6 +20,8 @@ const Main = () => (
     <Route path="/primeline" render={()=><Arena fullscreen = {true} features = {{chip: true}} script = {primechips.init}/>} />
     <Route path="/dualnumberline" render={()=><Arena fullscreen = {true} features = {{chip: true}} script = {dualnumberline.init}/>} />
     <Route path="/rainbowarrays" render={()=><Arena fullscreen = {true} features = {{chip: true}} script = {partialproducts.init}/>} />
+    <Route path="/drawing" render={()=><Arena fullscreen = {true} script = {drawing.init}/>} />
+    <Route path="/spotlight" render={()=><Arena fullscreen = {true} script = {spotlight.init}/>} />
     <Route path="/multiplicationgridk2" render={()=><Arena fullscreen = {true} features = {{type: "k2"}} script = {multiplicationgrid.init}/>} />
     <Route path="/" component={Manipulatives} />
   </Switch>
