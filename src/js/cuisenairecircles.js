@@ -308,7 +308,7 @@ function drawMenu(){
     circ.texture = app.renderer.generateTexture(myCirc)
     
     app.stage.addChild(circ)
-    circ.y = window_height - 1.25*S.maxR - S.topY/2
+    circ.y = V.trashArea.y
     circ.x = x
     circ.on('pointerdown',createCircle)
     circ.on('pointerdown',onObjectDown)
@@ -401,7 +401,7 @@ function minusClicked() {
     S.denominator = 2
     S.maxR = window_width/20
     S.one = S.maxR*S.maxR*3.14/10
-    S.vPad = window_width < window_height ? window_height/20 : 0
+    S.vPad = window_width < window_height ? window_height/10 : window_height/50
     S.topY = S.maxR + S.vPad
 
 
@@ -456,7 +456,7 @@ function minusClicked() {
     V.cuttingRegion.drawRoundedRect(0,0,0.8*window_width,0.1*window_height,0.05*window_height)
     V.cuttingRegion.denominator = 5
     V.cuttingRegion.x = window_width/2 - V.cuttingRegion.width/2 
-    V.cuttingRegion.y = V.cuttingRegion.height/2
+    V.cuttingRegion.y = V.plusBtn.y - V.cuttingRegion.height/2
     V.cuttingRegion.interactive = true
 
 
