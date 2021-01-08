@@ -325,7 +325,7 @@ function drawMenu(){
 }
 
 function onObjectUp(){
-  if (this.x < 2*S.maxR && this.y > window_height - 2*S.maxR){
+  if (this.x < V.trashArea.x+V.trashArea.width && this.y > V.trashArea.y-V.trashArea.height){
     deleteActiveObject()
   }
 }
@@ -402,7 +402,8 @@ function minusClicked() {
     S.maxR = window_width/20
     S.one = S.maxR*S.maxR*3.14/10
     S.vPad = window_width < window_height ? window_height/10 : window_height/50
-    S.topY = S.maxR + S.vPad
+    S.topY = S.maxR + S.vPad/2
+    S.botY = S.maxR + S.vPad*1.5
 
 
 
@@ -437,7 +438,7 @@ function minusClicked() {
     V.editBtn.width = S.maxR*2
     V.editBtn.height = S.maxR*2
     V.editBtn.x = window_width - S.maxR
-    V.editBtn.y = window_height-S.topY
+    V.editBtn.y = window_height-S.botY
     V.editBtn.on('pointerdown',createEditableTextField)
     app.stage.addChild(V.editBtn)
 
@@ -447,7 +448,7 @@ function minusClicked() {
     V.trashArea.width = S.maxR*1.5
     V.trashArea.height = S.maxR*1.5
     V.trashArea.x = S.maxR
-    V.trashArea.y = window_height-S.topY
+    V.trashArea.y = window_height-S.botY
     V.trashArea.on('pointerdown',minusClicked)
     app.stage.addChild(V.trashArea)
 
