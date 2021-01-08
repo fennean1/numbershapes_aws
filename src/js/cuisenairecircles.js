@@ -273,11 +273,12 @@ class CuisenaireCircle extends PIXI.Graphics {
 }
 
 function createCircle(i){
+
   let circleState = {
     numerator: 1,
     denominator: 1, 
     index: this.index,
-    one: 1000,
+    one: S.one,
   }
   let c = new CuisenaireCircle(circleState)
   c.on('pointerdown',onObjectDown)
@@ -292,7 +293,7 @@ function drawMenu(){
     numerator: 1,
     denominator: 1, 
     index: 9,
-    one: 1000,
+    one: S.one
   }
   let myCirc = new CuisenaireCircle(state)
   let x = 0
@@ -307,7 +308,7 @@ function drawMenu(){
     circ.texture = app.renderer.generateTexture(myCirc)
     
     app.stage.addChild(circ)
-    circ.y = window_height - S.maxR
+    circ.y = window_height - 1.25*S.maxR
     circ.x = x
     circ.on('pointerdown',createCircle)
     circ.on('pointerdown',onObjectDown)
@@ -398,8 +399,8 @@ function minusClicked() {
   function load() {
 
     S.denominator = 2
-
     S.maxR = window_width/20
+    S.one = S.maxR*S.maxR*3.14/10
 
 
     V.backGround = new PIXI.Sprite.from(blueGradient)
