@@ -308,7 +308,7 @@ function drawMenu(){
     circ.texture = app.renderer.generateTexture(myCirc)
     
     app.stage.addChild(circ)
-    circ.y = window_height - 1.25*S.maxR
+    circ.y = window_height - 1.25*S.maxR - S.topY/2
     circ.x = x
     circ.on('pointerdown',createCircle)
     circ.on('pointerdown',onObjectDown)
@@ -401,6 +401,9 @@ function minusClicked() {
     S.denominator = 2
     S.maxR = window_width/20
     S.one = S.maxR*S.maxR*3.14/10
+    S.vPad = window_width < window_height ? window_height/20 : 0
+    S.topY = S.maxR + S.vPad
+
 
 
     V.backGround = new PIXI.Sprite.from(blueGradient)
@@ -414,7 +417,7 @@ function minusClicked() {
     V.plusBtn.width = S.maxR*2
     V.plusBtn.height = S.maxR*2
     V.plusBtn.x = window_width - S.maxR
-    V.plusBtn.y = S.maxR
+    V.plusBtn.y = S.topY
     V.plusBtn.on('pointerdown',plusClicked)
     app.stage.addChild(V.plusBtn)
 
@@ -424,7 +427,7 @@ function minusClicked() {
     V.minusBtn.width = S.maxR*2
     V.minusBtn.height = S.maxR*2
     V.minusBtn.x = S.maxR
-    V.minusBtn.y = S.maxR
+    V.minusBtn.y = S.topY
     V.minusBtn.on('pointerdown',minusClicked)
     app.stage.addChild(V.minusBtn)
 
@@ -434,7 +437,7 @@ function minusClicked() {
     V.editBtn.width = S.maxR*2
     V.editBtn.height = S.maxR*2
     V.editBtn.x = window_width - S.maxR
-    V.editBtn.y = window_height-S.maxR
+    V.editBtn.y = window_height-S.topY
     V.editBtn.on('pointerdown',createEditableTextField)
     app.stage.addChild(V.editBtn)
 
@@ -444,7 +447,7 @@ function minusClicked() {
     V.trashArea.width = S.maxR*1.5
     V.trashArea.height = S.maxR*1.5
     V.trashArea.x = S.maxR
-    V.trashArea.y = window_height-S.maxR
+    V.trashArea.y = window_height-S.topY
     V.trashArea.on('pointerdown',minusClicked)
     app.stage.addChild(V.trashArea)
 
