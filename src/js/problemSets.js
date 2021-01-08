@@ -64,3 +64,129 @@ export const BBS_ADDITION_IN_100 = {
     PARTITIONS: 1,
   },
 };
+
+
+// Two digit addition under 100
+const TWO_DIGIT_ADDITION_UNDER_100_P1 = {
+  fact: {
+    operation: "+",
+    a: 43,
+    b: 38,
+    answer: 81
+  },
+  numberlineState: {
+    min: 0,
+    max: 100,
+    minorStep: 5,
+    majorStep: 25,
+    denominator: 1,
+  }, 
+  spotlight: {
+    width: 0.06
+  }
+}
+
+const TWO_DIGIT_ADDITION_UNDER_100_P2 = {
+  fact: {
+    operation: "+",
+    a: 33,
+    b: 41,
+    answer: 74
+  },
+  numberlineState: {
+    min: 0,
+    max: 100,
+    minorStep: 5,
+    majorStep: 25,
+    denominator: 1,
+  }, 
+  spotlight: {
+    width: 0.05
+  }
+}
+
+const TWO_DIGIT_ADDITION_UNDER_100_P3 = {
+  fact: {
+    operation: "+",
+    a: 25,
+    b: 17,
+    answer: 42 
+  },
+  numberlineState: {
+    min: 0,
+    max: 100,
+    minorStep: 5,
+    majorStep: 25,
+    denominator: 1,
+  }, 
+  spotlight: {
+    width: 0.05
+  }
+}
+
+const TWO_DIGIT_ADDITION_UNDER_100_P4 = {
+  fact: {
+    operation: "+",
+    a: 34,
+    b: 27,
+    answer: 61
+  },
+  numberlineState: {
+    min: 0,
+    max: 100,
+    minorStep: 5,
+    majorStep: 25,
+    denominator: 1,
+  }, 
+  spotlight: {
+    width: 0.05
+  }
+}
+
+const TWO_DIGIT_ADDITION_UNDER_100_P5 = {
+  fact: {
+    operation: "+",
+    a: 12,
+    b: 39,
+    answer: 51
+  },
+  numberlineState: {
+    min: 0,
+    max: 100,
+    minorStep: 10,
+    majorStep: 25,
+    denominator: 1,
+  },
+  spotlight: {
+    width: 0.10
+  }
+}
+
+const TWO_DIGIT_ADDITION_UNDER_100_P6 = {
+  fact: {
+    operation: "+",
+    a: 26,
+    b: 18,
+    answer: 44
+  },
+  numberlineState: {
+    min: 0,
+    max: 100,
+    minorStep: 10,
+    majorStep: 25,
+    denominator: 1,
+  },
+  spotlight: {
+    width: 0.10
+  }
+}
+
+
+export const TWO_DIGIT_ADDITION_UNDER_100 = {
+  0: TWO_DIGIT_ADDITION_UNDER_100_P1,
+  1: TWO_DIGIT_ADDITION_UNDER_100_P5,
+  2: TWO_DIGIT_ADDITION_UNDER_100_P3,
+  3: TWO_DIGIT_ADDITION_UNDER_100_P4,
+  4: TWO_DIGIT_ADDITION_UNDER_100_P5,
+  5: TWO_DIGIT_ADDITION_UNDER_100_P6
+}

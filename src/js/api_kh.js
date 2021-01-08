@@ -6,7 +6,6 @@ import {
 import * as CONST from "./const.js";
 
 
-
 // CLASSES - 
 export function digitCount(n) {
   var count = 1;
@@ -26,6 +25,181 @@ export function digitCount(n) {
     return count - 1;
   }
 }
+
+
+export class KHNumberline extends PIXI.Container {
+  constructor(state,renderer,frame){
+    super()
+    this.state = state
+    this.renderer = renderer
+    this.frame = frame
+    this.ticks = []
+    this.labels = []
+    this.centerLine = new PIXI.Sprite()
+    this.ctx = new PIXI.Graphics()
+    this.padding = 0.95
+    this.offset = (1-this.padding)*this.frame.width/2
+    this.density = this.padding*this.frame.width/(this.state.max-this.state.min)
+    this.init()
+  }
+
+  getValFromPosition(x){
+      let val = (x - this.offset)/this.density
+      return val;
+  }
+
+  getPositionFromVal(value){
+    let val = this.offset + value*this.density
+    return val;
+}
+
+  updateTextures(){
+  
+    this.majorTickTexture.destroy()
+    this.majorTickTexture.destroy()
+    this.centerLineTexture.destroy()
+
+    this.majorTickHeight = this.frame.width/30
+    this.majorTickStroke = this.majorTickHeight/12
+    this.minorTickHeight = this.majorTickHeight/2
+    this.minorTickStroke = this.minorTickHeight/8
+    this.lineStroke = this.majorTickStroke
+
+    // Center Line 
+    this.ctx.clear()
+    this.ctx.lineStyle(this.lineStroke,0xffffff,1,0.5)
+    this.ctx.lineTo(this.frame.width,0)
+    this.centerLineTexture = this.renderer.generateTexture(this.ctx)
+    
+    // Major Tick
+    this.ctx.clear()
+    this.ctx.lineStyle(this.majorTickStroke,0xffffff,1,0.5)
+    this.ctx.lineTo(0,this.majorTickHeight)
+    this.majorTickTexture = this.renderer.generateTexture(this.ctx)
+
+    // Minor Tick
+    this.ctx.clear()
+    this.ctx.lineStyle(this.minorTickStroke,0xffffff,1,0.5)
+    this.ctx.lineTo(0,this.minorTickHeight)
+    this.minorTickTexture = this.renderer.generateTexture(this.ctx)
+
+  }
+
+  getLabelsNeeded(){
+    const nums = []
+    let curr = this.state.min
+    while (curr <= this.state.max){
+      nums.push(curr)
+      curr += this.state.majorStep
+    }
+    return nums
+  }
+  
+  getTicksNeeded(){
+    const nums = []
+    let curr = this.state.min
+    while (curr <= this.state.max){
+      nums.push(curr)
+      curr += this.state.minorStep
+    }
+    return nums
+  }
+
+  highlight(range){
+
+    let a = (range[0]-this.offset)/this.density + this.state.min
+    let b = (range[1]-this.offset)/this.density + this.state.min
+
+    let center = Math.abs((a+b)/2)
+    let d = Math.abs(a-b)
+    let r = d/2
+
+    this.ticks.forEach(t=>{
+      if (t.val > a && t.val < b){
+        t.alpha = 1 - Math.abs(t.val-center)/r
+      } else {
+        t.alpha = 0
+      }
+    } )
+
+    this.labels.forEach(t=>{
+      if (t.val > a  && t.val < b && t.val != null){
+        console.log("t.val",t.val)
+        t.alpha = 1 - Math.abs(t.val-center)/r
+      } else {
+        t.alpha = 0
+      }
+    } )
+  }
+
+  draw(){
+
+    const labelVals = this.getLabelsNeeded()
+    const tickVals = this.getTicksNeeded()
+
+    this.centerLine.texture = this.centerLineTexture
+
+    this.labels.forEach((l,i)=>{
+      if (i < labelVals.length){
+        let val = labelVals[i]
+        l.y = this.majorTickHeight/2
+        l.draw(val,this.state.denominator,this.majorTickHeight)
+        l.x = (val-this.state.min)*this.density - l.width/2 + (1-this.padding)/2*this.frame.width
+        l.val = val
+        l.alpha = 1
+      } else {
+        l.alpha = 0
+        l.val = null
+      }
+    
+    })
+
+    this.ticks.forEach((t,i)=>{
+      if (i < tickVals.length){
+        let val = tickVals[i] 
+        let texture =val%this.state.majorStep == 0 ? this.majorTickTexture : this.minorTickTexture
+        t.texture = texture
+        t.y = -texture.height/2 + this.minorTickStroke/2
+        t.val = val
+        t.x = (val-this.state.min)*this.density - this.majorTickStroke/2 + (1-this.padding)/2*this.frame.width
+        t.alpha = 1
+      } else {
+        t.alpha = 0
+        t.val = null
+      }
+    })
+    
+  }
+
+  init(){
+    this.ctx.lineStyle(2,0xffffff)
+    this.ctx.lineTo(this.frame.width,0)
+    this.centerLineTexture = this.renderer.generateTexture(this.ctx)
+    this.majorTickTexture = this.centerLineTexture
+    this.minorTickTexture = this.centerLineTexture
+    this.updateTextures()
+
+    for (let i = 0;i<100;i++){
+      let newTick = new PIXI.Sprite()
+      let newLbl = new Fraction(1,2000,this.majorTickHeight,0xffffff)
+      newLbl.val = null
+      this.ticks.push(newTick)
+      this.addChild(newTick)
+      this.labels.push(newLbl)
+      this.addChild(newLbl)
+    }
+
+
+
+    // Layering
+    this.addChild(this.centerLine)
+
+
+    // Draw 
+    this.draw()
+  }
+} 
+
 
 export class Axis extends PIXI.Container {
   constructor(app,state){
@@ -776,6 +950,7 @@ export class MultiplicationStrip extends PIXI.Container {
       this._height,
       this._height
     );
+
     this.draggerSpriteB.hitArea = new PIXI.Circle(
       0,
       0,
@@ -4056,5 +4231,177 @@ export class EditableTextField extends PIXI.Container {
   
   pointerUpOutside(event){
     this.touching = false
+  }
+}
+
+
+
+export class Fraction extends PIXI.Container {
+  constructor(n,d,w,color){
+    super()
+    this._width = w
+    this.numerator = n+""
+    this.denominator = d+""
+    this.color = color
+    this.makeWhole = true
+    this.numDigits = this.numerator.length
+    this.denDigits = this.denominator.length 
+    this.maxDigits = 2
+    this.fontSize = w/(this.maxDigits)
+    this.compression = 0.9
+    this.lineCompression = 20
+    this.dragged = false
+    this.touching = false
+    this.interactive = true
+    this.lockX = false 
+    this.lockY = false
+    this.tagColor = color ? color : "0xffffff"
+
+    if (this.maxDigits == 3){
+      this.compression = 1.5
+      this.lineCompression = 30
+    } else if (this.maxDigits == 2){
+      this.compression = 1.3
+      this.lineCompression = 25
+    }
+
+    // Numerator
+    this.N = new PIXI.Text()
+    this.N.anchor.x = 0.5
+    this.N.x = this._width/2
+    this.N.y = 0
+    this.N.text = n
+    this.N.style.fontSize = this.fontSize
+    this.addChild(this.N)
+
+    // Denominator
+    this.D = new PIXI.Text()
+    this.D.anchor.x = 0.5
+    this.D.x = this._width/2
+    this.D.y = this.height
+    this.D.text = d
+    this.D.style.fontSize = this.fontSize
+    this.addChild(this.D)
+
+    // Mid Line
+    this.L = new PIXI.Graphics()
+    this.L.lineStyle(this._width/this.lineCompression,this.color)
+    this.L.lineTo(this._width,0)
+    this.L.y = this.height/2
+
+    this.addChild(this.L)
+
+    this.draw(n,d,w)
+  }
+
+  includeTag() {
+      this.addChild(this.tag)
+      this.addChild(this.L)
+    }
+
+  hide(mark){
+    this.N.text = "?"
+    this.D.text = "?"
+  }
+
+  makeDraggable() {
+    this.on('pointerdown',this.pointerDown)
+    this.on('pointermove',this.pointerMove)
+    this.on('pointerup',this.pointerUp)
+    this.on('pointerupoutside',this.pointerUpOutside)  
+  }
+
+
+  pointerDown(event){
+    this.touching = true
+    this.dragged = false
+    this.deltaTouch = {
+      x: this.x - event.data.global.x,
+      y: this.y - event.data.global.y
+    }
+  }
+
+  
+  pointerMove(event){
+    if (this.touching){
+      if (!this.lockX){
+        this.x = event.data.global.x + this.deltaTouch.x
+      } 
+      if (!this.lockY){
+        this.y = event.data.global.y + this.deltaTouch.y
+      }
+      this.dragged = true
+    }
+  }
+
+  pointerUp(event){
+    this.touching = false
+  }
+  
+  pointerUpOutside(event){
+    this.touching = false
+  }
+
+  draw(n,d,_w){
+
+    this.numerator = n+""
+    this.denominator = d+""
+    let drawingAWholeNumber = this.numerator%this.denominator == 0
+
+    this.L.alpha = 1
+    this.D.alpha = 1
+
+    if (drawingAWholeNumber && this.makeWhole){
+      this.numerator = Math.round(this.numerator/this.denominator)+""
+      this.L.alpha = 0 
+      this.D.alpha = 0
+    } 
+
+    this.numDigits = this.numerator.length
+    this.denDigits = this.denominator.length 
+    this.maxDigits = Math.max(this.numDigits,this.denDigits)
+    this.minDigits = Math.min(this.numDigits,this.denDigits)
+    this.fontSize = _w/2
+    this.compression = 0.9
+
+    if (this.maxDigits == 3){
+      this.compression = 1.5
+      this.lineCompression = 30
+    } else if (this.maxDigits == 2){
+      this.compression = 1.3
+      this.lineCompression = 25
+    } else if (this.maxDigits == 1) {
+      this.compression = 1.3
+      this.lineCompression = 15
+      _w = _w/1.5
+    }
+
+    
+    let textColor = this.color
+
+    // Numerator
+    this.N.x = _w/2
+    this.N.y = 0
+    this.N.style.fontSize = this.fontSize*this.compression
+    this.N.style.fill = textColor
+    this.N.text = this.numerator
+    this.addChild(this.N)
+
+    // Denominator
+    this.D.x = _w/2
+    this.D.y = this.N.height
+    this.D.style.fill = textColor
+    this.D.style.fontSize = this.fontSize*this.compression
+    this.D.text = this.denominator
+    this.addChild(this.D)
+
+    // Line
+    this.L.clear()
+    this.L.lineStyle(_w/this.lineCompression,textColor)
+    this.L.lineTo(_w,0)
+    this.L.y = this.N.height
+    this.L.x = 0
+
+
   }
 }

@@ -10,6 +10,8 @@ import * as partialproducts from "./js/partialproducts.js"
 import Manipulatives from "./Manipulatives"
 import * as drawing from "./js/drawing.js"
 import * as spotlight from "./js/spotlight.js"
+import * as cuisenairecircles from "./js/cuisenairecircles.js"
+
 
 
 const Main = () => (
@@ -22,6 +24,7 @@ const Main = () => (
     <Route path="/rainbowarrays" render={()=><Arena fullscreen = {true} features = {{chip: true}} script = {partialproducts.init}/>} />
     <Route path="/drawing" render={()=><Arena fullscreen = {true} script = {drawing.init}/>} />
     <Route path="/spotlight" render={()=><Arena fullscreen = {true} script = {spotlight.init}/>} />
+    <Route path="/cuisenairecirclesbeta" render={()=><Arena fullscreen = {true} script = {cuisenairecircles.init}/>} />
     <Route path="/multiplicationgridk2" render={()=><Arena fullscreen = {true} features = {{type: "k2"}} script = {multiplicationgrid.init}/>} />
     <Route path="/" component={Manipulatives} />
   </Switch>
