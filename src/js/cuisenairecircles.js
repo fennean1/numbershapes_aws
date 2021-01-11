@@ -22,6 +22,8 @@ loader.add('minus', 'https://res.cloudinary.com/duim8wwno/image/upload/v16076221
 loader.add('plus', 'https://res.cloudinary.com/duim8wwno/image/upload/v1607622190/PlusButton_cxghiq.png')
 loader.add('trash', 'https://res.cloudinary.com/duim8wwno/image/upload/v1610110971/Trash_lryrwg.png')
 loader.add('edit', 'https://res.cloudinary.com/duim8wwno/image/upload/v1607622188/EditIcon_ixof8l.png')
+loader.add('fullPaintBrush', 'https://res.cloudinary.com/duim8wwno/image/upload/v1610379613/Painting%20Circles/FullBrush_vx2guq.jpg')
+loader.add('emptyPaintBrush', 'https://res.cloudinary.com/duim8wwno/image/upload/v1610379613/Painting%20Circles/EmptyBrush_hdgrxy.png')
 
 
 // https://res.cloudinary.com/duim8wwno/image/upload/v1610110971/Trash_lryrwg.png
@@ -182,9 +184,11 @@ class CuisenaireCircle extends PIXI.Graphics {
 
       let ratio = numerator/denominator
 
-        const {stroke,fill} = COLORS[state.index]
+        const {fill} = COLORS[state.index]
 
-        let sW = r/12
+      let stroke = 0xffffff
+
+        let sW = r/20
 
         this.beginFill(fill)
         this.moveTo(0,0)
