@@ -52,7 +52,7 @@ export const ASSETS = {
     BLUE_SQUARE: blue_square,
 }
 
-export const FONT = "Courier"
+export const FONT = "Verdana"
 
 export const CUISENAIRE_COLORS = {
   "1": 0xfff9fc,

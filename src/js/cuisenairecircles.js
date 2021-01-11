@@ -22,11 +22,8 @@ loader.add('minus', 'https://res.cloudinary.com/duim8wwno/image/upload/v16076221
 loader.add('plus', 'https://res.cloudinary.com/duim8wwno/image/upload/v1607622190/PlusButton_cxghiq.png')
 loader.add('trash', 'https://res.cloudinary.com/duim8wwno/image/upload/v1610110971/Trash_lryrwg.png')
 loader.add('edit', 'https://res.cloudinary.com/duim8wwno/image/upload/v1607622188/EditIcon_ixof8l.png')
-loader.add('fullPaintBrush', 'https://res.cloudinary.com/duim8wwno/image/upload/v1610379613/Painting%20Circles/FullBrush_vx2guq.jpg')
-loader.add('emptyPaintBrush', 'https://res.cloudinary.com/duim8wwno/image/upload/v1610379613/Painting%20Circles/EmptyBrush_hdgrxy.png')
-
-
-// https://res.cloudinary.com/duim8wwno/image/upload/v1610110971/Trash_lryrwg.png
+loader.add('openBrush', 'https://res.cloudinary.com/duim8wwno/image/upload/v1610397628/Painting%20Circles/openBrush_pfkuxn.png')
+loader.add('closedBrush', 'https://res.cloudinary.com/duim8wwno/image/upload/v1610397810/Painting%20Circles/closedBrush_zwn9p6.png')
 
 
 // Assign to sprite object.
@@ -36,6 +33,8 @@ loader.load((loader, resources) => {
     sprites.plus = resources.plus.texture
     sprites.edit = resources.edit.texture
     sprites.trash = resources.trash.texture
+    sprites.openBrush = resources.openBrush.texture
+    sprites.closedBrush = resources.closedBrush.texture
 });
 
 
@@ -96,7 +95,7 @@ const COLORS = {
     stroke: 0x6C3F00,
   },
   9: {
-    fill: 0x279CFF,
+    fill: 0x3e3ede,
     stroke: 0x276DFF,
   },
   10: {
@@ -341,11 +340,16 @@ function createEditableTextField(){
   newField.textField.alpha = 1
   newField.x = window_width/2 
   newField.y = window_height/2
+  newField.textField.style.fontSize = Math.min(window_height,window_width)/35
   newField.editButton.on("pointerdown",openDialog)
   newField.on("pointerdown",onObjectDown)
   newField.on("pointerup",onObjectUp)
+  newField.updateText("Text")
+  newField.editButton.alpha = 1
   V.textFields.push(newField)
   app.stage.addChild(newField)
+
+  
 
   V.activeObject = newField
   TweenLite.to(newField,{y: window_height/4})
@@ -382,6 +386,7 @@ function deleteActiveObject(){
 
 function onObjectDown(){
  V.activeObject = this
+ app.stage.addChild(this)
 }
 
 function plusClicked(){
@@ -408,8 +413,6 @@ function minusClicked() {
     S.vPad = window_width < window_height ? window_height/10 : window_height/50
     S.topY = S.maxR + S.vPad/2
     S.botY = S.maxR + S.vPad*1.5
-
-
 
     V.backGround = new PIXI.Sprite.from(blueGradient)
     V.backGround.width = window_width
@@ -464,7 +467,6 @@ function minusClicked() {
     V.cuttingRegion.y = V.plusBtn.y - V.cuttingRegion.height/2
     V.cuttingRegion.interactive = true
 
-
     V.fractionLine = new PIXI.Graphics()
     V.fractionLine.x = V.cuttingRegion.x + 0.05*window_width
     V.fractionLine.y = V.cuttingRegion.y + 0.5*V.cuttingRegion.height
@@ -475,6 +477,26 @@ function minusClicked() {
 
     drawMenu()
     drawLine()
+
+    V.openBrush = new PIXI.Sprite(sprites.closedBrush)
+    V.openBrush.interactive = true
+    V.openBrush.anchor.set(0.5,0.5)
+    V.openBrush.width = 2/3*S.maxR
+    V.openBrush.height =V.openBrush.width
+    V.openBrush.x = V.cuttingRegion.x + V.cuttingRegion.width - V.cuttingRegion.height/3
+    V.openBrush.y = S.topY
+    app.stage.addChild(V.openBrush)
+
+    V.closedBrush = new PIXI.Sprite(sprites.openBrush)
+    V.closedBrush.interactive = true
+    V.closedBrush.anchor.set(0.5,0.5)
+    V.closedBrush.width = 2/3*S.maxR
+    V.closedBrush.height = V.closedBrush.width
+    V.closedBrush.x = V.cuttingRegion.x + V.cuttingRegion.height/3
+    V.closedBrush.y = S.topY
+    app.stage.addChild(V.closedBrush)
+
+
   }
 
 
