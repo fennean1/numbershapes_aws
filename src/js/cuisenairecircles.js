@@ -309,6 +309,14 @@ function drawMenu(){
     circ.interactive = true
     circ.anchor.set(0,0.5)
     circ.texture = app.renderer.generateTexture(myCirc)
+
+    circ.descriptor = new PIXI.Text()
+    circ.descriptor.text = i
+    circ.descriptor.style.fill = 0xffffff
+    circ.descriptor.anchor.set(0.5,0.5)
+    circ.descriptor.x = circ.width/2
+    circ.descriptor.y = 0
+    circ.addChild(circ.descriptor)
     
     app.stage.addChild(circ)
     circ.y = V.trashArea.y
@@ -316,6 +324,9 @@ function drawMenu(){
     circ.on('pointerdown',createCircle)
     circ.on('pointerdown',onObjectDown)
     x = x + circ.width
+
+
+
     V.menuItems.push(circ)
   }
   
