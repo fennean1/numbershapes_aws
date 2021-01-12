@@ -214,6 +214,7 @@ class CuisenaireCircle extends PIXI.Graphics {
 
   pointerDown(event) {
     app.stage.addChild(this)
+    TweenLite.to(V.cuttingRegion,{duration: 0.25,alpha: 1})
     this.touching = true;
     this.dragged = false;
     this.deltaTouch = {
@@ -267,6 +268,7 @@ class CuisenaireCircle extends PIXI.Graphics {
 
   pointerUp(event) {
     this.touching = false;
+    TweenLite.to(V.cuttingRegion,{duration: 0.25,alpha: 0})
   }
 
   pointerUpOutside(event) {
@@ -324,7 +326,6 @@ function drawMenu(){
     circ.on('pointerdown',createCircle)
     circ.on('pointerdown',onObjectDown)
     x = x + circ.width
-
 
 
     V.menuItems.push(circ)
@@ -477,6 +478,7 @@ function minusClicked() {
     V.cuttingRegion.x = window_width/2 - V.cuttingRegion.width/2 
     V.cuttingRegion.y = V.plusBtn.y - V.cuttingRegion.height/2
     V.cuttingRegion.interactive = true
+    V.cuttingRegion.alpha = 0
 
     V.fractionLine = new PIXI.Graphics()
     V.fractionLine.x = V.cuttingRegion.x + 0.05*window_width
@@ -496,7 +498,7 @@ function minusClicked() {
     V.openBrush.height =V.openBrush.width
     V.openBrush.x = V.cuttingRegion.x + V.cuttingRegion.width - V.cuttingRegion.height/3
     V.openBrush.y = S.topY
-    app.stage.addChild(V.openBrush)
+    //app.stage.addChild(V.openBrush)
 
     V.closedBrush = new PIXI.Sprite(sprites.openBrush)
     V.closedBrush.interactive = true
@@ -505,7 +507,7 @@ function minusClicked() {
     V.closedBrush.height = V.closedBrush.width
     V.closedBrush.x = V.cuttingRegion.x + V.cuttingRegion.height/3
     V.closedBrush.y = S.topY
-    app.stage.addChild(V.closedBrush)
+    //app.stage.addChild(V.closedBrush)
 
 
   }
