@@ -56,7 +56,6 @@ export class DraggableGraphics extends PIXI.Graphics {
     // Omly normalize points if the objects is not already drawn
     if (!this.drawn){
 
-      console.log("mapping points")
       this.state.points = this.state.points.map(s=>{
 
         return s.map(p=>{
@@ -81,7 +80,6 @@ export class DraggableGraphics extends PIXI.Graphics {
 
         this.moveTo(prev.x,prev.y)
 
-
         if (i == 0){
           this.lineStyle(0,this.state.strokeColor,1,0.5)
           this.drawCircle(prev.x,prev.y,this.state.strokeWidth/2.1)
@@ -96,14 +94,13 @@ export class DraggableGraphics extends PIXI.Graphics {
       })
 
     })
-
         const padding = 3*this.state.strokeWidth
         this.beginFill(0xffffff)
         this._fillStyle.alpha = 0.005
         this.lineStyle(0,0xffffff)
         this.drawRoundedRect(0,0,maxX - minX+2*padding,maxY-minY+2*padding,this.state.strokeWidth*5)
-
-  }
+  
+      }
 
   pointerDown(event) {
     this.touching = true;
@@ -122,7 +119,6 @@ export class DraggableGraphics extends PIXI.Graphics {
 
   pointerMove(event) {
     if (this.touching) {
-      console.log(this.x,this.y)
       if (!this.lockX) {
         this.x = event.data.global.x + this.deltaTouch.x;
 

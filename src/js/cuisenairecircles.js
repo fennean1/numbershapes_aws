@@ -483,7 +483,7 @@ function onObjectDown(){
 
 
 function onObjectUp(){
-  if (this.x-this.width < V.trashArea.x+V.trashArea.width && this.y+this.height > V.trashArea.y-V.trashArea.height){
+  if (this.x < V.trashArea.x+V.trashArea.width && this.y > V.trashArea.y-V.trashArea.height){
     deleteActiveObject()
   }
 }
