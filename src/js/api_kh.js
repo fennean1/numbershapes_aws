@@ -27,6 +27,145 @@ export function digitCount(n) {
 }
 
 
+export class DraggableGraphics extends PIXI.Graphics {
+  constructor(texture) {
+    super();
+    this.dragged = false;
+    this.touching = false;
+    this.interactive = true;
+    this.lockX = false;
+    this.lockY = false;
+    this.texture = texture;
+    this.minX = null;
+    this.maxX = null;
+    this.minY = null;
+    this.maxY = null;
+    this.on("pointerdown", this.pointerDown);
+    this.on("pointermove", this.pointerMove);
+    this.on("pointerup", this.pointerUp);
+    this.on("pointerupoutside", this.pointerUpOutside);
+  }
+
+  draw(){
+
+    this.clear()
+    this.beginFill(this.state.strokeColor)
+
+    const {minX,minY,maxX,maxY} = this.state.bounds
+
+    // Omly normalize points if the objects is not already drawn
+    if (!this.drawn){
+
+      console.log("mapping points")
+      this.state.points = this.state.points.map(s=>{
+
+        return s.map(p=>{
+          return {x: p.x - minX,y:p.y - minY}
+        })
+      })
+      this.x = minX
+      this.y = minY
+    }
+
+
+    this.state.points.forEach((s,i)=>{
+
+      let prev = s[0]
+      let curr = s.length > 1 ? s[1] : s[0]
+      
+      s.forEach((p,i)=>{
+        
+        curr = i != 0 ? p : s[1]
+
+        curr = !curr ? prev : curr
+
+        this.moveTo(prev.x,prev.y)
+
+
+        if (i == 0){
+          this.lineStyle(0,this.state.strokeColor,1,0.5)
+          this.drawCircle(prev.x,prev.y,this.state.strokeWidth/2.1)
+        } else {
+          this.lineStyle(0,this.state.strokeColor,1,0.5)
+          this.drawCircle(curr.x,curr.y,this.state.strokeWidth/2.1)
+        }
+
+        this.lineStyle(this.state.strokeWidth,this.state.strokeColor,this.state.strokeWidth,0.5)
+        this.quadraticCurveTo(prev.x,prev.y,curr.x,curr.y)
+        prev = p
+      })
+
+    })
+
+        const padding = 3*this.state.strokeWidth
+        this.beginFill(0xffffff)
+        this._fillStyle.alpha = 0.005
+        this.lineStyle(0,0xffffff)
+        this.drawRoundedRect(0,0,maxX - minX+2*padding,maxY-minY+2*padding,this.state.strokeWidth*5)
+
+  }
+
+  pointerDown(event) {
+    this.touching = true;
+    this.dragged = false;
+    this.deltaTouch = {
+      x: this.x - event.data.global.x,
+      y: this.y - event.data.global.y,
+    };
+
+    if (this.drawn){
+      this.state.strokeColor = 0xffffff
+      this.draw()
+    }
+
+  }
+
+  pointerMove(event) {
+    if (this.touching) {
+      console.log(this.x,this.y)
+      if (!this.lockX) {
+        this.x = event.data.global.x + this.deltaTouch.x;
+
+        let xMaxOut = (this.maxX != null) && this.x > this.maxX;
+        let xMinOut = (this.minX != null) && this.x < this.minX;
+
+        if (xMaxOut) {
+          this.x = this.maxX;
+        } else if (xMinOut) {
+          this.x = this.minX;
+        }
+      }
+
+      if (!this.lockY) {
+        this.y = event.data.global.y + this.deltaTouch.y;
+
+        let yMaxOut = (this.maxY !=null) && this.y > this.maxY;
+        let yMinOut = (this.minY !=null) && this.y < this.minY;
+
+        if (yMaxOut) {
+          this.y = this.maxY;
+        } else if (yMinOut) {
+          this.y = this.minY;
+        }
+      }
+      this.dragged = true;
+    }
+  }
+
+  pointerUp(event) {
+    if (this.drawn){
+      this.state.strokeColor = 0x000000
+      this.draw()
+    }
+    this.touching = false;
+  }
+
+  pointerUpOutside(event) {
+    this.touching = false;
+  }
+
+}
+
 export class KHNumberline extends PIXI.Container {
   constructor(state,renderer,frame){
     super()
@@ -82,7 +221,6 @@ export class KHNumberline extends PIXI.Container {
     this.ctx.lineStyle(this.minorTickStroke,0xffffff,1,0.5)
     this.ctx.lineTo(0,this.minorTickHeight)
     this.minorTickTexture = this.renderer.generateTexture(this.ctx)
-
   }
 
   getLabelsNeeded(){

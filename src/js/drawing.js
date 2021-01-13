@@ -4,7 +4,7 @@ import greyPin from "../assets/Pin.png";
 import * as CONST from "./const.js";
 import { TweenLite } from "gsap";
 import {
-  Draggable,
+  DraggableGraphics,
   HorizontalNumberLine,
   BlockRow,
   AdjustableStrip,
@@ -24,62 +24,38 @@ export const init = (app, setup) => {
   let arr = []
   let subArr = []
   let curr; 
-  let prev;
   let timeout;
-  let startColor = 0x404040
+  let startColor = 0xed1f30
   let endColor = 0x000000
-  let strokeWidth = 3
+  let strokeWidth = Math.min(WINDOW_WIDTH,WINDOW_HEIGHT)/200
+
+
 
   // UI
   let background;
-  let drawingCtx;
-
   
 
-
-  function redraw(){
-    drawingCtx.clear()
-    drawingCtx.lineStyle(strokeWidth,endColor,1,0.5)
-    drawingCtx.beginFill(endColor)
-
-
-    
-    arr.forEach((s,i)=>{
-
-
-      let prev = s[0]
-      let curr;
-
-
-
-      s.forEach(p=>{
-        curr = p
-        drawingCtx.moveTo(prev.x,prev.y)
-        drawingCtx.lineStyle(0,endColor,1,0.5)
-        drawingCtx.drawCircle(curr.x,curr.y,0.8)
-        drawingCtx.lineStyle(strokeWidth,endColor,strokeWidth,0.5)
-        drawingCtx.quadraticCurveTo(prev.x,prev.y,curr.x,curr.y)
-        prev = p
-
-      })
-
-    })
-
-    getTextureFromCtx()
-    arr = []
+  // START
+  const V = {drawings: []}
+  const S = {
+    startColor: 0xed1f30,
+    endColor: 0x000000,
+    strokeWidth: Math.min(WINDOW_WIDTH,WINDOW_HEIGHT)/200,
+    prev: {},
+    curr: {}
   }
 
+  function drawingPointerUp(){
+    arr.push(subArr)
+    subArr = []
+    background.touching = false
 
-  function getTextureFromCtx() {
-    let t = app.renderer.generateTexture(drawingCtx)
-    let s = new PIXI.Sprite()
-    s.width = t.width
-    s.height = t.height
-    s.texture = t
-    let c = new PIXI.Container()
-    //c.addChild(s)
-    app.stage.addChild(s)
+    if (!this.drawn){
+    
+    timeout = setTimeout(()=>{
 
+    V.currentCtx.alpha = 1
+    V.currentCtx.state.points = arr
     let yS = []
 
     let xS = []
@@ -96,67 +72,73 @@ export const init = (app, setup) => {
       })
     })
 
-  
-    console.log("texturewidth",t.x)
-    console.log("texturewidth",t.y)
-
-    console.log("texturewidth",s.width)
-    console.log("texturewidth",s.height)
-
 
     let minY = Math.min(...yS)
     let minX = Math.min(...xS)
+    let maxY = Math.max(...yS)
+    let maxX = Math.max(...xS)
+
+    V.currentCtx.state.bounds ={
+      minX: minX,
+      maxX: maxX,
+      minY: minY,
+      maxY: maxY
+    }
+
+    V.currentCtx.drawn = true
+    V.currentCtx.draw()
 
 
-    s.x = minX - strokeWidth/2 
-    s.y = minY - strokeWidth/2
-    drawingCtx.clear()
+
+    V.drawings.push(V.currentCtx)
+
+    V.currentCtx.drawn = true
+
+    let newDrawingCtx = new DraggableGraphics()
+    newDrawingCtx.on('pointerup',drawingPointerUp)
+    newDrawingCtx.state.strokeWidth = strokeWidth
+    newDrawingCtx.state.strokeColor= endColor
+    V.currentCtx = newDrawingCtx
+    V.drawings.push(newDrawingCtx )
+    app.stage.addChild(newDrawingCtx)
+
+    arr = []
+    subArr = []
+    },1000)
+
+  }
+
   }
 
   function backgroundPointerDown(e) {
     clearTimeout(timeout)
     this.touching = true
-    prev = {x: e.data.global.x,y: e.data.global.y}
-    drawingCtx.lineStyle(2,startColor,1,0.5)
-    drawingCtx.beginFill(startColor)
+    S.prev = {x: e.data.global.x,y: e.data.global.y}
+    subArr.push(S.prev)
+    V.currentCtx.moveTo(S.prev.x,S.prev.y)
+    V.currentCtx.beginFill(startColor)
+    V.currentCtx.lineStyle(0,startColor,1,0.5)
+    V.currentCtx.drawCircle(S.prev.x,S.prev.y,strokeWidth/2.1)
+
   }
 
 
   function backgroundPointerMove(e) {
     if (this.touching){
-      curr = {x: e.data.global.x,y: e.data.global.y}
-      drawingCtx.moveTo(prev.x,prev.y)
-      drawingCtx.lineStyle(0,startColor,1,0.5)
-      drawingCtx.drawCircle(curr.x,curr.y,strokeWidth/2.1)
-      drawingCtx.lineStyle(strokeWidth,startColor,1,0.5)
-      drawingCtx.quadraticCurveTo(prev.x,prev.y,curr.x,curr.y)
-    
-
-      prev = curr
-      subArr.push(curr)
+      S.curr = {x: e.data.global.x,y: e.data.global.y}
+      V.currentCtx.moveTo(S.prev.x,S.prev.y)
+      V.currentCtx.lineStyle(0,startColor,1,0.5)
+      V.currentCtx.drawCircle(S.curr.x,S.curr.y,strokeWidth/2.1)
+      V.currentCtx.lineStyle(strokeWidth,startColor,1,0.5)
+      V.currentCtx.quadraticCurveTo(S.prev.x,S.prev.y,S.curr.x,S.curr.y)
+      S.prev = S.curr
+      subArr.push(S.curr)
     }
   }
 
-  function backgroundPointerUp(e) {
-    this.touching = false;
-    arr.push(subArr)
-    subArr = []
-    
-    timeout = setTimeout(redraw,500)
-    //getTextureFromCtx()
-    arr = []
-    //drawingCtx.clear()
-
-    console.log("drawing Context Hit Area",drawingCtx.hitArea)
-  }
+  // END
 
 
-  function drawNodes(arr){
-    arr.forEach(e=>{
-      drawingCtx.lineTo(e.x,e.y)
-      drawingCtx.moveTo(e.x,e.y)
-    })
-  }
 
   // Called on resize
   function resize(newFrame) {
@@ -187,12 +169,16 @@ export const init = (app, setup) => {
     background.interactive = true 
     background.on('pointerdown',backgroundPointerDown)
     background.on('pointermove',backgroundPointerMove)
-    background.on('pointerup',backgroundPointerUp)
     app.stage.addChild(background)
 
 
-    drawingCtx = new PIXI.Graphics()
-    app.stage.addChild(drawingCtx)
+    V.currentCtx= new DraggableGraphics()
+    V.currentCtx.on('pointerup',drawingPointerUp)
+    V.currentCtx.state.strokeWidth = strokeWidth
+    V.currentCtx.state.strokeColor= endColor
+
+    V.drawings.push(...V.currentCtx)
+    app.stage.addChild(V.currentCtx)
 
 
 

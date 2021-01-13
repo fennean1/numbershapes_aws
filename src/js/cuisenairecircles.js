@@ -5,7 +5,7 @@ import * as CONST from "./const.js";
 import {
   TweenLite,TimelineLite
 } from "gsap";
-import {ArrayModel, Axis, digitCount, KHNumberline, MathFactPrompt,EditableTextField} from "./api_kh.js";
+import {ArrayModel, Axis, digitCount, KHNumberline, MathFactPrompt,DraggableGraphics,EditableTextField} from "./api_kh.js";
 
 import {TWO_DIGIT_ADDITION_UNDER_100} from "./problemSets.js"
 import createMixins from "@material-ui/core/styles/createMixins";
@@ -52,12 +52,21 @@ loader.load((loader, resources) => {
   }
 
 
+
+// 
+const V = {drawings: [],
+    textFields:[]}
+
 // State
-let S = {}
-// View
-let V = {
-  textFields:[]
-}
+const S = {
+    startColor: 0xed1f30,
+    endColor: 0x000000,
+    strokeWidth: Math.min(window_width,window_height)/200,
+    prev: {},
+    curr: {},
+    arr: [],
+    subArr: []
+  }
 // Model 
 let M = {}
 
@@ -113,25 +122,102 @@ const COLORS = {
   // Should be updated any time a change is made on the screens
 
 // Model
-
-
-
+let timeout;
 
   // Objects
 
+  function drawingPointerUp(){
+    S.arr.push(S.subArr)
+    S.subArr = []
+    V.backGround.touching = false
 
-  function backgroundPointerDown(e) {
-    this.touching = true 
+    if (!this.drawn){
+    
+    timeout = setTimeout(()=>{
+
+    V.currentCtx.alpha = 1
+    V.currentCtx.state.points = S.arr
+    let yS = []
+
+    let xS = []
+
+    S.arr.forEach(s=>{
+      s.forEach(p=>{
+        xS.push(p.x)
+      })
+    })
+
+    S.arr.forEach(s=>{
+      s.forEach(p=>{
+        yS.push(p.y)
+      })
+    })
+
+
+    let minY = Math.min(...yS)
+    let minX = Math.min(...xS)
+    let maxY = Math.max(...yS)
+    let maxX = Math.max(...xS)
+
+    V.currentCtx.state.bounds ={
+      minX: minX,
+      maxX: maxX,
+      minY: minY,
+      maxY: maxY
+    }
+
+    V.currentCtx.draw()
+    V.currentCtx.drawn = true
+
+
+
+    V.drawings.push(V.currentCtx)
+
+    V.currentCtx.drawn = true
+
+    let newDrawingCtx = new DraggableGraphics()
+    newDrawingCtx.on('pointerup',drawingPointerUp)
+    newDrawingCtx.on('pointerdown',onObjectDown)
+    newDrawingCtx.on('pointerup',onObjectUp)
+    newDrawingCtx.state.strokeWidth = S.strokeWidth
+    newDrawingCtx.state.strokeColor= S.endColor
+    
+    V.currentCtx = newDrawingCtx
+    V.drawings.push(newDrawingCtx )
+    app.stage.addChild(newDrawingCtx)
+
+    S.arr = []
+    S.subArr = []
+    },1000)
 
   }
 
-  function backgroundPointerMove(e) {
+  }
+
+  function backGroundPointerDown(e) {
+    clearTimeout(timeout)
+    this.touching = true
+    S.prev = {x: e.data.global.x,y: e.data.global.y}
+    S.subArr.push(S.prev)
+    V.currentCtx.moveTo(S.prev.x,S.prev.y)
+    V.currentCtx.beginFill(S.startColor)
+    V.currentCtx.lineStyle(0,S.startColor,1,0.5)
+    V.currentCtx.drawCircle(S.prev.x,S.prev.y,S.strokeWidth/2.1)
+
+  }
+
+
+  function backGroundPointerMove(e) {
     if (this.touching){
-
-    } 
-  }
-  function backgroundPointerUp(e){
-    this.touching = false
+      S.curr = {x: e.data.global.x,y: e.data.global.y}
+      V.currentCtx.moveTo(S.prev.x,S.prev.y)
+      V.currentCtx.lineStyle(0,S.startColor,1,0.5)
+      V.currentCtx.drawCircle(S.curr.x,S.curr.y,S.strokeWidth/2.1)
+      V.currentCtx.lineStyle(S.strokeWidth,S.startColor,1,0.5)
+      V.currentCtx.quadraticCurveTo(S.prev.x,S.prev.y,S.curr.x,S.curr.y)
+      S.prev = S.curr
+      S.subArr.push(S.curr)
+    }
   }
 
 
@@ -339,12 +425,6 @@ function drawMenu(){
 
 }
 
-function onObjectUp(){
-  if (this.x < V.trashArea.x+V.trashArea.width && this.y > V.trashArea.y-V.trashArea.height){
-    deleteActiveObject()
-  }
-}
-
 // Text Box Stuff
 function createEditableTextField(){
 
@@ -401,6 +481,13 @@ function onObjectDown(){
  app.stage.addChild(this)
 }
 
+
+function onObjectUp(){
+  if (this.x-this.width < V.trashArea.x+V.trashArea.width && this.y+this.height > V.trashArea.y-V.trashArea.height){
+    deleteActiveObject()
+  }
+}
+
 function plusClicked(){
   if (S.denominator < 12){
     S.denominator = S.denominator+1
@@ -426,10 +513,22 @@ function minusClicked() {
     S.topY = S.maxR + S.vPad/2
     S.botY = S.maxR + S.vPad*1.5
 
-    V.backGround = new PIXI.Sprite.from(blueGradient)
-    V.backGround.width = window_width
-    V.backGround.height = window_height
+    V.backGround = new PIXI.Sprite()
+    V.backGround.texture = new PIXI.Texture.from(CONST.ASSETS.BLUE_GRADIENT)
+    V.backGround.interactive = true 
+    V.backGround.on('pointerdown',backGroundPointerDown)
+    V.backGround.on('pointermove',backGroundPointerMove)
     app.stage.addChild(V.backGround)
+
+    V.currentCtx= new DraggableGraphics()
+    V.currentCtx.on('pointerup',drawingPointerUp)
+    V.currentCtx.on('pointerdown',onObjectDown)
+    V.currentCtx.on('pointerup',onObjectUp)
+    V.currentCtx.state.strokeWidth = S.strokeWidth
+    V.currentCtx.state.strokeColor= S.endColor
+
+    V.drawings.push(...V.currentCtx)
+    app.stage.addChild(V.currentCtx)
 
     V.plusBtn = new PIXI.Sprite(sprites.plus)
     V.plusBtn.interactive = true
