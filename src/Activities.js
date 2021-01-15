@@ -76,3 +76,23 @@ export const PRIME_LINE = {
   coreSkillDescription:
     "Here is a lotere is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
 };
+
+export const RAINBOW_ARRAYS = {
+  shortText: "Whole Number Multiplication",
+  title: "Rainbow Arrays",
+  previewImg: "RainbowArrays.png",
+  tool: "/rainbowarrays",
+  gameShow: 'https://khlink.net/33dlSj0',
+  coreSkillDescription:
+    "Here is a lotere is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
+};
+
+export const RELATIONAL_CIRCLES = {
+  shortText: "Investigating Part Whole Relationships",
+  title: "Relational Circles",
+  previewImg: "RelationalCircles.png",
+  tool: "/relationalcircles",
+  gameShow: 'https://khlink.net/33dlSj0',
+  coreSkillDescription:
+    "Here is a lotere is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text. Here is a lot of text here is a lot of text here is a lot of text.",
+};

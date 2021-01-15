@@ -20,7 +20,8 @@
 
 .clouds {
   background: url('./assets/yellow-gradient.png') no-repeat;
-  height: 100vh;
+  height: 100%;
+  width: 100vw,
 }
 
 

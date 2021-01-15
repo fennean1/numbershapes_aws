@@ -40,6 +40,25 @@ export default class Manipulatives extends Component {
                   </div>
                 </div>
               </Grid>
+              <Grid xs={12} item={true} sm={6}>
+                <div
+                  style={{ flexDirection: "column", display: "flex", flex: 1 }}
+                >
+                  <div style={{ margin: 5, flex: 1 }}>
+                    {" "}
+                    <ManipulativeCard data={ACTIVITIES.RAINBOW_ARRAYS} />
+                  </div>
+                </div>
+              </Grid>
+              <Grid xs={12} item={true} sm={6}>
+                <div
+                  style={{ flexDirection: "column", display: "flex", flex: 1 }}
+                >
+                  <div style={{ margin: 5, flex: 1 }}>
+                    <ManipulativeCard data={ACTIVITIES.RELATIONAL_CIRCLES} />
+                  </div>
+                </div>
+              </Grid>
             </Grid>
           </div>
           <Feedback style = {{height: 1000}}email = {true} projectId="5f63dca7515e130004737f5c" />

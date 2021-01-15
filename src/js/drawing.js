@@ -35,7 +35,7 @@ export const init = (app, setup) => {
   let background;
   
 
-  // START
+  // STAR
   const V = {drawings: []}
   const S = {
     startColor: 0xed1f30,
@@ -135,8 +135,6 @@ export const init = (app, setup) => {
       subArr.push(S.curr)
     }
   }
-
-  // END
 
 
 
