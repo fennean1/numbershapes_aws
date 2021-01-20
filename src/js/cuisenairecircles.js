@@ -44,13 +44,6 @@ loader.load((loader, resources) => {
   let window_width = setup.width
   let window_height = setup.height
   let window_frame = {width: window_width,height: window_height}
-  
-  // Problem Set
-  let P = {
-    problemSet: TWO_DIGIT_ADDITION_UNDER_100,
-    currentIndex: 0,
-  }
-
 
 
 // 
@@ -214,7 +207,7 @@ let timeout;
       V.currentCtx.lineStyle(0,S.startColor,1,0.5)
       V.currentCtx.drawCircle(S.curr.x,S.curr.y,S.strokeWidth/2.1)
       V.currentCtx.lineStyle(S.strokeWidth,S.startColor,1,0.5)
-      V.currentCtx.quadraticCurveTo(S.prev.x,S.prev.y,S.curr.x,S.curr.y)
+      V.currentCtx.lineTo(S.curr.x,S.curr.y)
       S.prev = S.curr
       S.subArr.push(S.curr)
     }
@@ -502,6 +495,10 @@ function minusClicked() {
   drawLine()
 }
 
+// Save all the information required to reconstruct the arena. 
+  function saveState(){
+
+  }
 
   // Loading Script
   function load() {

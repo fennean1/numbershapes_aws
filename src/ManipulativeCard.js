@@ -31,7 +31,7 @@ const useStyles = makeStyles(theme => ({
     transform: "rotate(180deg)"
   },
   title: {
-    fontFamily: "Chalkboard SE",
+    fontFamily: "Verdana",
   },
   avatar: {
     backgroundColor: red[500]

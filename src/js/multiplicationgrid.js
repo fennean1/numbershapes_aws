@@ -88,9 +88,6 @@ export const init = (app, setup) => {
   app.stage.addChild(decXDenominator);
 
   function inc() {
-
-    console.log('incrementinging')
-
     switch (this) {
       case incYDenominator:
         if (vnumberline.denominator < 10){
@@ -138,6 +135,7 @@ export const init = (app, setup) => {
 
     let {minFloat,maxFloat}  = hnumberline
 
+  
     hnumberline.draw(minFloat,maxFloat)
     vnumberline.draw(minFloat,maxFloat)
 
@@ -336,21 +334,17 @@ export const init = (app, setup) => {
     lineUp.x = slider.x;
     lineUp.y = SELECTOR_Y;
 
-    const numberBubbleConfig = {
-      text: 456,
-      width: SLIDER_DIM,
-    };
-
-
     let width = 0.8 * Math.min(WINDOW_WIDTH, WINDOW_HEIGHT);
 
     hnumberline = new HorizontalNumberLine(0, 3.5, width, app);
+    //hnumberline.fractionTicks = true
     hnumberline.draw(0, 3.2);
     hnumberline.x = WINDOW_WIDTH / 2 - width / 2;
     hnumberline.y = WINDOW_HEIGHT / 2 + width / 2;
     app.stage.addChild(hnumberline);
 
     vnumberline = new VerticalNumberLine(0, 3.5, width, app);
+    //vnumberline.fractionTicks = true
     vnumberline.draw(0, 3.2);
     vnumberline.x = WINDOW_WIDTH / 2 - width / 2;
     vnumberline.y = WINDOW_HEIGHT / 2 + width / 2;
@@ -389,6 +383,7 @@ export const init = (app, setup) => {
       drawWhiskers(slider.x, slider.y);
     };
 
+    
     vnumberline.fractionTicks = true;
     vnumberline.denominator = 2;
 

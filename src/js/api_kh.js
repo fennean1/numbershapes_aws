@@ -2557,13 +2557,16 @@ export class HorizontalNumberLine extends PIXI.Container {
       let needsToBeSet = activeLabel && values[currentValue];
       delete values[currentValue];
 
+
       // If the label is active and still a value that needs to be set, reposition it.
-      if (needsToBeSet) {
+      if (needsToBeSet == true) {
         l.text = l.value;
         l.x = this.dx * (l.value - this.min);
         l.y = 0;
         l.alpha = 1;
-        let mod = Math.abs((l.value % this.majorStep) / this.majorStep);
+
+        let arg = (l.value % this.majorStep) / this.majorStep
+        let mod = Math.abs(arg);
         if (mod < 0.01 || mod > 0.99) {
           l.texture = this.majorTickTexture;
           l.height = this.majorTickHeight
@@ -2583,6 +2586,7 @@ export class HorizontalNumberLine extends PIXI.Container {
 
     let empties = this.ticks.filter((l) => l.value == null);
 
+
     let valueKeys = Object.keys(values);
 
     valueKeys.forEach((k) => {
@@ -2592,6 +2596,7 @@ export class HorizontalNumberLine extends PIXI.Container {
         let mod = Math.abs(
           (newActiveTick.value % this.majorStep) / this.majorStep
         );
+
         if (mod < 0.01 || mod > 0.99) {
           newActiveTick.texture = this.majorTickTexture;
           newActiveTick.height = this.majorTickHeight
@@ -2605,6 +2610,8 @@ export class HorizontalNumberLine extends PIXI.Container {
         newActiveTick.alpha = 1;
       }
     });
+
+
   }
 
   pointerUp() {
@@ -2690,6 +2697,7 @@ export class HorizontalNumberLine extends PIXI.Container {
 
     this.lineThickness = this._width/300
 
+
     if (this.fractionTicks) {
       this.params.MINOR_STEP = 1 / this.denominator;
       this.params.MAJOR_STEP = 1;
@@ -2710,7 +2718,11 @@ export class HorizontalNumberLine extends PIXI.Container {
     this.majorTickHeight = 1.5 * this.minorTickHeight;
 
     this.minorTickThickness = Math.min(this.majorDX / 3, this.lineThickness);
+    if (this.minorTickThickness < 1 ){
+      this.minorTickThickness = 1
+    }
     this.majorTickThickness = this.minorTickThickness * 1.25;
+
   }
 
   getNumbersNeeded(min, max, step) {
@@ -3247,6 +3259,9 @@ export class VerticalNumberLine extends PIXI.Container {
     this.majorTickHeight = 1.5 * this.minorTickHeight;
 
     this.minorTickThickness = Math.min(this.majorDX / 3, this.lineThickness);
+    if (this.minorTickThickness < 1 ){
+      this.minorTickThickness = 1
+    }
     this.majorTickThickness = this.minorTickThickness * 1.25;
   }
 
