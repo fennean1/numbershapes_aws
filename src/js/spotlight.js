@@ -131,6 +131,8 @@ loader.load((loader, resources) => {
     this.touching = false
   }
 
+
+
   function spotLightPointerDown(){
 
     let {answer} = P.problemSet[P.currentIndex].fact

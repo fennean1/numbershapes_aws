@@ -51,10 +51,10 @@ class Arena extends Component {
   }
 
   componentWillMount() {
-    PIXI.settings.RESOLUTION = window.devicePixelRatio;
+    PIXI.settings.RESOLUTION = 2;
     this.app = new PIXI.Application({forceCanvas: true});
     this.app.renderer.backgroundColor = 0xffffff;
-    this.app.renderer.resolution = window.devicePixelRatio;
+    this.app.renderer.resolution = 2;
     this.app.renderer.autoDensity = true;
   }
 
@@ -94,13 +94,7 @@ class Arena extends Component {
     let styleType = this.props.fullscreen ? { height: "100vh" } : null;
     return (
       <div>
-        <div
-          style={styleType}
-          ref={(me) => {
-            this.gameCanvas = me;
-          }}
-        />
-        <Dialog
+                <Dialog
           open={this.state.open}
           onClose={this.handleClose.bind(this)}
           aria-labelledby="form-dialog-title"
@@ -109,9 +103,11 @@ class Arena extends Component {
           <DialogContent>
             <TextField
               fullWidth
+              multiline
               value={this.state.text}
               onChange={this.onChange.bind(this)}
             />
+            
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose.bind(this)} color="primary">
@@ -119,6 +115,12 @@ class Arena extends Component {
             </Button>
           </DialogActions>
         </Dialog>
+        <div
+          style={styleType}
+          ref={(me) => {
+            this.gameCanvas = me;
+          }}
+        />
         <Dialog
           open={this.state.openMoreInfo}
           onClose={this.handleInfoClose.bind(this)}

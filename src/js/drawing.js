@@ -45,6 +45,8 @@ export const init = (app, setup) => {
     curr: {}
   }
 
+
+
   function drawingPointerUp(){
     arr.push(subArr)
     subArr = []

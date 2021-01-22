@@ -14,7 +14,7 @@ import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles(theme => ({
   card: {
-    fontFamily: "Chalkboard SE",
+    fontFamily: "Verdana",
   },
   media: {
     height: 0,

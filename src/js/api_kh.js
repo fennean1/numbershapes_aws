@@ -954,7 +954,7 @@ export class MultiplicationStrip extends PIXI.Container {
   constructor(app,numberline,state) {
     super();
 
-
+    this.grabberFadeTimeline = new TimelineLite({paused: true})
     this.state = state
 
     this.TYPE = 's'
@@ -983,6 +983,9 @@ export class MultiplicationStrip extends PIXI.Container {
     this.adjusterSprite.on("pointerup", this.onAdjustPointerUp);
     this.adjusterSprite.on("pointerupoutside", this.onAdjustPointerUp);
     this.addChild(this.adjusterSprite);
+
+    this.grabberFadeTimeline.to(this.adjusterSprite,{duration: 2,alpha: 1})
+    this.grabberFadeTimeline.to(this.adjusterSprite,{duration: 2,alpha: 0})
 
 
     this.stripGraphic = new PIXI.Graphics();
@@ -1234,6 +1237,8 @@ onAdjustPointerDown(){
 
   pointerDown(event) {
     this.touching = true;
+    this.adjusterSprite.alpha = 1
+    this.grabberFadeTimeline.kill()
     this.dragged = false;
     this.deltaTouch = {
       x: this.x - event.data.global.x,
@@ -1282,6 +1287,7 @@ onAdjustPointerDown(){
       this.synch()
       this.draw();
     }
+    this.grabberFadeTimeline.restart()
     this.touching = false;
     this.dragged = false
     this.onUpdate && this.onUpdate();
@@ -4342,10 +4348,10 @@ export class EditableTextField extends PIXI.Container {
   updateText(text){
    this.textField.text = text
    this.editButton.alpha = 0
-   this.editButton.height = this.textField.height 
-   this.editButton.width = this.textField.height
+   this.editButton.height = this.textField.style.fontSize*2
+   this.editButton.width = this.textField.style.fontSize*2
    this.editButton.x = this.textField.width 
-   this.editButton.y = -this.textField.height
+   this.editButton.y = -this.textField.style.fontSize*2
   }
  
 

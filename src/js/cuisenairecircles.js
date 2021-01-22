@@ -5,10 +5,7 @@ import * as CONST from "./const.js";
 import {
   TweenLite,TimelineLite
 } from "gsap";
-import {ArrayModel, Axis, digitCount, KHNumberline, MathFactPrompt,DraggableGraphics,EditableTextField} from "./api_kh.js";
-
-import {TWO_DIGIT_ADDITION_UNDER_100} from "./problemSets.js"
-import createMixins from "@material-ui/core/styles/createMixins";
+import {ArrayModel, Draggable, Axis, digitCount, KHNumberline, MathFactPrompt,DraggableGraphics,EditableTextField} from "./api_kh.js";
 
 export const init = (app, setup) => {
 
@@ -47,7 +44,7 @@ loader.load((loader, resources) => {
 
 
 // 
-const V = {drawings: [],
+const V = {paths: [],
     textFields:[]}
 
 // State
@@ -106,89 +103,57 @@ const COLORS = {
   }
 }
     
-
-  // Animation 
-  let spotLightFlashTimelineRight = new TimelineLite({paused: true})
-  let spotLightFlashTimelineLeft = new TimelineLite({paused: true})
-
-
   // Should be updated any time a change is made on the screens
 
 // Model
 let timeout;
 
-  // Objects
+function drawPaths(paths,ctx){
 
-  function drawingPointerUp(){
-    S.arr.push(S.subArr)
-    S.subArr = []
-    V.backGround.touching = false
+  const strokeColor = 0x000000
+  const strokeWidth = S.strokeWidth
 
-    if (!this.drawn){
-    
-    timeout = setTimeout(()=>{
+  paths.forEach((s,j)=>{
 
-    V.currentCtx.alpha = 1
-    V.currentCtx.state.points = S.arr
-    let yS = []
+    let prev = s[0]
+    let curr = s.length > 1 ? s[1] : s[0]
 
-    let xS = []
 
-    S.arr.forEach(s=>{
-      s.forEach(p=>{
-        xS.push(p.x)
-      })
+    s.forEach((p,i)=>{
+      curr = i != 0 ? p : s[1]
+
+      curr = !curr ? prev : curr
+
+
+      ctx.moveTo(prev.x,prev.y)
+      ctx.beginFill(0x000000)
+      
+      if (i == 0){
+        ctx.lineStyle(0,strokeColor,1,0.5)
+        ctx.drawCircle(prev.x,prev.y,strokeWidth/2.1)
+        ctx._fillStyle.alpha = 0.001
+        ctx.drawCircle(curr.x,curr.y,3*strokeWidth)
+      } else {
+        ctx.lineStyle(0,strokeColor,1,0.5)
+        ctx.drawCircle(curr.x,curr.y,strokeWidth/2.1)
+        ctx._fillStyle.alpha = 0.001
+        ctx.drawCircle(curr.x,curr.y,3*strokeWidth)
+      }
+
+      ctx.lineStyle(strokeWidth,strokeColor,1,0.5)
+      ctx.lineTo(curr.x,curr.y)
+      prev = p
     })
 
-    S.arr.forEach(s=>{
-      s.forEach(p=>{
-        yS.push(p.y)
-      })
-    })
+  })
+
+}
 
 
-    let minY = Math.min(...yS)
-    let minX = Math.min(...xS)
-    let maxY = Math.max(...yS)
-    let maxX = Math.max(...xS)
-
-    V.currentCtx.state.bounds ={
-      minX: minX,
-      maxX: maxX,
-      minY: minY,
-      maxY: maxY
-    }
-
-    V.currentCtx.draw()
-    V.currentCtx.drawn = true
-
-
-
-    V.drawings.push(V.currentCtx)
-
-    V.currentCtx.drawn = true
-
-    let newDrawingCtx = new DraggableGraphics()
-    newDrawingCtx.on('pointerup',drawingPointerUp)
-    newDrawingCtx.on('pointerdown',onObjectDown)
-    newDrawingCtx.on('pointerup',onObjectUp)
-    newDrawingCtx.state.strokeWidth = S.strokeWidth
-    newDrawingCtx.state.strokeColor= S.endColor
-    
-    V.currentCtx = newDrawingCtx
-    V.drawings.push(newDrawingCtx )
-    app.stage.addChild(newDrawingCtx)
-
-    S.arr = []
-    S.subArr = []
-    },1000)
-
-  }
-
-  }
 
   function backGroundPointerDown(e) {
     clearTimeout(timeout)
+    V.paths.forEach(p=>{p.interactive = false})
     this.touching = true
     S.prev = {x: e.data.global.x,y: e.data.global.y}
     S.subArr.push(S.prev)
@@ -196,6 +161,8 @@ let timeout;
     V.currentCtx.beginFill(S.startColor)
     V.currentCtx.lineStyle(0,S.startColor,1,0.5)
     V.currentCtx.drawCircle(S.prev.x,S.prev.y,S.strokeWidth/2.1)
+    V.currentCtx._fillStyle.alpha = 0.001
+    V.currentCtx.drawCircle(S.prev.x,S.prev.y,3*S.strokeWidth)
 
   }
 
@@ -203,9 +170,12 @@ let timeout;
   function backGroundPointerMove(e) {
     if (this.touching){
       S.curr = {x: e.data.global.x,y: e.data.global.y}
+      V.currentCtx._fillStyle.alpha =1
       V.currentCtx.moveTo(S.prev.x,S.prev.y)
       V.currentCtx.lineStyle(0,S.startColor,1,0.5)
       V.currentCtx.drawCircle(S.curr.x,S.curr.y,S.strokeWidth/2.1)
+      V.currentCtx._fillStyle.alpha = 0.001
+      V.currentCtx.drawCircle(S.prev.x,S.prev.y,3*S.strokeWidth)
       V.currentCtx.lineStyle(S.strokeWidth,S.startColor,1,0.5)
       V.currentCtx.lineTo(S.curr.x,S.curr.y)
       S.prev = S.curr
@@ -213,6 +183,50 @@ let timeout;
     }
   }
 
+  function backGroundPointerUp(){
+    this.touching = false
+    V.paths.forEach(p=>{p.interactive = true})
+
+    const t = app.renderer.generateTexture(V.currentCtx)
+    const b = V.currentCtx.getBounds()
+
+ 
+    if (b.width > S.strokeWidth*6 || b.height > S.strokeWidth*6){
+      const s = new PIXI.Sprite(t)
+      s.x = b.x 
+      s.y = b.y
+      V.currentCtx.clear()
+      V.accumulatorSprite.addChild(s)
+      V.accumulatorSprite.state.points.push(S.subArr)
+    } else {
+      V.currentCtx.clear()
+      t.destroy()
+    }
+    S.subArr = []
+    timeout = setTimeout(finishPath,1000)
+  }
+
+  function finishPath(){
+    drawPaths(V.accumulatorSprite.state.points,V.currentCtx)
+    const t = app.renderer.generateTexture(V.currentCtx)
+    let {x,y} = V.currentCtx.getBounds()
+    V.currentCtx.clear()
+    
+    const d = new Draggable(t)
+    d.on('pointerdown',onObjectDown)
+    d.on('pointerup',onObjectUp)
+    d.x = x 
+    d.y = y
+    app.stage.addChild(d)
+    d.type = 'PATH'
+    V.paths.push(d)
+
+    V.accumulatorSprite.destroy()
+    V.accumulatorSprite = new PIXI.Sprite()
+    V.accumulatorSprite.state = {}
+    V.accumulatorSprite.state.points = []
+    app.stage.addChild(V.accumulatorSprite)
+  }
 
 
   // Called on resize
@@ -227,8 +241,7 @@ let timeout;
   function draw(newFrame){
     M.frame = newFrame
     app.renderer.resize(newFrame.width,newFrame.height)
-    V.backGround.width = newFrame.width
-    V.backGround.height = newFrame.height
+    layoutView()
   }
 
 
@@ -237,7 +250,7 @@ class CuisenaireCircle extends PIXI.Graphics {
   constructor(state){
     super()
     this.state = state
-
+    this.type = 'CIRCLE'
 
     this.draw()
 
@@ -464,6 +477,12 @@ function drawLine(){
 
 
 function deleteActiveObject(){
+  /*Need to know type so we can delete it from the correct array
+  otherwise we have destroyed objects in our array */
+  if (V.activeObject.type == 'PATH'){
+    let i = V.paths.indexOf(V.activeObject)
+    V.paths.splice(i,1)
+  }
   app.stage.removeChild(V.activeObject)
   V.activeObject.destroy()
   V.activeObject = null
@@ -471,12 +490,16 @@ function deleteActiveObject(){
 
 function onObjectDown(){
  V.activeObject = this
+ if (this.type == 'PATH'){
+  this.alpha = 0.5
+ }
  app.stage.addChild(this)
 }
 
 
-function onObjectUp(){
-  if (this.x < V.trashArea.x+V.trashArea.width && this.y > V.trashArea.y-V.trashArea.height){
+function onObjectUp(e){
+  this.alpha = 1
+  if (e.data.global.x < V.trashArea.x+V.trashArea.width && e.data.global.y > V.trashArea.y-V.trashArea.height){
     deleteActiveObject()
   }
 }
@@ -497,12 +520,61 @@ function minusClicked() {
 
 // Save all the information required to reconstruct the arena. 
   function saveState(){
+      const nS = {
+        editableTextFields: [],
 
+      }
+
+      V.editableTextFields.forEach(e=>{
+        nS.push(e.state)
+      })
+
+    // Destroy V
   }
+
+  function layoutView(){
+
+
+    V.backGround.width = window_width
+    V.backGround.height = window_height
+
+    V.plusBtn.width = S.maxR*2
+    V.plusBtn.height = S.maxR*2
+    V.plusBtn.x = window_width - S.maxR
+    V.plusBtn.y = S.topY
+
+
+    V.minusBtn.width = S.maxR*2
+    V.minusBtn.height = S.maxR*2
+    V.minusBtn.x = S.maxR
+    V.minusBtn.y = S.topY
+
+    V.editBtn.width = S.maxR*2
+    V.editBtn.height = S.maxR*2
+    V.editBtn.x = window_width - S.maxR
+    V.editBtn.y = window_height-S.botY
+
+    V.trashArea.width = S.maxR*1.5
+    V.trashArea.height = S.maxR*1.5
+    V.trashArea.x = S.maxR
+    V.trashArea.y = window_height-S.botY
+
+    // bac
+    V.cuttingRegion.clear()
+    V.cuttingRegion.beginFill(0xffffff,0.5)
+    V.cuttingRegion.drawRoundedRect(0,0,0.8*window_width,0.1*window_height,0.05*window_height)
+    V.cuttingRegion.x = window_width/2 - V.cuttingRegion.width/2 
+    V.cuttingRegion.y = V.plusBtn.y - V.cuttingRegion.height/2
+
+    V.fractionLine.x = V.cuttingRegion.x + 0.05*window_width
+    V.fractionLine.y = V.cuttingRegion.y + 0.5*V.cuttingRegion.height
+  }
+
 
   // Loading Script
   function load() {
 
+    // All these should be from C.
     S.denominator = 2
     S.maxR = window_width/20
     S.one = S.maxR*S.maxR*3.14/10
@@ -512,19 +584,21 @@ function minusClicked() {
 
     V.backGround = new PIXI.Sprite()
     V.backGround.texture = new PIXI.Texture.from(CONST.ASSETS.BLUE_GRADIENT)
+    V.backGround.width = window_width
+    V.backGround.height = window_height
     V.backGround.interactive = true 
     V.backGround.on('pointerdown',backGroundPointerDown)
     V.backGround.on('pointermove',backGroundPointerMove)
+    V.backGround.on('pointerup',backGroundPointerUp)
     app.stage.addChild(V.backGround)
 
     V.currentCtx= new DraggableGraphics()
-    V.currentCtx.on('pointerup',drawingPointerUp)
     V.currentCtx.on('pointerdown',onObjectDown)
     V.currentCtx.on('pointerup',onObjectUp)
     V.currentCtx.state.strokeWidth = S.strokeWidth
     V.currentCtx.state.strokeColor= S.endColor
+    V.currentCtx.interactive = false
 
-    V.drawings.push(...V.currentCtx)
     app.stage.addChild(V.currentCtx)
 
     V.plusBtn = new PIXI.Sprite(sprites.plus)
@@ -540,10 +614,6 @@ function minusClicked() {
     V.minusBtn = new PIXI.Sprite(sprites.minus)
     V.minusBtn.interactive = true
     V.minusBtn.anchor.set(0.5,0.5)
-    V.minusBtn.width = S.maxR*2
-    V.minusBtn.height = S.maxR*2
-    V.minusBtn.x = S.maxR
-    V.minusBtn.y = S.topY
     V.minusBtn.on('pointerdown',minusClicked)
     app.stage.addChild(V.minusBtn)
 
@@ -581,30 +651,17 @@ function minusClicked() {
     V.fractionLine.y = V.cuttingRegion.y + 0.5*V.cuttingRegion.height
     
     app.stage.addChild(V.fractionLine)
-
     app.stage.addChild(V.cuttingRegion)
 
     drawMenu()
     drawLine()
 
-    V.openBrush = new PIXI.Sprite(sprites.closedBrush)
-    V.openBrush.interactive = true
-    V.openBrush.anchor.set(0.5,0.5)
-    V.openBrush.width = 2/3*S.maxR
-    V.openBrush.height =V.openBrush.width
-    V.openBrush.x = V.cuttingRegion.x + V.cuttingRegion.width - V.cuttingRegion.height/3
-    V.openBrush.y = S.topY
-    //app.stage.addChild(V.openBrush)
+    V.accumulatorSprite = new PIXI.Sprite()
+    V.accumulatorSprite.state = {}
+    V.accumulatorSprite.state.points = []
+    app.stage.addChild(V.accumulatorSprite)
 
-    V.closedBrush = new PIXI.Sprite(sprites.openBrush)
-    V.closedBrush.interactive = true
-    V.closedBrush.anchor.set(0.5,0.5)
-    V.closedBrush.width = 2/3*S.maxR
-    V.closedBrush.height = V.closedBrush.width
-    V.closedBrush.x = V.cuttingRegion.x + V.cuttingRegion.height/3
-    V.closedBrush.y = S.topY
-    //app.stage.addChild(V.closedBrush)
-
+    layoutView()
 
   }
 
