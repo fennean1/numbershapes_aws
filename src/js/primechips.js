@@ -537,7 +537,7 @@ if (objects.length == 0){
     VIEW_HEIGHT = frame.height
     VIEW_FRAME = frame
     BTN_DIM =  VIEW_WIDTH < VIEW_HEIGHT ? Math.max(VIEW_WIDTH,VIEW_HEIGHT)/15 : Math.min(VIEW_WIDTH,VIEW_HEIGHT)/15
-    LEAVE_Y = -2*BTN_DIM
+    LEAVE_Y = -5*BTN_DIM
   }
 
   function openDialog(){

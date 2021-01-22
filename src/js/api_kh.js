@@ -954,7 +954,7 @@ export class MultiplicationStrip extends PIXI.Container {
   constructor(app,numberline,state) {
     super();
 
-    this.grabberFadeTimeline = new TimelineLite({paused: true})
+    this.adjusterFadeTimeline = new TimelineLite({paused: true})
     this.state = state
 
     this.TYPE = 's'
@@ -984,8 +984,8 @@ export class MultiplicationStrip extends PIXI.Container {
     this.adjusterSprite.on("pointerupoutside", this.onAdjustPointerUp);
     this.addChild(this.adjusterSprite);
 
-    this.grabberFadeTimeline.to(this.adjusterSprite,{duration: 2,alpha: 1})
-    this.grabberFadeTimeline.to(this.adjusterSprite,{duration: 2,alpha: 0})
+    this.adjusterFadeTimeline.to(this.adjusterSprite,{duration: 2,alpha: 1})
+    this.adjusterFadeTimeline.to(this.adjusterSprite,{duration: 2,alpha: 0})
 
 
     this.stripGraphic = new PIXI.Graphics();
@@ -1238,7 +1238,7 @@ onAdjustPointerDown(){
   pointerDown(event) {
     this.touching = true;
     this.adjusterSprite.alpha = 1
-    this.grabberFadeTimeline.kill()
+    this.adjusterFadeTimeline.kill()
     this.dragged = false;
     this.deltaTouch = {
       x: this.x - event.data.global.x,
@@ -1287,7 +1287,7 @@ onAdjustPointerDown(){
       this.synch()
       this.draw();
     }
-    this.grabberFadeTimeline.restart()
+    this.adjusterFadeTimeline.restart()
     this.touching = false;
     this.dragged = false
     this.onUpdate && this.onUpdate();
@@ -1308,6 +1308,8 @@ export class FractionStrip extends PIXI.Container {
     this.HEIGHT_RATIO = 1/20
     this.TYPE = 's'
     this.state = state
+
+    this.adjusterFadeTimeline = new TimelineLite({paused: true})
 
     // Access _height this through 'state' in the future.
     this._height = this.state.frame.height*this.HEIGHT_RATIO
@@ -1356,6 +1358,10 @@ export class FractionStrip extends PIXI.Container {
     this.adjusterSprite.on("pointermove", this.onAdjustPointerMove);
     this.adjusterSprite.on("pointerup", this.onAdjustPointerUp);
     this.adjusterSprite.on("pointerupoutside", this.onAdjustPointerUp);
+   
+    this.adjusterFadeTimeline.to(this.adjusterSprite,{duration: 2,alpha: 1})
+    this.adjusterFadeTimeline.to(this.adjusterSprite,{duration: 2,alpha: 0})
+
     this.addChild(this.adjusterSprite);
 
 
@@ -1524,7 +1530,7 @@ export class FractionStrip extends PIXI.Container {
   }
 
 onAdjustPointerDown(){
-
+  this.touched = true
 }
 
   onAdjustPointerMove(){
@@ -1547,11 +1553,13 @@ onAdjustPointerDown(){
     this.parent.denominator = Math.round(this.parent.denominator)
     this.parent.draw();
     this.touching = false;
+    this.touched = false
     this.x = this.parent.minDragger.x + this.parent.blockWidth 
   }
 
   onPointerDown() {
     this.touching = true;
+    this.touched = false
   }
 
   onPointerMove() {
@@ -1572,6 +1580,8 @@ onAdjustPointerDown(){
   pointerDown(event) {
     this.touching = true;
     this.dragged = false;
+    this.adjusterSprite.alpha = 1
+    this.adjusterFadeTimeline.kill()
     this.deltaTouch = {
       x: this.x - event.data.global.x,
       y: this.y - event.data.global.y,
@@ -1614,12 +1624,13 @@ onAdjustPointerDown(){
   }
 
   pointerUp(event) {
+    console.log("pointer location Y", event.data.getLocalPosition(this).y)
     if (this.dragged) {
       const range = this.max - this.min;
       this.min = this.numberline.roundPositionToNearestTick(this.min);
       this.max = this.min + range;
       this.draw();
-    } else {
+    } else if (event.data.getLocalPosition(this).y > -this._height) {
 
 
       let x = event.data.getLocalPosition(this).x;
@@ -1637,6 +1648,7 @@ onAdjustPointerDown(){
   
     }
 
+    this.adjusterFadeTimeline.restart()
     this.touching = false;
     this.dragged = false
     this.synch()
