@@ -21,6 +21,7 @@ loader.add('trash', 'https://res.cloudinary.com/duim8wwno/image/upload/v16101109
 loader.add('edit', 'https://res.cloudinary.com/duim8wwno/image/upload/v1607622188/EditIcon_ixof8l.png')
 loader.add('openBrush', 'https://res.cloudinary.com/duim8wwno/image/upload/v1610397628/Painting%20Circles/openBrush_pfkuxn.png')
 loader.add('closedBrush', 'https://res.cloudinary.com/duim8wwno/image/upload/v1610397810/Painting%20Circles/closedBrush_zwn9p6.png')
+loader.add('incrementOneBtn', 'https://res.cloudinary.com/duim8wwno/image/upload/v1611509432/Painting%20Circles/IncrementOneBtn_m5gm2g.png')
 
 
 // Assign to sprite object.
@@ -32,6 +33,7 @@ loader.load((loader, resources) => {
     sprites.trash = resources.trash.texture
     sprites.openBrush = resources.openBrush.texture
     sprites.closedBrush = resources.closedBrush.texture
+    sprites.incrementOneBtn = resources.incrementOneBtn.texture
 });
 
 
@@ -115,7 +117,9 @@ function drawPaths(paths,ctx){
 
   paths.forEach((s,j)=>{
 
+
     let prev = s[0]
+    let prev2 = prev
     let curr = s.length > 1 ? s[1] : s[0]
 
 
@@ -142,6 +146,12 @@ function drawPaths(paths,ctx){
 
       ctx.lineStyle(strokeWidth,strokeColor,1,0.5)
       ctx.lineTo(curr.x,curr.y)
+      /*
+      if (i%2 == 0){
+        ctx.bezierCurveTo(prev2.x,prev2.y,prev.x,prev.y,curr.x,curr.y)
+      }
+            prev2 = prev
+      */
       prev = p
     })
 
@@ -153,9 +163,11 @@ function drawPaths(paths,ctx){
 
   function backGroundPointerDown(e) {
     clearTimeout(timeout)
+    S.index = 0
     V.paths.forEach(p=>{p.interactive = false})
     this.touching = true
     S.prev = {x: e.data.global.x,y: e.data.global.y}
+    S.prev2 = S.prev
     S.subArr.push(S.prev)
     V.currentCtx.moveTo(S.prev.x,S.prev.y)
     V.currentCtx.beginFill(S.startColor)
@@ -169,15 +181,21 @@ function drawPaths(paths,ctx){
 
   function backGroundPointerMove(e) {
     if (this.touching){
+      S.index++
       S.curr = {x: e.data.global.x,y: e.data.global.y}
       V.currentCtx._fillStyle.alpha =1
       V.currentCtx.moveTo(S.prev.x,S.prev.y)
       V.currentCtx.lineStyle(0,S.startColor,1,0.5)
       V.currentCtx.drawCircle(S.curr.x,S.curr.y,S.strokeWidth/2.1)
-      V.currentCtx._fillStyle.alpha = 0.001
-      V.currentCtx.drawCircle(S.prev.x,S.prev.y,3*S.strokeWidth)
       V.currentCtx.lineStyle(S.strokeWidth,S.startColor,1,0.5)
       V.currentCtx.lineTo(S.curr.x,S.curr.y)
+      /*
+      if (S.index%4 == 0){
+        V.currentCtx.bezierCurveTo(S.prev2.x,S.prev2.y,S.prev.x,S.prev.y,S.curr.x,S.curr.y,40)
+        S.index = 0
+      }
+      */
+      S.prev2 = S.prev
       S.prev = S.curr
       S.subArr.push(S.curr)
     }
@@ -386,6 +404,7 @@ function createCircle(i){
 
 
 function drawMenu(){
+  // Circle State
   let state = {
     numerator: 1,
     denominator: 1, 
@@ -418,9 +437,9 @@ function drawMenu(){
     circ.on('pointerdown',createCircle)
     circ.on('pointerdown',onObjectDown)
     x = x + circ.width
-
-
     V.menuItems.push(circ)
+
+
   }
   
   let offset  = window_width/2 - x/2
@@ -570,12 +589,38 @@ function minusClicked() {
     V.fractionLine.y = V.cuttingRegion.y + 0.5*V.cuttingRegion.height
   }
 
+  function incrementClicked(event){
+    const locY = event.data.getLocalPosition(this).y
+    console.log("locY",locY)
+    if (locY < 0){
+      if (S.valueOfOne < 100){
+        S.valueOfOne++
+        updateMenuItems()
+      } 
+    } else {
+      if (S.valueOfOne > 1){
+        S.valueOfOne--
+        updateMenuItems()
+      } 
+    }
+  }
+
+  function updateMenuItems(one = S.valueOfOne){
+
+    S.valueOfOne = one 
+
+    V.menuItems.forEach((m,i)=>{
+      m.descriptor.text = (i+1)*S.valueOfOne
+    })
+  }
+
 
   // Loading Script
   function load() {
 
     // All these should be from C.
     S.denominator = 2
+    S.valueOfOne = 2
     S.maxR = window_width/20
     S.one = S.maxR*S.maxR*3.14/10
     S.vPad = window_width < window_height ? window_height/10 : window_height/50
@@ -637,6 +682,16 @@ function minusClicked() {
     V.trashArea.on('pointerdown',minusClicked)
     app.stage.addChild(V.trashArea)
 
+    V.incrementOne = new PIXI.Sprite(sprites.incrementOneBtn)
+    V.incrementOne.interactive = true
+    V.incrementOne.anchor.set(0.5,0.5)
+    V.incrementOne.width = Math.sqrt(S.one/3.14)*4
+    V.incrementOne.height = V.incrementOne.width*2.5
+    V.incrementOne.x = S.maxR
+    V.incrementOne.y = window_height/2
+    V.incrementOne.on('pointerdown',incrementClicked)
+    app.stage.addChild(V.incrementOne)
+
     V.cuttingRegion = new PIXI.Graphics()
     V.cuttingRegion.beginFill(0xffffff,0.5)
     V.cuttingRegion.drawRoundedRect(0,0,0.8*window_width,0.1*window_height,0.05*window_height)
@@ -662,6 +717,8 @@ function minusClicked() {
     app.stage.addChild(V.accumulatorSprite)
 
     layoutView()
+
+    updateMenuItems()
 
   }
 
