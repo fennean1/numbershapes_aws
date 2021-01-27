@@ -72,7 +72,7 @@ const COLORS = {
     stroke: 0xFF0A98,
   },
   3: {
-    fill: 0x04E7B3,
+    fill: 0x00eb00,
     stroke: 0x04943A,
   },
   4: {
@@ -136,22 +136,17 @@ function drawPaths(paths,ctx){
         ctx.lineStyle(0,strokeColor,1,0.5)
         ctx.drawCircle(prev.x,prev.y,strokeWidth/2.1)
         ctx._fillStyle.alpha = 0.001
-        ctx.drawCircle(curr.x,curr.y,3*strokeWidth)
+        ctx.drawCircle(curr.x,curr.y,1.5*strokeWidth)
       } else {
         ctx.lineStyle(0,strokeColor,1,0.5)
         ctx.drawCircle(curr.x,curr.y,strokeWidth/2.1)
         ctx._fillStyle.alpha = 0.001
-        ctx.drawCircle(curr.x,curr.y,3*strokeWidth)
+        ctx.drawCircle(curr.x,curr.y,1.5*strokeWidth)
       }
 
       ctx.lineStyle(strokeWidth,strokeColor,1,0.5)
       ctx.lineTo(curr.x,curr.y)
-      /*
-      if (i%2 == 0){
-        ctx.bezierCurveTo(prev2.x,prev2.y,prev.x,prev.y,curr.x,curr.y)
-      }
-            prev2 = prev
-      */
+
       prev = p
     })
 
@@ -183,12 +178,14 @@ function drawPaths(paths,ctx){
     if (this.touching){
       S.index++
       S.curr = {x: e.data.global.x,y: e.data.global.y}
-      V.currentCtx._fillStyle.alpha =1
+      V.currentCtx._fillStyle.alpha = 1
       V.currentCtx.moveTo(S.prev.x,S.prev.y)
       V.currentCtx.lineStyle(0,S.startColor,1,0.5)
       V.currentCtx.drawCircle(S.curr.x,S.curr.y,S.strokeWidth/2.1)
       V.currentCtx.lineStyle(S.strokeWidth,S.startColor,1,0.5)
       V.currentCtx.lineTo(S.curr.x,S.curr.y)
+
+
       /*
       if (S.index%4 == 0){
         V.currentCtx.bezierCurveTo(S.prev2.x,S.prev2.y,S.prev.x,S.prev.y,S.curr.x,S.curr.y,40)
@@ -204,6 +201,11 @@ function drawPaths(paths,ctx){
   function backGroundPointerUp(){
     this.touching = false
     V.paths.forEach(p=>{p.interactive = true})
+
+    V.currentCtx.lineStyle(0,S.startColor,1,0.5)
+    V.currentCtx.drawCircle(S.prev.x,S.prev.y,S.strokeWidth/2.1)
+    V.currentCtx._fillStyle.alpha = 0.001
+    V.currentCtx.drawCircle(S.prev.x,S.prev.y,1.5*S.strokeWidth)
 
     const t = app.renderer.generateTexture(V.currentCtx)
     const b = V.currentCtx.getBounds()
@@ -221,7 +223,7 @@ function drawPaths(paths,ctx){
       t.destroy()
     }
     S.subArr = []
-    timeout = setTimeout(finishPath,1000)
+    timeout = setTimeout(finishPath,800)
   }
 
   function finishPath(){
@@ -297,7 +299,7 @@ class CuisenaireCircle extends PIXI.Graphics {
 
       let stroke = 0xffffff
 
-        let sW = r/20
+        let sW = r/30
 
         this.beginFill(fill)
         this.moveTo(0,0)
@@ -336,7 +338,6 @@ class CuisenaireCircle extends PIXI.Graphics {
   pointerMove(event) {
     if (this.touching) {
 
-
       if (event.data.global.y < V.cuttingRegion.y+V.cuttingRegion.height){
         let inc = window_width*0.70/this.state.denominator
         let num = (this.x-0.15*window_width)/inc 
@@ -345,7 +346,6 @@ class CuisenaireCircle extends PIXI.Graphics {
         this.state.numerator = num
         this.draw()
       }
-
 
       if (!this.lockX) {
         this.x = event.data.global.x + this.deltaTouch.x;
@@ -562,7 +562,6 @@ function minusClicked() {
     V.plusBtn.x = window_width - S.maxR
     V.plusBtn.y = S.topY
 
-
     V.minusBtn.width = S.maxR*2
     V.minusBtn.height = S.maxR*2
     V.minusBtn.x = S.maxR
@@ -591,14 +590,13 @@ function minusClicked() {
 
   function incrementClicked(event){
     const locY = event.data.getLocalPosition(this).y
-    console.log("locY",locY)
     if (locY < 0){
       if (S.valueOfOne < 100){
         S.valueOfOne++
         updateMenuItems()
       } 
     } else {
-      if (S.valueOfOne > 1){
+      if (S.valueOfOne > 0){
         S.valueOfOne--
         updateMenuItems()
       } 
@@ -607,10 +605,11 @@ function minusClicked() {
 
   function updateMenuItems(one = S.valueOfOne){
 
-    S.valueOfOne = one 
+    S.valueOfOne = one
 
     V.menuItems.forEach((m,i)=>{
-      m.descriptor.text = (i+1)*S.valueOfOne
+      let val = (i+1)*S.valueOfOne
+      m.descriptor.text = val == 0 ? "" : val
     })
   }
 
@@ -620,7 +619,7 @@ function minusClicked() {
 
     // All these should be from C.
     S.denominator = 2
-    S.valueOfOne = 2
+    S.valueOfOne = 1
     S.maxR = window_width/20
     S.one = S.maxR*S.maxR*3.14/10
     S.vPad = window_width < window_height ? window_height/10 : window_height/50
