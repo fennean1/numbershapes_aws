@@ -39,7 +39,9 @@ loader.load((loader, resources) => {
 
 
 
-  // Layout Vars
+  // Layout Vars  (Should be L)
+
+
   let window_width = setup.width
   let window_height = setup.height
   let window_frame = {width: window_width,height: window_height}
@@ -49,63 +51,19 @@ loader.load((loader, resources) => {
 const V = {paths: [],
     textFields:[]}
 
-// Sub array should be in
-
 // State
 const S = {
-    startColor: 0xed1f30,
-    endColor: 0x000000,
-    strokeWidth: Math.min(window_width,window_height)/200,
-    prev: {},
-    curr: {},
-    arr: [],
-    subArr: []
+  startColor: 0xed1f30,
+  endColor: 0x000000,
+  strokeWidth: Math.min(window_width,window_height)/200,
+  prev: {},
+  curr: {},
+  arr: [],
+  subArr: []
   }
 // Model 
 let M = {}
 
-const COLORS = {
-  1: {
-    fill: 0xFF9F08,
-    stroke: 0xBC5500,
-  },
-  2: {
-    fill: 0xFF4B98,
-    stroke: 0xFF0A98,
-  },
-  3: {
-    fill: 0x00eb00,
-    stroke: 0x04943A,
-  },
-  4: {
-    fill: 0xAF00F7,
-    stroke: 0x8200F7,
-  },
-  5: {
-    fill: 0xFFEA37,
-    stroke: 0xC1A100,
-  },
-  6: {
-    fill: 0x00A406,
-    stroke: 0x007C06,
-  },
-  7: {
-    fill: 0x333333,
-    stroke: 0x000000,
-  },
-  8: {
-    fill: 0x873F00,
-    stroke: 0x6C3F00,
-  },
-  9: {
-    fill: 0x3e3ede,
-    stroke: 0x276DFF,
-  },
-  10: {
-    fill: 0xFF9F08,
-    stroke: 0xBC5500,
-  }
-}
     
   // Should be updated any time a change is made on the screens
 
@@ -267,191 +225,6 @@ function drawPaths(paths,ctx){
   }
 
 
-
-class CuisenaireCircle extends PIXI.Graphics {
-  constructor(state){
-    super()
-    this.state = state
-    this.type = 'CIRCLE'
-
-    this.draw()
-
-    this.interactive = true
-    this.on("pointerdown", this.pointerDown);
-    this.on("pointermove", this.pointerMove);
-    this.on("pointerup", this.pointerUp);
-    this.on("pointerupoutside", this.pointerUpOutside);
-  }
-
-
-  draw(state = this.state){
-
-    this.clear()
-
-    this.state = state
-
-    const {numerator,denominator,index,one} = state
-
-
-    let r = Math.sqrt(index*one/Math.PI)
-
-      let ratio = numerator/denominator
-
-        const {fill} = COLORS[state.index]
-
-      let stroke = 0xffffff
-
-        let sW = r/30
-
-        this.beginFill(fill)
-        this.moveTo(0,0)
-        this.lineTo(0,-r)
-        this.arc(0,0,r,-Math.PI/2,-Math.PI/2+ratio*Math.PI*2)
-        this.lineTo(0,0)
-        this.endFill()
-        this.lineStyle(sW,stroke,1,1)
-        this.beginFill(0xffffff,0.05)
-        this.drawCircle(0,0,r)
-        this.moveTo(0,0)
-
-        if (denominator != 1){
-          for (let i = 0;i<denominator;i++){
-            let inc = 2*Math.PI/denominator
-            let a = -Math.PI/2 + i*inc
-            this.moveTo(0,0)
-            this.lineTo(r*Math.cos(a),r*Math.sin(a))
-          }
-        }
- 
-  }
-
-
-  pointerDown(event) {
-    app.stage.addChild(this)
-    TweenLite.to(V.cuttingRegion,{duration: 0.25,alpha: 1})
-    this.touching = true;
-    this.dragged = false;
-    this.deltaTouch = {
-      x: this.x - event.data.global.x,
-      y: this.y - event.data.global.y,
-    };
-  }
-
-  pointerMove(event) {
-    if (this.touching) {
-
-      if (event.data.global.y < V.cuttingRegion.y+V.cuttingRegion.height){
-        let inc = window_width*0.70/this.state.denominator
-        let num = (this.x-0.15*window_width)/inc 
-        num = num > 0 ? num : 0
-        this.state.denominator = S.denominator
-        this.state.numerator = num
-        this.draw()
-      }
-
-      if (!this.lockX) {
-        this.x = event.data.global.x + this.deltaTouch.x;
-
-        let xMaxOut = (this.maxX != null) && this.x > this.maxX;
-        let xMinOut = (this.minX != null) && this.x < this.minX;
-
-        if (xMaxOut) {
-          this.x = this.maxX;
-        } else if (xMinOut) {
-          this.x = this.minX;
-        }
-      }
-
-      if (!this.lockY) {
-        this.y = event.data.global.y + this.deltaTouch.y;
-
-        let yMaxOut = (this.maxY !=null) && this.y > this.maxY;
-        let yMinOut = (this.minY !=null) && this.y < this.minY;
-
-        if (yMaxOut) {
-          this.y = this.maxY;
-        } else if (yMinOut) {
-          this.y = this.minY;
-        }
-      }
-      this.dragged = true;
-    }
-  }
-
-  pointerUp(event) {
-    this.touching = false;
-    TweenLite.to(V.cuttingRegion,{duration: 0.25,alpha: 0})
-  }
-
-  pointerUpOutside(event) {
-    this.touching = false;
-  }
-
-}
-
-function createCircle(i){
-
-  let circleState = {
-    numerator: 1,
-    denominator: 1, 
-    index: this.index,
-    one: S.one,
-  }
-  let c = new CuisenaireCircle(circleState)
-  c.on('pointerdown',onObjectDown)
-  c.on('pointerup',onObjectUp)
-  TweenLite.to(c,{x: window_width/2,y: window_height/2})
-  app.stage.addChild(c)
-}
-
-
-function drawMenu(){
-  // Circle State
-  let state = {
-    numerator: 1,
-    denominator: 1, 
-    index: 9,
-    one: S.one
-  }
-  let myCirc = new CuisenaireCircle(state)
-  let x = 0
-  V.menuItems = []
-  for (let i = 1;i<=10;i++){
-    state.index = i
-    myCirc.draw(state) 
-    let circ = new PIXI.Sprite()
-    circ.index = i
-    circ.interactive = true
-    circ.anchor.set(0,0.5)
-    circ.texture = app.renderer.generateTexture(myCirc)
-
-    circ.descriptor = new PIXI.Text()
-    circ.descriptor.text = i
-    circ.descriptor.style.fill = 0xffffff
-    circ.descriptor.anchor.set(0.5,0.5)
-    circ.descriptor.x = circ.width/2
-    circ.descriptor.y = 0
-    circ.addChild(circ.descriptor)
-    
-    app.stage.addChild(circ)
-    circ.y = V.trashArea.y
-    circ.x = x
-    circ.on('pointerdown',createCircle)
-    circ.on('pointerdown',onObjectDown)
-    x = x + circ.width
-    V.menuItems.push(circ)
-
-
-  }
-  
-  let offset  = window_width/2 - x/2
-
-  V.menuItems.forEach(m=>{
-    m.x = m.x + offset
-  })
-
-}
-
 // Text Box Stuff
 function createEditableTextField(){
 
@@ -485,17 +258,6 @@ app.updateActiveTextBox = (text)=>{
 }
 
 
-function drawLine(){
-  V.fractionLine.clear()
-  V.fractionLine.lineStyle(S.maxR/40,0x000000)
-  V.fractionLine.lineTo(0.7*window_width,0)
-    for (let i = 0;i<=S.denominator;i++){
-    let inc = 0.7*window_width/S.denominator
-    V.fractionLine.moveTo(i*inc,-S.maxR/6)
-    V.fractionLine.lineTo(i*inc,S.maxR/6)
-    }
-}
-
 
 function deleteActiveObject(){
   /*Need to know type so we can delete it from the correct array
@@ -525,19 +287,6 @@ function onObjectUp(e){
   }
 }
 
-function plusClicked(){
-  if (S.denominator < 12){
-    S.denominator = S.denominator+1
-  }
-  drawLine()
-}
-
-function minusClicked() {
-  if (S.denominator > 1){
-    S.denominator = S.denominator-1
-  }
-  drawLine()
-}
 
 // Save all the information required to reconstruct the arena. 
   function saveState(){
@@ -554,20 +303,8 @@ function minusClicked() {
   }
 
   function layoutView(){
-
-
     V.backGround.width = window_width
     V.backGround.height = window_height
-
-    V.plusBtn.width = S.maxR*2
-    V.plusBtn.height = S.maxR*2
-    V.plusBtn.x = window_width - S.maxR
-    V.plusBtn.y = S.topY
-
-    V.minusBtn.width = S.maxR*2
-    V.minusBtn.height = S.maxR*2
-    V.minusBtn.x = S.maxR
-    V.minusBtn.y = S.topY
 
     V.editBtn.width = S.maxR*2
     V.editBtn.height = S.maxR*2
@@ -579,42 +316,8 @@ function minusClicked() {
     V.trashArea.x = S.maxR
     V.trashArea.y = window_height-S.botY
 
-    // bac
-    V.cuttingRegion.clear()
-    V.cuttingRegion.beginFill(0xffffff,0.5)
-    V.cuttingRegion.drawRoundedRect(0,0,0.8*window_width,0.1*window_height,0.05*window_height)
-    V.cuttingRegion.x = window_width/2 - V.cuttingRegion.width/2 
-    V.cuttingRegion.y = V.plusBtn.y - V.cuttingRegion.height/2
-
-    V.fractionLine.x = V.cuttingRegion.x + 0.05*window_width
-    V.fractionLine.y = V.cuttingRegion.y + 0.5*V.cuttingRegion.height
   }
-
-  function incrementClicked(event){
-    const locY = event.data.getLocalPosition(this).y
-    if (locY < 0){
-      if (S.valueOfOne < 100){
-        S.valueOfOne++
-        updateMenuItems()
-      } 
-    } else {
-      if (S.valueOfOne > 0){
-        S.valueOfOne--
-        updateMenuItems()
-      } 
-    }
-  }
-
-  function updateMenuItems(one = S.valueOfOne){
-
-    S.valueOfOne = one
-
-    V.menuItems.forEach((m,i)=>{
-      let val = (i+1)*S.valueOfOne
-      m.descriptor.text = val == 0 ? "" : val
-    })
-  }
-
+  
 
   // Loading Script
   function load() {
@@ -647,22 +350,6 @@ function minusClicked() {
 
     app.stage.addChild(V.currentCtx)
 
-    V.plusBtn = new PIXI.Sprite(sprites.plus)
-    V.plusBtn.interactive = true
-    V.plusBtn.anchor.set(0.5,0.5)
-    V.plusBtn.width = S.maxR*2
-    V.plusBtn.height = S.maxR*2
-    V.plusBtn.x = window_width - S.maxR
-    V.plusBtn.y = S.topY
-    V.plusBtn.on('pointerdown',plusClicked)
-    app.stage.addChild(V.plusBtn)
-
-    V.minusBtn = new PIXI.Sprite(sprites.minus)
-    V.minusBtn.interactive = true
-    V.minusBtn.anchor.set(0.5,0.5)
-    V.minusBtn.on('pointerdown',minusClicked)
-    app.stage.addChild(V.minusBtn)
-
     V.editBtn = new PIXI.Sprite(sprites.edit)
     V.editBtn.interactive = true
     V.editBtn.anchor.set(0.5,0.5)
@@ -682,43 +369,12 @@ function minusClicked() {
     V.trashArea.y = window_height-S.botY
     app.stage.addChild(V.trashArea)
 
-    V.incrementOne = new PIXI.Sprite(sprites.incrementOneBtn)
-    V.incrementOne.interactive = true
-    V.incrementOne.anchor.set(0.5,0.5)
-    V.incrementOne.width = Math.sqrt(S.one/3.14)*4
-    V.incrementOne.height = V.incrementOne.width*2.5
-    V.incrementOne.x = S.maxR
-    V.incrementOne.y = window_height/2
-    V.incrementOne.on('pointerdown',incrementClicked)
-    app.stage.addChild(V.incrementOne)
-
-    V.cuttingRegion = new PIXI.Graphics()
-    V.cuttingRegion.beginFill(0xffffff,0.5)
-    V.cuttingRegion.drawRoundedRect(0,0,0.8*window_width,0.1*window_height,0.05*window_height)
-    V.cuttingRegion.denominator = 5
-    V.cuttingRegion.x = window_width/2 - V.cuttingRegion.width/2 
-    V.cuttingRegion.y = V.plusBtn.y - V.cuttingRegion.height/2
-    V.cuttingRegion.interactive = true
-    V.cuttingRegion.alpha = 0
-
-    V.fractionLine = new PIXI.Graphics()
-    V.fractionLine.x = V.cuttingRegion.x + 0.05*window_width
-    V.fractionLine.y = V.cuttingRegion.y + 0.5*V.cuttingRegion.height
-    
-    app.stage.addChild(V.fractionLine)
-    app.stage.addChild(V.cuttingRegion)
-
-    drawMenu()
-    drawLine()
-
     V.accumulatorSprite = new PIXI.Sprite()
     V.accumulatorSprite.state = {}
     V.accumulatorSprite.state.points = []
     app.stage.addChild(V.accumulatorSprite)
 
     layoutView()
-
-    updateMenuItems()
 
   }
 

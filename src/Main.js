@@ -11,6 +11,7 @@ import Manipulatives from "./Manipulatives"
 import * as drawing from "./js/drawing.js"
 import * as spotlight from "./js/spotlight.js"
 import * as cuisenairecircles from "./js/cuisenairecircles.js"
+import * as annotator from "./js/annotator.js"
 
 
 
@@ -27,6 +28,7 @@ const Main = () => (
     <Route path="/cuisenairecirclesbeta" render={()=><Arena fullscreen = {true} script = {cuisenairecircles.init}/>} />
     <Route path="/relationalcircles" render={()=><Arena fullscreen = {true} script = {cuisenairecircles.init}/>} />
     <Route path="/multiplicationgridk2" render={()=><Arena fullscreen = {true} features = {{type: "k2"}} script = {multiplicationgrid.init}/>} />
+    <Route path="/annotator" render={()=><Arena fullscreen = {true} features = {{type: "k2"}} script = {annotator.init}/>} />
     <Route path="/" component={Manipulatives} />
   </Switch>
 );

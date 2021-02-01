@@ -2046,12 +2046,18 @@ export class BinomialGrid extends PIXI.Container {
     this.sprites = [];
 
     for (let i = 0; i < 1000; i++) {
-      let s = new PIXI.Sprite();
+      let s = new Draggable();
+      this.app.stage.addChild(s)
+      s.on('pointerdown',this.blockPointerDown)
       s.active = false;
       this.sprites.push(s);
     }
 
     this.draw(config);
+  }
+
+  blockPointerDown(){
+    this.parent.addChild(this)
   }
 
   resize(dim) {
