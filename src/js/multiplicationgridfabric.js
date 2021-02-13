@@ -1,39 +1,39 @@
 import * as PIXI from "pixi.js-legacy";
+import blueGradient from "../assets/blue-gradient.png";
+import plusButton from "../assets/PlusButton.png";
+import minusButton from "../assets/MinusButton.png";
+import * as CONST from "./const.js";
 import {
   Draggable,
   HorizontalNumberLine,
   VerticalNumberLine,
+  Strip,
+  rangeBubbleSelector,
   RangeBubbleSelector,
+  MathFactPrompt,
+  NumberBubble,
   BinomialGrid,
+  digitCount,
   EditableTextField
 } from "./api_kh.js";
 import {
   TweenLite,
 } from "gsap";
-import { Sketcher } from "./sketcher.js";
+import * as PROBLEM_SETS from "./problemSets.js";
+import * as canvasSketcher from "./canvassketcher.js"
+
 
 
 export const init = (app, setup) => {
 
-  const dS = {
 
-  }
-
-   const App = {
-     R: app.renderer,
-     S: dS,
-     T: {},
-     L: {},
-     V: {annotations:[]},
-     C: {}
-   }
 
   const loader = PIXI.Loader.shared; // PixiJS exposes a premade instance for you to use.
-  const T = {};
+  const sprites = {};
   const renderer = app.renderer
   
   // Load Images
-  loader.add('backGround', 'https://res.cloudinary.com/duim8wwno/image/upload/v1607622190/blue-gradient_un84kq.png')
+  loader.add('backGround', 'https://res.cloudinary.com/duim8wwno/image/upload/v1609776412/Spotlight%20Game/SpotlightBackground.svg')
   loader.add('minus', 'https://res.cloudinary.com/duim8wwno/image/upload/v1607622190/MinusButton_snfs15.png')
   loader.add('plus', 'https://res.cloudinary.com/duim8wwno/image/upload/v1607622190/PlusButton_cxghiq.png')
   loader.add('trash', 'https://res.cloudinary.com/duim8wwno/image/upload/v1610110971/Trash_lryrwg.png')
@@ -45,22 +45,31 @@ export const init = (app, setup) => {
   
   // Assign to sprite object.
   loader.load((loader, resources) => {
-      App.T.backGround = resources.backGround.texture
-      T.minus = resources.minus.texture
-      T.plus = resources.plus.texture
-      T.edit = resources.edit.texture
-      T.trash = resources.trash.texture
-      T.openBrush = resources.openBrush.texture
-      T.closedBrush = resources.closedBrush.texture
-      T.incrementOneBtn = resources.incrementOneBtn.texture
+      sprites.backGround = resources.backGround.texture
+      sprites.minus = resources.minus.texture
+      sprites.plus = resources.plus.texture
+      sprites.edit = resources.edit.texture
+      sprites.trash = resources.trash.texture
+      sprites.openBrush = resources.openBrush.texture
+      sprites.closedBrush = resources.closedBrush.texture
+      sprites.incrementOneBtn = resources.incrementOneBtn.texture
   });
 
   let features = {};
+  let viewPort = new PIXI.Container();
+  let backGround;
   let lineUp = new PIXI.Graphics();
 
   // CONSTANTS
   // Colors
   const GREY = 0xa6a6a6;
+
+
+  // Problem Set
+  const problemSet = PROBLEM_SETS.BBS_ADDITION_IN_100;
+  let problemNumber = 1;
+  let currentProblem = problemSet[problemNumber];
+
 
 
   // Layout Parameters
@@ -113,31 +122,47 @@ let M = {}
   let brickGrid;
   let whiskers = new PIXI.Graphics();
 
+  let incYDenominator = new PIXI.Sprite.from(plusButton);
+  incYDenominator.interactive = true;
+  incYDenominator.on("pointerdown", inc);
+  app.stage.addChild(incYDenominator);
+  let decYDenominator = new PIXI.Sprite.from(minusButton);
+  decYDenominator.interactive = true;
+  decYDenominator.on("pointerdown", inc);
+  app.stage.addChild(decYDenominator);
+  let incXDenominator = new PIXI.Sprite.from(plusButton);
+  incXDenominator.interactive = true;
+  incXDenominator.on("pointerdown", inc);
+  app.stage.addChild(incXDenominator);
+  let decXDenominator = new PIXI.Sprite.from(minusButton);
+  decXDenominator.interactive = true;
+  decXDenominator.on("pointerdown", inc);
+  app.stage.addChild(decXDenominator);
 
   function inc() {
     switch (this) {
-      case V.incYDenominator:
+      case incYDenominator:
         if (vnumberline.denominator < 10){
           vnumberline.denominator = vnumberline.denominator+1
         } else {
           console.log("incY failed")
         }
         break;
-      case V.decYDenominator:
+      case decYDenominator:
         if (vnumberline.denominator > 1){
           vnumberline.denominator = vnumberline.denominator-1
         }else {
           console.log("decY failed")
         }
         break;
-      case V.incXDenominator:
+      case incXDenominator:
         if (hnumberline.denominator < 10){
           hnumberline.denominator = hnumberline.denominator+1
         }else {
           console.log("incX failed")
         }
         break;
-      case V.decXDenominator:
+      case decXDenominator:
         if (hnumberline.denominator > 1){
          hnumberline.denominator = hnumberline.denominator-1
         } else {
@@ -209,7 +234,7 @@ function deleteActiveObject(){
   otherwise we have destroyed objects in our array */
   if (V.activeObject.type == 'PATH'){
     let i = V.paths.indexOf(V.activeObject)
-    App.V.annotations.splice(i,1)
+    V.paths.splice(i,1)
   }
   app.stage.removeChild(V.activeObject)
   V.activeObject.destroy()
@@ -231,6 +256,80 @@ function onObjectUp(e){
     deleteActiveObject()
   }
 }
+
+
+
+  // Model
+let timeout;
+
+function drawPaths(paths,ctx){
+
+  const strokeColor = 0x000000
+  const strokeWidth = S.strokeWidth
+
+  paths.forEach((s,j)=>{
+
+
+    let prev = s[0]
+    let prev2 = prev
+    let curr = s.length > 1 ? s[1] : s[0]
+
+
+    s.forEach((p,i)=>{
+      curr = i != 0 ? p : s[1]
+
+      curr = !curr ? prev : curr
+
+
+      ctx.moveTo(prev.x,prev.y)
+      ctx.beginFill(0x000000)
+      
+      if (i == 0){
+        ctx.lineStyle(0,strokeColor,1,0.5)
+        ctx.drawCircle(prev.x,prev.y,strokeWidth/2.1)
+        ctx._fillStyle.alpha = 0.001
+        ctx.drawCircle(curr.x,curr.y,1.5*strokeWidth)
+      } else {
+        ctx.lineStyle(0,strokeColor,1,0.5)
+        ctx.drawCircle(curr.x,curr.y,strokeWidth/2.1)
+        ctx._fillStyle.alpha = 0.001
+        ctx.drawCircle(curr.x,curr.y,1.5*strokeWidth)
+      }
+
+      ctx.lineStyle(strokeWidth,strokeColor,1,0.5)
+      ctx.lineTo(curr.x,curr.y)
+
+      prev = p
+    })
+
+  })
+
+}
+
+
+  function finishPath(){
+    drawPaths(V.accumulatorSprite.state.points,V.currentCtx)
+    const t = app.renderer.generateTexture(V.currentCtx)
+    let {x,y} = V.currentCtx.getBounds()
+    V.currentCtx.clear()
+    
+    const d = new Draggable(t)
+    d.on('pointerdown',onObjectDown)
+    d.on('pointerup',onObjectUp)
+    d.x = x 
+    d.y = y
+    app.stage.addChild(d)
+    d.type = 'PATH'
+    V.paths.push(d)
+
+    V.accumulatorSprite.destroy()
+    V.accumulatorSprite = new PIXI.Sprite()
+    V.accumulatorSprite.state = {}
+    V.accumulatorSprite.state.points = []
+    app.stage.addChild(V.accumulatorSprite)
+  }
+
+
 
 
   function updateLayoutParams(newFrame) {
@@ -338,25 +437,25 @@ function onObjectUp(e){
       slider.width = SLIDER_DIM
       slider.height = SLIDER_DIM
 
-      V.incYDenominator.width = SLIDER_DIM
-      V.incYDenominator.height = SLIDER_DIM
-      V.incYDenominator.x = vnumberline.x 
-      V.incYDenominator.y = vnumberline.y - vnumberline.length - SLIDER_DIM
+      incYDenominator.width = SLIDER_DIM
+      incYDenominator.height = SLIDER_DIM
+      incYDenominator.x = vnumberline.x 
+      incYDenominator.y = vnumberline.y - vnumberline.length - SLIDER_DIM
 
-      V.decYDenominator.width = SLIDER_DIM
-      V.decYDenominator.height = SLIDER_DIM
-      V.decYDenominator.x = vnumberline.x - SLIDER_DIM
-      V.decYDenominator.y = vnumberline.y - vnumberline.length - SLIDER_DIM
+      decYDenominator.width = SLIDER_DIM
+      decYDenominator.height = SLIDER_DIM
+      decYDenominator.x = vnumberline.x - SLIDER_DIM
+      decYDenominator.y = vnumberline.y - vnumberline.length - SLIDER_DIM
   
-      V.incXDenominator.width = SLIDER_DIM
-      V.incXDenominator.height = SLIDER_DIM
-      V.incXDenominator.x = hnumberline.x + hnumberline.length
-      V.incXDenominator.y = hnumberline.y - SLIDER_DIM
+      incXDenominator.width = SLIDER_DIM
+      incXDenominator.height = SLIDER_DIM
+      incXDenominator.x = hnumberline.x + hnumberline.length
+      incXDenominator.y = hnumberline.y - SLIDER_DIM
   
-      V.decXDenominator.width = SLIDER_DIM
-      V.decXDenominator.height = SLIDER_DIM
-      V.decXDenominator.x = hnumberline.x + hnumberline.length 
-      V.decXDenominator.y = hnumberline.y
+      decXDenominator.width = SLIDER_DIM
+      decXDenominator.height = SLIDER_DIM
+      decXDenominator.x = hnumberline.x + hnumberline.length 
+      decXDenominator.y = hnumberline.y
 
       V.editBtn.width = S.maxR*2
       V.editBtn.height = S.maxR*2
@@ -370,37 +469,11 @@ function onObjectUp(e){
   
     }
 
-
-    App.C.addAnnotation = sprite => {
-      sprite.on("pointerup",onObjectUp)
-      sprite.on("pointerdown",onObjectDown)
-      App.V.annotations.push(sprite)
-      app.stage.addChild(sprite)
-    }
-
   // Loading Script
   function load() {
     if (setup.props.features) {
       features = setup.props.features;
     }
-
-    
-
-        V.incYDenominator = new PIXI.Sprite(T.plus);
-        V.incYDenominator.interactive = true;
-        V.incYDenominator.on("pointerdown", inc);
-      
-        V.decYDenominator = new PIXI.Sprite(T.minus);
-        V.decYDenominator.interactive = true;
-        V.decYDenominator.on("pointerdown", inc);
-       
-        V.incXDenominator = new PIXI.Sprite(T.plus);
-        V.incXDenominator.interactive = true;
-        V.incXDenominator.on("pointerdown", inc);
-       
-        V.decXDenominator = new PIXI.Sprite(T.minus);
-        V.decXDenominator.interactive = true;
-        V.decXDenominator.on("pointerdown", inc);
 
         // All these should be from C.
         S.denominator = 2
@@ -411,48 +484,12 @@ function onObjectUp(e){
         S.topY = S.maxR + S.vPad/2
         S.botY = S.maxR + S.vPad*1.5
     
-        /*
-        V.backGround = new PIXI.Sprite(T.backGround)
+        V.backGround = new PIXI.Sprite()
+        V.backGround.texture = new PIXI.Texture.from(CONST.ASSETS.BLUE_GRADIENT)
         V.backGround.width = window_width
         V.backGround.height = window_height
         V.backGround.interactive = true 
-        //V.backGround.on('pointerdown',backGroundPointerDown)
-        V.backGround.on('pointermove',backGroundPointerMove)
-        V.backGround.on('pointerup',backGroundPointerUp)
         app.stage.addChild(V.backGround)
-        */
-
-
-  
-        // Need to restructure to more efficiently extract state
-        const initStateSketcher = {
-          strokeWidth: 5,
-          startColor: 0xffffff,
-          paths: [],
-        }
-
-        console.log("app",App)
-
-        App.V.sketcher = new Sketcher(initStateSketcher,App)
-        app.stage.addChild(App.V.sketcher)
-
-
-
-        let width = 0.8 * Math.min(WINDOW_WIDTH, WINDOW_HEIGHT);
-
-        hnumberline = new HorizontalNumberLine(0, 3.5, width, app);
-        //hnumberline.fractionTicks = true
-        hnumberline.draw(0, 3.2);
-        hnumberline.x = WINDOW_WIDTH / 2 - width / 2;
-        hnumberline.y = WINDOW_HEIGHT / 2 + width / 2;
-        app.stage.addChild(hnumberline);
-    
-        vnumberline = new VerticalNumberLine(0, 3.5, width, app);
-        //vnumberline.fractionTicks = true
-        vnumberline.draw(0, 3.2);
-        vnumberline.x = WINDOW_WIDTH / 2 - width / 2;
-        vnumberline.y = WINDOW_HEIGHT / 2 + width / 2;
-        app.stage.addChild(vnumberline);
     
         V.currentCtx= new PIXI.Graphics()
         V.currentCtx.on('pointerdown',onObjectDown)
@@ -460,9 +497,9 @@ function onObjectUp(e){
         V.currentCtx.state.strokeWidth = S.strokeWidth
         V.currentCtx.state.strokeColor= S.endColor
         V.currentCtx.interactive = false
-
+  
     
-        V.editBtn = new PIXI.Sprite(T.edit)
+        V.editBtn = new PIXI.Sprite(sprites.edit)
         V.editBtn.interactive = true
         V.editBtn.anchor.set(0.5,0.5)
         V.editBtn.width = S.maxR*2
@@ -472,20 +509,40 @@ function onObjectUp(e){
         V.editBtn.on('pointerdown',createEditableTextField)
         app.stage.addChild(V.editBtn)
     
-        V.trashArea = new PIXI.Sprite(T.trash)
+        V.trashArea = new PIXI.Sprite(sprites.trash)
         V.trashArea.interactive = true
         V.trashArea.anchor.set(0.5,0.5)
         V.trashArea.width = S.maxR*1.5
         V.trashArea.height = S.maxR*1.5
         V.trashArea.x = S.maxR
         V.trashArea.y = window_height-S.botY
+        V.trashArea.on('pointerdown',()=>{
+          console.log("balls")
+          setup.canvas.style.zIndex = 1
+        })
         app.stage.addChild(V.trashArea)
     
         V.accumulatorSprite = new PIXI.Sprite()
         V.accumulatorSprite.state = {}
         V.accumulatorSprite.state.points = []
         app.stage.addChild(V.accumulatorSprite)
- 
+    
+
+
+    rangeBubbleSelector = new RangeBubbleSelector(
+      0.8 * WINDOW_WIDTH,
+      currentProblem.MIN,
+      currentProblem.MAX,
+      currentProblem.PARTITIONS,
+      currentProblem.TARGET,
+      1,
+      app
+    );
+    rangeBubbleSelector.y = (2 / 3) * WINDOW_HEIGHT;
+    rangeBubbleSelector.x = WINDOW_WIDTH / 2 - rangeBubbleSelector._width / 2;
+    rangeBubbleSelector.drawStrips(rangeBubbleSelector._width / 2);
+
+    //app.stage.addChild(rangeBubbleSelector);
 
     let sliderGraphics = new PIXI.Graphics();
     sliderGraphics.beginFill(0x000000);
@@ -497,24 +554,43 @@ function onObjectUp(e){
     slider.anchor.set(0,1);
     slider.alpha = 0.5;
     slider.hitArea = new PIXI.Circle(0, 0, SLIDER_DIM * 4, SLIDER_DIM * 4);
-    slider.maxX = null
-    slider.minX = hnumberline.x
+    slider.maxX = rangeBubbleSelector.x + rangeBubbleSelector._width;
+    slider.minX = rangeBubbleSelector.x;
     slider.interactive = true;
+
     slider.width = SLIDER_DIM;
     slider.height = slider.width;
-    slider.y = 0
-    slider.x = 0
+    slider.y = rangeBubbleSelector.y + 2 * slider.height;
+    slider.x = rangeBubbleSelector.x + rangeBubbleSelector._width / 2;
+    app.stage.addChild(slider);
+
     slider.on("pointerdown", sliderPointerDown);
     slider.on("pointermove", sliderPointerMove);
     slider.on("pointerup", sliderPointerUp);
     slider.on("pointerupoutside", sliderPointerUp);
-    app.stage.addChild(slider);
 
     lineUp.lineStyle(2, GREY);
     lineUp.lineTo(0, slider.y - slider.height / 2 - SELECTOR_Y);
     //app.stage.addChild(lineUp)
     lineUp.x = slider.x;
     lineUp.y = SELECTOR_Y;
+
+    let width = 0.8 * Math.min(WINDOW_WIDTH, WINDOW_HEIGHT);
+
+    hnumberline = new HorizontalNumberLine(0, 3.5, width, app);
+    //hnumberline.fractionTicks = true
+    hnumberline.draw(0, 3.2);
+    hnumberline.x = WINDOW_WIDTH / 2 - width / 2;
+    hnumberline.y = WINDOW_HEIGHT / 2 + width / 2;
+    app.stage.addChild(hnumberline);
+
+    vnumberline = new VerticalNumberLine(0, 3.5, width, app);
+    //vnumberline.fractionTicks = true
+    vnumberline.draw(0, 3.2);
+    vnumberline.x = WINDOW_WIDTH / 2 - width / 2;
+    vnumberline.y = WINDOW_HEIGHT / 2 + width / 2;
+    app.stage.addChild(vnumberline);
+
 
     vnumberline.onUpdate = () => {
       let { min, max } = vnumberline;
@@ -579,39 +655,43 @@ function onObjectUp(e){
 
     let incDim = SLIDER_DIM
 
-    V.incYDenominator.width = incDim
-    V.incYDenominator.height = incDim
-    V.incYDenominator.x = vnumberline.x 
-    V.incYDenominator.y = vnumberline.y - vnumberline.length - incDim
+    incYDenominator.width = incDim
+    incYDenominator.height = incDim
+    incYDenominator.x = vnumberline.x 
+    incYDenominator.y = vnumberline.y - vnumberline.length - incDim
 
-    V.decYDenominator.width = incDim
-    V.decYDenominator.height = incDim
-    V.decYDenominator.x = vnumberline.x - incDim
-    V.decYDenominator.y = vnumberline.y - vnumberline.length - incDim
+    decYDenominator.width = incDim
+    decYDenominator.height = incDim
+    decYDenominator.x = vnumberline.x - incDim
+    decYDenominator.y = vnumberline.y - vnumberline.length - incDim
 
-    V.incXDenominator.width = incDim 
-    V.incXDenominator.height = incDim 
-    V.incXDenominator.x = hnumberline.x + hnumberline.length
-    V.incXDenominator.y = hnumberline.y - incDim
+    incXDenominator.width = incDim 
+    incXDenominator.height = incDim 
+    incXDenominator.x = hnumberline.x + hnumberline.length
+    incXDenominator.y = hnumberline.y - incDim
 
-    V.decXDenominator.width = incDim 
-    V.decXDenominator.height = incDim 
-    V.decXDenominator.x = hnumberline.x + hnumberline.length 
-    V.decXDenominator.y = hnumberline.y
+    decXDenominator.width = incDim 
+    decXDenominator.height = incDim 
+    decXDenominator.x = hnumberline.x + hnumberline.length 
+    decXDenominator.y = hnumberline.y
 
     app.stage.addChild(V.currentCtx)
-
 
     if (features.type == "k2"){
       hnumberline.hideLabels()
       vnumberline.hideLabels()
       console.log("hiding")
     } else {
-      app.stage.addChild(V.incYDenominator);
-      app.stage.addChild(V.decYDenominator);
-      app.stage.addChild(V.incXDenominator);
-      app.stage.addChild(V.decXDenominator);
+      app.stage.addChild(incYDenominator);
+      app.stage.addChild(decYDenominator);
+      app.stage.addChild(incXDenominator);
+      app.stage.addChild(decXDenominator);
     }
+
+
+    console.log("running...")
+    canvasSketcher.run(setup)
+
 
   }
 
